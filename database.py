@@ -132,8 +132,10 @@ def add_patient(name, age, sex):
     if sex not in VALID_SEX_VALUES:
         raise ValueError("Sex must be 'Male' or 'Female'.")
 
-    if age is not None:
+    if age not in (None, ""):
         age = int(age)
+    else:
+        age = None
 
     created_at = datetime.now().isoformat(timespec="seconds")
 
@@ -172,16 +174,17 @@ def get_patient(patient_id):
 # ---------------------------------------------------------------------------
 
 def save_session(patient_id, game_type, difficulty, score, total):
-    """
-    Save a completed game session and return the newly created session id.
-
-    Raises ValueError if patient_id does not refer to an existing patient,
-    so an orphan session can never be created.
-    """
     if get_patient(patient_id) is None:
         raise ValueError(f"Cannot save session: patient_id {patient_id} does not exist.")
 
+    if total is None or int(total) <= 0:
+        raise ValueError("total must be greater than 0.")
+
+    if score is None or int(score) < 0:
+        raise ValueError("score cannot be negative.")
+
     played_at = datetime.now().isoformat(timespec="seconds")
+    ...
 
     conn = get_connection()
     try:
