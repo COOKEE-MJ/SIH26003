@@ -59,17 +59,20 @@ def home():
     return render_template('index.html', patients=patients)
 @app.route('/patient/add', methods=['POST'])
 def add_patient_route():
-    name = request.form.get('name')
+    name = (request.form.get('name') or '').strip()
     age_value = request.form.get('age')
     sex = request.form.get('sex')
+
     try:
+        if not name:
+            raise ValueError("Patient name cannot be empty.")
         age = None if not age_value else _parse_integer(age_value, 'Age')
         if sex not in ('Male', 'Female'):
             raise ValueError("Sex must be 'Male' or 'Female'.")
         add_patient(name, age, sex)
     except ValueError as e:
         flash(f'Could not add patient: {e}', 'error')
-    return redirect(url_for('home'))
+        return redirect(url_for('home'))
 @app.route('/patient/<int:patient_id>/play')
 def play_select(patient_id):
     patient = get_patient(patient_id)
@@ -102,13 +105,14 @@ def submit_score():
         difficulty = _parse_integer(data['difficulty'], 'difficulty')
         score = _parse_integer(data['score'], 'score')
         total = _parse_integer(data['total'], 'total')
-        compute_next_difficulty(score, total, difficulty)
+        next_difficulty = compute_next_difficulty(score, total, difficulty)
         if get_patient(patient_id) is None:
             return jsonify({'error': f'patient_id {patient_id} does not exist.'}), 404
+
         save_session(patient_id, game_type, difficulty, score, total)
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
-    next_difficulty = compute_next_difficulty(score, total, difficulty)
+
     return jsonify({'next_difficulty': next_difficulty})
 @app.route('/api/patient/<int:patient_id>/sessions')
 def patient_sessions_route(patient_id):
