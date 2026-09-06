@@ -60,6 +60,13 @@ check(fetched and fetched["sex"] == "Male", "Test 4: patient sex matches")
 all_patients = database.get_all_patients()
 check(any(p["id"] == new_id for p in all_patients), "Test 5: patient list contains new patient")
 
+# Test 5b: blank age string (what Flask's request.form.get returns for an
+# empty field) should be treated as "no age given", not crash
+blank_age_id = database.add_patient("Blank Age Patient", "", "Male")
+blank_age_patient = database.get_patient(blank_age_id)
+check(blank_age_patient is not None, "Test 5b: patient with blank age saved")
+check(blank_age_patient["age"] is None, "Test 5b: blank age string stored as None")
+
 # Test 6: save a valid game session
 session_id = database.save_session(new_id, "matching", 2, 8, 10)
 check(isinstance(session_id, int) and session_id > 0, "Test 6: session saved, got valid id")
@@ -84,6 +91,15 @@ orphan_count = conn.execute(
 ).fetchone()["c"]
 conn.close()
 check(orphan_count == 0, "Test 8b: no orphan session row exists in db")
+
+# Test 8c: total <= 0 must be rejected (prevents downstream ZeroDivisionError
+# in compute_next_difficulty)
+total_zero_rejected = False
+try:
+    database.save_session(new_id, "matching", 2, 0, 0)
+except ValueError:
+    total_zero_rejected = True
+check(total_zero_rejected, "Test 8c: save_session rejects total<=0")
 
 # Test 9: seed data runs successfully
 import importlib
