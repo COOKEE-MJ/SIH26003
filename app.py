@@ -106,13 +106,13 @@ def submit_score():
         score = _parse_integer(data['score'], 'score')
         total = _parse_integer(data['total'], 'total')
         next_difficulty = compute_next_difficulty(score, total, difficulty)
-        if get_patient(patient_id) is None:
-            return jsonify({'error': f'patient_id {patient_id} does not exist.'}), 404
-
-        save_session(patient_id, game_type, difficulty, score, total)
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
+    if get_patient(patient_id) is None:
+        return jsonify({'error': f'patient_id {patient_id} does not exist.'}), 404
+
+    save_session(patient_id, game_type, difficulty, score, total)
     return jsonify({'next_difficulty': next_difficulty})
 @app.route('/api/patient/<int:patient_id>/sessions')
 def patient_sessions_route(patient_id):
@@ -128,6 +128,6 @@ def dashboard(patient_id):
     return render_template('dashboard.html', patient=patient)
 if __name__ == '__main__':
     init_db()
-    debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
+    debug = os.environ.get('FLASK_DEBUG', 'true').lower() in ('1', 'true', 'yes')
     # This development server is not an authentication or CSRF boundary.
     app.run(debug=debug)
