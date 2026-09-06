@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from database import (
- init_db,
- get_all_patients,
- add_patient,
- get_patient,
- save_session,
- get_patient_sessions,
+    init_db,
+    get_all_patients,
+    add_patient,
+    get_patient,
+    save_session,
+    get_patient_sessions,
 )
 app = Flask(__name__)
 def compute_next_difficulty(score, total, current_difficulty):
