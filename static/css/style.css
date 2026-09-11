@@ -1,0 +1,168 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f1e8;
+    color: #3f3a34;
+    min-height: 100vh;
+}
+
+/* Navigation */
+.navbar {
+    background: #6f7f72;
+    padding: 16px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Main Content */
+.main-content {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+    min-height: 70vh;
+}
+
+/* Home Page */
+.home-container {
+    background: #fffdf8;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(70, 60, 50, 0.12);
+    border: 1px solid #ddd5c8;
+}
+
+.home-container h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #4d5d51;
+}
+
+.home-container h3 {
+    margin: 25px 0 20px;
+    font-size: 22px;
+}
+
+.welcome-text {
+    font-size: 19px;
+    margin-bottom: 12px;
+}
+
+.home-container p {
+    line-height: 1.6;
+}
+
+/* Buttons */
+.button-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.answer-btn {
+    border: none;
+    padding: 15px 35px;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.yes-btn {
+    background: #879b88;
+    color: white;
+}
+
+.no-btn {
+    background: #a99f94;
+    color: white;
+}
+
+.answer-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Result */
+#result {
+    margin-top: 25px;
+    font-weight: bold;
+    color: #4d5d51;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #e7e0d5;
+    color: #625b52;
+    margin-top: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+
+    .nav-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+
+    .home-container {
+        padding: 25px 18px;
+    }
+
+    .home-container h2 {
+        font-size: 26px;
+    }
+
+    .button-section {
+        flex-direction: column;
+    }
+
+    .answer-btn {
+        width: 100%;
+    }
+}
