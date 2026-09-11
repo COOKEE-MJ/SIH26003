@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Memory Care Platform{% endblock %}
+
+{% block content %}
+
+<div class="home-container">
+
+    <h2>Memory Care Platform</h2>
+
+    <p class="welcome-text">
+        Welcome to our interactive memory care platform.
+    </p>
+
+    <p>
+        This platform provides simple and engaging activities
+        designed to support memory and cognitive skills.
+    </p>
+
+    <div class="button-section">
+
+        <button class="answer-btn yes-btn"
+                onclick="window.location.href='/game_matching'">
+            Start Memory Game
+        </button>
+
+        <button class="answer-btn no-btn"
+                onclick="window.location.href='/dashboard'">
+            View Dashboard
+        </button>
+
+    </div>
+
+</div>
+
+{% endblock %}
