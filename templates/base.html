@@ -4,22 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}SIH 2026{% endblock %}</title>
+    <title>{% block title %}Memory Care Platform{% endblock %}</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}
 </head>
 
 <body>
 
-    <header>
-        <h1>SIH 2026</h1>
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="{{ url_for('home') }}" class="logo">
+                🧠 Memory Care
+            </a>
+
+            <nav class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+            </nav>
+
+        </div>
     </header>
 
-    <main>
+    <main class="main-content">
         {% block content %}
         {% endblock %}
     </main>
+
+    <footer class="footer">
+        <p>© 2026 Memory Care Platform | SIH 2026</p>
+    </footer>
 
     {% block scripts %}
     {% endblock %}
