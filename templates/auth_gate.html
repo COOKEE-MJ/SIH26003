@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-illustration" aria-hidden="true">
+        <span>🌉</span>
+        <span>🌿</span>
+        <span>☀️</span>
+    </div>
+    <div class="auth-card">
+        <p class="eyebrow">SmritiSetu</p>
+        <h1>A gentler way to care for memory.</h1>
+        <p class="lead">Keep games, patient progress, and family support together in one warm, simple place.</p>
+        <div class="auth-actions">
+            <a class="button button-primary" href="{{ url_for('login') }}">Sign in to my account</a>
+            <a class="button button-outline" href="{{ url_for('register') }}">Create a new account</a>
+        </div>
+        <p class="quiet-note">For caregivers, families, and care teams.</p>
+    </div>
+</section>
+{% endblock %}

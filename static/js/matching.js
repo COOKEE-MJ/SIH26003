@@ -1,9 +1,12 @@
-ocument.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
     const cards = document.querySelectorAll(".memory-card");
     const scoreElement = document.getElementById("score");
     const movesElement = document.getElementById("moves");
     const messageElement = document.getElementById("game-message");
+    const gameBoard = document.getElementById("game-board");
+    const patientId = Number(gameBoard.dataset.patientId);
+    const difficulty = Number(gameBoard.dataset.difficulty);
 
     let firstCard = null;
     let secondCard = null;
@@ -11,14 +14,12 @@ ocument.addEventListener("DOMContentLoaded", function () {
     let moves = 0;
     let score = 0;
     let matchedPairs = 0;
-  const cardArray = Array.from(cards);
+        const cardArray = Array.from(cards);
 
     cardArray.sort(() => Math.random() - 0.5);
 
-    const board = document.getElementById("game-board");
-
     cardArray.forEach(card => {
-        board.appendChild(card);
+        gameBoard.appendChild(card);
     });
 
     cards.forEach(card => {
@@ -56,6 +57,8 @@ ocument.addEventListener("DOMContentLoaded", function () {
                 if (matchedPairs === cards.length / 2) {
                     messageElement.textContent =
                         "🎉 Well done! You matched all the cards!";
+                    showCelebration();
+                    submitScore();
                 }
 
             } else {
@@ -78,4 +81,52 @@ ocument.addEventListener("DOMContentLoaded", function () {
         lockBoard = false;
     }
 
+    async function submitScore() {
+        try {
+            const response = await fetch("/api/score", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    patient_id: patientId,
+                    game_type: "matching",
+                    difficulty: difficulty,
+                    score: matchedPairs,
+                    total: cards.length / 2
+                })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || "Unable to save your score.");
+            }
+
+            messageElement.textContent +=
+                ` Next difficulty: ${result.next_difficulty}.`;
+        } catch (error) {
+            console.error(error);
+            messageElement.textContent +=
+                " Your score could not be saved.";
+        }
+    }
+
+    function showCelebration() {
+        const celebration = document.getElementById("celebration");
+        celebration.classList.add("is-visible");
+        const colors = ["#c96d2d", "#8fa55c", "#e39a70", "#d6ad65"];
+        for (let index = 0; index < 28; index += 1) {
+            const piece = document.createElement("span");
+            piece.className = "confetti-piece";
+            piece.style.left = `${Math.random() * 100}vw`;
+            piece.style.background = colors[index % colors.length];
+            piece.style.animationDelay = `${Math.random() * 0.4}s`;
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 4000);
+        }
+    }
+
 });
+
+function closeCelebration() {
+    const celebration = document.getElementById("celebration");
+    celebration.classList.remove("is-visible");
+}

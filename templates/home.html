@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Home | SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="home-hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Designed for elders and caregivers</p>
+        <h1>Care that remembers, so they feel <em>remembered.</em></h1>
+        <p class="lead">Gentle activities, familiar rhythms, and a simple family dashboard for the person you care for.</p>
+        <div class="hero-actions">
+            {% if patient %}
+                <a class="button button-primary" href="{{ url_for('games') }}">Explore activities <span aria-hidden="true">→</span></a>
+                <a class="text-link" href="{{ url_for('dashboard_home') }}">View progress <span aria-hidden="true">↗</span></a>
+            {% else %}
+                <a class="button button-primary" href="{{ url_for('dashboard_gate') }}">Add a patient <span aria-hidden="true">→</span></a>
+            {% endif %}
+        </div>
+        <div class="trust-line"><span class="trust-mark">✦</span> A calm, caregiver-first space for everyday progress</div>
+    </div>
+    <div class="hero-visual" aria-label="A warm illustration of a family sharing time together">
+        <div class="sun-disc"></div>
+        <div class="family-illustration"><span>👵🏽</span><span>🌿</span><span>👧🏽</span></div>
+        <div class="floating-note note-top">☀️ Gentle, familiar moments</div>
+        <div class="floating-note note-bottom">✓ Today can be a good day</div>
+    </div>
+</section>
+
+<section class="story-band">
+    <div class="story-intro"><p class="eyebrow">The care loop</p><h2>Small moments. Meaningful insight.</h2></div>
+    <div class="story-grid">
+        <article class="story-card"><span class="story-icon">🧩</span><h3>Play together</h3><p>Large, friendly games that feel like a welcome activity, never a test.</p></article>
+        <article class="story-card"><span class="story-icon">🌱</span><h3>Notice progress</h3><p>Scores and session history turn everyday play into a gentle care signal.</p></article>
+        <article class="story-card"><span class="story-icon">🤝</span><h3>Stay connected</h3><p>Keep the family and doctor conversation grounded in what is changing.</p></article>
+    </div>
+</section>
+
+<section class="home-footer-note"><strong>Signed in as {{ caregiver_name }}.</strong> {% if patient %}Caring for {{ patient.name }}.{% else %}Register a patient to begin.{% endif %} <a href="{{ url_for('logout') }}">Sign out</a></section>
+{% endblock %}

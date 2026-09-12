@@ -20,6 +20,7 @@ It will:
 
 from datetime import datetime, timedelta
 
+import database
 from database import get_connection, init_db
 
 
@@ -41,7 +42,8 @@ def clear_demo_data(conn):
     conn.execute("DELETE FROM sessions")
     conn.execute("DELETE FROM patients")
     # Reset autoincrement counters so IDs look clean each time this runs.
-    conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('patients', 'sessions')")
+    if not database.USE_POSTGRES:
+        conn.execute("DELETE FROM sqlite_sequence WHERE name IN ('patients', 'sessions')")
     conn.commit()
 
 
@@ -55,14 +57,23 @@ def insert_demo_patients(conn):
         created_at = (now - timedelta(days=(len(DEMO_PATIENTS) - i) * 3)).isoformat(
             timespec="seconds"
         )
-        cursor = conn.execute(
-            """
+        insert_sql = """
             INSERT INTO patients (name, age, sex, created_at)
-            VALUES (?, ?, ?, ?)
-            """,
+            VALUES ({0}, {0}, {0}, {0})
+        """.format("%s" if database.USE_POSTGRES else "?")
+        cursor = conn.execute(
+            insert_sql,
             (patient["name"], patient["age"], patient["sex"], created_at),
         )
-        patient_ids.append(cursor.lastrowid)
+        if database.USE_POSTGRES:
+            # PostgreSQL needs a query for the generated id.
+            cursor = conn.execute(
+                "SELECT id FROM patients WHERE name = %s AND created_at = %s ORDER BY id DESC LIMIT 1",
+                (patient["name"], created_at),
+            )
+            patient_ids.append(cursor.fetchone()["id"])
+        else:
+            patient_ids.append(cursor.lastrowid)
 
     conn.commit()
     return patient_ids

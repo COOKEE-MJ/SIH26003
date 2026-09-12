@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="form-shell">
+    <div class="form-card">
+        <p class="eyebrow">A caring beginning</p>
+        <h1>Create your caregiver account</h1>
+        <p class="lead">Your account keeps one patient's care journey private and easy to follow.</p>
+        {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+        <form method="post" class="care-form">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required>
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+            <label for="confirmation">Confirm password</label>
+            <input id="confirmation" name="confirmation" type="password" minlength="6" autocomplete="new-password" required>
+            <button class="button button-primary" type="submit">Create account</button>
+        </form>
+        <p class="form-switch">Already registered? <a href="{{ url_for('login') }}">Sign in</a></p>
+    </div>
+</section>
+{% endblock %}

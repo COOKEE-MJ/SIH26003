@@ -1,16 +1,45 @@
 import os
+from functools import wraps
 
-from flask import Flask, abort, flash, render_template, request, jsonify, redirect, url_for
+from flask import (
+    Flask,
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from werkzeug.security import check_password_hash, generate_password_hash
 from database import (
     init_db,
     get_all_patients,
     add_patient,
+    create_caregiver,
+    get_caregiver_by_email,
     get_patient,
     save_session,
     get_patient_sessions,
 )
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-only-change-me')
+
+
+def login_required(view):
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if 'caregiver_id' not in session:
+            return redirect(url_for('landing'))
+        return view(*args, **kwargs)
+
+    return wrapped
+
+
+def current_patient():
+    patients = get_all_patients(session['caregiver_id'])
+    return patients[0] if patients else None
 
 
 def _parse_integer(value, field_name):
@@ -54,10 +83,74 @@ def get_latest_difficulty(patient_id, game_type):
     last = matching[-1]
     return compute_next_difficulty(last['score'], last['total'], last['difficulty'])
 @app.route('/')
+def landing():
+    if 'caregiver_id' in session:
+        return redirect(url_for('home'))
+    return render_template('auth_gate.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        caregiver = get_caregiver_by_email(email)
+        if not caregiver or not check_password_hash(caregiver['password_hash'], password):
+            return render_template('login.html', error='Email or password is incorrect.'), 401
+        session.clear()
+        session['caregiver_id'] = caregiver['id']
+        session['caregiver_name'] = caregiver['name']
+        return redirect(url_for('home'))
+    return render_template('login.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        confirmation = request.form.get('confirmation', '')
+        if len(password) < 6:
+            return render_template('register.html', error='Use at least 6 characters for your password.'), 400
+        if password != confirmation:
+            return render_template('register.html', error='The passwords do not match.'), 400
+        try:
+            caregiver_id = create_caregiver(name, email, generate_password_hash(password))
+        except ValueError as error:
+            return render_template('register.html', error=str(error)), 400
+        session['caregiver_id'] = caregiver_id
+        session['caregiver_name'] = name
+        return redirect(url_for('home'))
+    return render_template('register.html')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('landing'))
+
+
+@app.route('/home')
+@login_required
 def home():
-    patients = get_all_patients()
-    return render_template('index.html', patients=patients)
+    patient = current_patient()
+    return render_template(
+        'home.html',
+        caregiver_name=session.get('caregiver_name'),
+        patient=patient,
+    )
+
+
+@app.route('/games')
+@login_required
+def games():
+    patient = current_patient()
+    if patient is None:
+        return redirect(url_for('dashboard_gate'))
+    return render_template('games.html', patient=patient)
 @app.route('/patient/add', methods=['POST'])
+@login_required
 def add_patient_route():
     name = (request.form.get('name') or '').strip()
     age_value = request.form.get('age')
@@ -69,25 +162,59 @@ def add_patient_route():
         age = None if not age_value else _parse_integer(age_value, 'Age')
         if sex not in ('Male', 'Female'):
             raise ValueError("Sex must be 'Male' or 'Female'.")
-        add_patient(name, age, sex)
+        add_patient(name, age, sex, caregiver_id=session['caregiver_id'])
+        flash('Patient added successfully.', 'success')
+        return redirect(url_for('home'))
     except ValueError as e:
         flash(f'Could not add patient: {e}', 'error')
         return redirect(url_for('home'))
+@app.route('/dashboard/register-patient', methods=['GET', 'POST'])
+@login_required
+def dashboard_gate():
+    if request.method == 'POST':
+        try:
+            name = (request.form.get('patient_name') or '').strip()
+            age = _parse_integer(request.form.get('patient_age'), 'Age')
+            sex = request.form.get('sex')
+            if not name:
+                raise ValueError('Patient name is required.')
+            if sex not in ('Male', 'Female'):
+                raise ValueError("Sex must be 'Male' or 'Female'.")
+            add_patient(
+                name,
+                age,
+                sex,
+                caregiver_id=session['caregiver_id'],
+                diagnosis_stage=request.form.get('diagnosis_stage'),
+                relation=request.form.get('relation'),
+                contact=request.form.get('contact'),
+            )
+        except (TypeError, ValueError) as error:
+            return render_template('dashboard_gate.html', error=str(error)), 400
+        flash('Patient profile registered. Their dashboard is ready.', 'success')
+        return redirect(url_for('dashboard_home'))
+    return render_template('dashboard_gate.html')
+
+
 @app.route('/patient/<int:patient_id>/play')
+@login_required
 def play_select(patient_id):
-    patient = get_patient(patient_id)
+    patient = get_patient(patient_id, session['caregiver_id'])
     if patient is None:
         abort(404)
     return render_template('play.html', patient=patient)
 @app.route('/game/matching/<int:patient_id>')
+@login_required
 def game_matching(patient_id):
-    patient = get_patient(patient_id)
+    patient = get_patient(patient_id, session['caregiver_id'])
     if patient is None:
         abort(404)
     difficulty = get_latest_difficulty(patient_id, 'matching')
     return render_template('game_matching.html', patient=patient, difficulty=difficulty)
 @app.route('/api/score', methods=['POST'])
 def submit_score():
+    if 'caregiver_id' not in session:
+        return jsonify({'error': 'Sign in required.'}), 401
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         return jsonify({'error': 'Request body must be a JSON object.'}), 400
@@ -109,22 +236,34 @@ def submit_score():
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-    if get_patient(patient_id) is None:
+    if get_patient(patient_id, session['caregiver_id']) is None:
         return jsonify({'error': f'patient_id {patient_id} does not exist.'}), 404
 
     save_session(patient_id, game_type, difficulty, score, total)
     return jsonify({'next_difficulty': next_difficulty})
 @app.route('/api/patient/<int:patient_id>/sessions')
 def patient_sessions_route(patient_id):
-    if get_patient(patient_id) is None:
+    if 'caregiver_id' not in session:
+        return jsonify({'error': 'Sign in required.'}), 401
+    if get_patient(patient_id, session['caregiver_id']) is None:
         return jsonify({'error': f'patient_id {patient_id} does not exist.'}), 404
     sessions = get_patient_sessions(patient_id)
     return jsonify(sessions)
 @app.route('/dashboard/<int:patient_id>')
+@login_required
 def dashboard(patient_id):
-    patient = get_patient(patient_id)
+    patient = get_patient(patient_id, session['caregiver_id'])
     if patient is None:
         abort(404)
+    return render_template('dashboard.html', patient=patient)
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard_home():
+    patient = current_patient()
+    if patient is None:
+        return redirect(url_for('dashboard_gate'))
     return render_template('dashboard.html', patient=patient)
 if __name__ == '__main__':
     init_db()

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add Patient | SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="form-shell gate-shell">
+    <div class="form-card">
+        <div class="form-icon">🩺</div>
+        <p class="eyebrow">Before the dashboard</p>
+        <h1>Tell us about the person you care for</h1>
+        <p class="lead">This keeps their games and progress connected to the right care circle.</p>
+        {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+        <form method="post" class="care-form">
+            <label for="patient_name">Patient's full name</label>
+            <input id="patient_name" name="patient_name" type="text" placeholder="e.g. Sunita Devi" required>
+            <div class="form-row">
+                <div><label for="patient_age">Age</label><input id="patient_age" name="patient_age" type="number" min="40" max="120" required></div>
+                <div><label for="sex">Gender</label><select id="sex" name="sex" required><option value="">Select</option><option value="Female">Female</option><option value="Male">Male</option></select></div>
+            </div>
+            <label for="diagnosis_stage">Dementia stage, if known</label>
+            <select id="diagnosis_stage" name="diagnosis_stage"><option value="unknown">Not sure / undiagnosed</option><option value="early">Early stage</option><option value="middle">Middle stage</option><option value="advanced">Advanced stage</option></select>
+            <label for="relation">Your relationship</label>
+            <input id="relation" name="relation" type="text" placeholder="Daughter, son, caregiver">
+            <label for="contact">Contact number</label>
+            <input id="contact" name="contact" type="tel" placeholder="For sharing reports">
+            <button class="button button-primary" type="submit">Register patient &amp; view dashboard</button>
+        </form>
+        <p class="quiet-note">You can update these details as your care journey changes.</p>
+    </div>
+</section>
+{% endblock %}

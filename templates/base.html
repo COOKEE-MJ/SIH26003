@@ -18,11 +18,19 @@
         <div class="nav-container">
 
             <a href="{{ url_for('home') }}" class="logo">
-                🧠 Memory Care
+                <span class="logo-symbol">✦</span> SmritiSetu
             </a>
 
             <nav class="nav-links">
-                <a href="{{ url_for('home') }}">Home</a>
+                {% if session.get('caregiver_id') %}
+                    <a class="nav-home" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-games" href="{{ url_for('games') }}">Games</a>
+                    <a class="nav-dashboard" href="{{ url_for('dashboard_home') }}">Dashboard</a>
+                    <a class="nav-quiet" href="{{ url_for('logout') }}">Sign out</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Sign in</a>
+                    <a class="nav-cta" href="{{ url_for('register') }}">Start your care circle</a>
+                {% endif %}
             </nav>
 
         </div>

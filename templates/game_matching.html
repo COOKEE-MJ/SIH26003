@@ -36,7 +36,9 @@
     </p>
 
     <!-- Memory Cards -->
-    <div id="game-board" class="game-board">
+        <div id="game-board" class="game-board"
+            data-patient-id="{{ patient.id }}"
+            data-difficulty="{{ difficulty }}">
 
         <button class="memory-card" data-card="1">
             <span>?</span>
@@ -76,15 +78,19 @@
 
 </div>
 
+<div id="celebration" class="celebration" role="status" aria-live="polite">
+    <div class="celebration-card">
+        <div class="celebration-icon">🎉</div>
+        <h2>Wonderful job!</h2>
+        <p>You found every pair. That was lovely work.</p>
+        <button class="button button-primary" type="button" onclick="closeCelebration()">Continue</button>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 
 <script src="{{ url_for('static', filename='js/matching.js') }}"></script>
-
-{% endblock %}
-    </div>
-
-</div>
 
 {% endblock %}

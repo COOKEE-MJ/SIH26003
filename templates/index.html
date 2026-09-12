@@ -17,17 +17,46 @@
         designed to support memory and cognitive skills.
     </p>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <p class="flash-message {{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form class="patient-form" action="{{ url_for('add_patient_route') }}" method="post">
+        <h3>Add Patient</h3>
+        <label for="patient-name">Name</label>
+        <input id="patient-name" name="name" type="text" required>
+        <label for="patient-age">Age</label>
+        <input id="patient-age" name="age" type="number" min="1" max="130">
+        <label for="patient-sex">Sex</label>
+        <select id="patient-sex" name="sex" required>
+            <option value="">Select</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+        </select>
+        <button class="answer-btn yes-btn" type="submit">Add Patient</button>
+    </form>
+
     <div class="button-section">
 
-        <button class="answer-btn yes-btn"
-                onclick="window.location.href='/game_matching'">
-            Start Memory Game
-        </button>
+        {% if patients %}
+            <button class="answer-btn yes-btn"
+                    onclick="window.location.href='{{ url_for('game_matching', patient_id=patients[0]['id']) }}'">
+                Start Memory Game
+            </button>
 
-        <button class="answer-btn no-btn"
-                onclick="window.location.href='/dashboard'">
-            View Dashboard
-        </button>
+            <button class="answer-btn no-btn"
+                    onclick="window.location.href='{{ url_for('dashboard', patient_id=patients[0]['id']) }}'">
+                View Dashboard
+            </button>
+        {% else %}
+            <p>No patients are available yet. Add a patient to start a memory game.</p>
+        {% endif %}
 
     </div>
 

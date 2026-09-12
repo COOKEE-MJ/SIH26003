@@ -1,106 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Doctor Dashboard</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/dashboard.css') }}">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Doctor Dashboard</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-
 <header class="header">
-    <div>
-        <h1>Doctor Dashboard</h1>
-        <p>Cognitive Health Monitoring</p>
-    </div>
+	<div>
+		<h1>Care dashboard</h1>
+		<p>A clear view of {{ patient["name"] }}'s cognitive journey</p>
+	</div>
+	<a class="dashboard-back" href="{{ url_for('home') }}">Back home</a>
 </header>
-
-<main class="container"> <!-- Patient Information -->
-    <section class="card patient-card">
-        <h2>Patient Information</h2>
-
-        <p>
-            <strong>Patient ID:</strong>
-            {{ patient["id"] }}
-        </p>
-    </section>
-
-
-    <!-- Score Overview -->
-    <section class="stats">
-
-        <div class="stat-card">
-            <h3>Total Sessions</h3>
-            <p id="totalSessions">0</p>
-        </div>
-
-        <div class="stat-card">
-            <h3>Average Score</h3>
-            <p id="averageScore">0%</p>
-        </div>
-
-        <div class="stat-card">
-            <h3>Latest Score</h3>
-            <p id="latestScore">0%</p>
-        </div>
-
-    </section>
-
-
-    <!-- Score Over Time -->
-    <section class="card">
-        <h2>Score Over Time</h2>
-
-        <div class="chart-container">
-            <canvas id="scoreChart"></canvas>
-        </div>
-    </section>
-
-
-    <!-- Past Sessions -->
-    <section class="card">
-
-        <h2>Past Sessions</h2>
-
-        <div class="table-container">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Game</th>
-                        <th>Score</th>
-                        <th>Difficulty</th>
-                    </tr>
-                </thead>
-
-                <tbody id="sessionsTable">
-
-                    <tr>
-                        <td colspan="4">
-                            Loading sessions...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
+<main class="container">
+	<section class="card patient-card">
+		<h2>Patient Information</h2>
+		<p><strong>Patient ID:</strong> <span id="patientId">{{ patient["id"] }}</span></p>
+	</section>
+	<section class="stats">
+		<div class="stat-card"><h3>Total Sessions</h3><p id="totalSessions">0</p></div>
+		<div class="stat-card"><h3>Average Score</h3><p id="averageScore">0%</p></div>
+		<div class="stat-card"><h3>Latest Score</h3><p id="latestScore">0%</p></div>
+	</section>
+	<section class="card">
+		<h2>Score Over Time</h2>
+		<div class="chart-container"><canvas id="scoreChart"></canvas></div>
+	</section>
+	<section class="card">
+		<h2>Past Sessions</h2>
+		<div class="table-container">
+			<table>
+				<thead><tr><th>Date</th><th>Game</th><th>Score</th><th>Difficulty</th></tr></thead>
+				<tbody id="sessionsTable"><tr><td colspan="4">Loading sessions...</td></tr></tbody>
+			</table>
+		</div>
+	</section>
 </main>
-
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
 </body>
-</html>
 </html>

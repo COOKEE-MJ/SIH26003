@@ -24,6 +24,10 @@ import sqlite3
 import os
 from datetime import datetime
 
+if os.environ.get("DATABASE_URL"):
+    import psycopg
+    from psycopg.rows import dict_row
+
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
@@ -32,6 +36,8 @@ from datetime import datetime
 # and doesn't hardcode any machine-specific absolute path).
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "app_data.db")
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
+USE_POSTGRES = bool(DATABASE_URL)
 
 VALID_SEX_VALUES = ("Male", "Female")
 
@@ -48,6 +54,10 @@ def get_connection():
     - Rows behave like dicts (sqlite3.Row) so callers can do row["name"]
     - Foreign key enforcement is turned on for this connection
     """
+    if USE_POSTGRES:
+        postgres_url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        return psycopg.connect(postgres_url, row_factory=dict_row)
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
@@ -66,6 +76,61 @@ def init_db():
     """
     conn = get_connection()
     try:
+        if USE_POSTGRES:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS caregivers (
+                    id BIGSERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    password_hash TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS patients (
+                    id BIGSERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    age INTEGER,
+                    sex TEXT NOT NULL,
+                    created_at TEXT,
+                    caregiver_id BIGINT REFERENCES caregivers(id),
+                    diagnosis_stage TEXT,
+                    relation TEXT,
+                    contact TEXT
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS sessions (
+                    id BIGSERIAL PRIMARY KEY,
+                    patient_id BIGINT NOT NULL REFERENCES patients(id),
+                    game_type TEXT NOT NULL,
+                    difficulty INTEGER NOT NULL,
+                    score INTEGER NOT NULL,
+                    total INTEGER NOT NULL,
+                    played_at TEXT NOT NULL
+                )
+                """
+            )
+            conn.commit()
+            return
+
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS caregivers (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                name          TEXT NOT NULL,
+                email         TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_at    TEXT NOT NULL
+            )
+            """
+        )
+
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS patients (
@@ -73,10 +138,26 @@ def init_db():
                 name       TEXT NOT NULL,
                 age        INTEGER,
                 sex        TEXT NOT NULL,
-                created_at TEXT
+                created_at TEXT,
+                caregiver_id INTEGER REFERENCES caregivers(id),
+                diagnosis_stage TEXT,
+                relation TEXT,
+                contact TEXT
             )
             """
         )
+
+        patient_columns = {
+            row[1] for row in conn.execute("PRAGMA table_info(patients)")
+        }
+        for column, definition in (
+            ("caregiver_id", "INTEGER REFERENCES caregivers(id)"),
+            ("diagnosis_stage", "TEXT"),
+            ("relation", "TEXT"),
+            ("contact", "TEXT"),
+        ):
+            if column not in patient_columns:
+                conn.execute(f"ALTER TABLE patients ADD COLUMN {column} {definition}")
 
         conn.execute(
             """
@@ -101,7 +182,7 @@ def init_db():
 # Patients
 # ---------------------------------------------------------------------------
 
-def get_all_patients():
+def get_all_patients(caregiver_id=None):
     """
     Return a list of all patients (as plain dicts), ordered by id.
 
@@ -109,15 +190,28 @@ def get_all_patients():
     """
     conn = get_connection()
     try:
-        rows = conn.execute(
-            "SELECT id, name, age, sex, created_at FROM patients ORDER BY id"
-        ).fetchall()
+        query = "SELECT id, name, age, sex, created_at FROM patients"
+        params = ()
+        if caregiver_id is not None:
+            query += " WHERE caregiver_id = ?"
+            params = (caregiver_id,)
+        if USE_POSTGRES:
+            query = query.replace("?", "%s")
+        rows = conn.execute(query + " ORDER BY id", params).fetchall()
         return [dict(row) for row in rows]
     finally:
         conn.close()
 
 
-def add_patient(name, age, sex):
+def add_patient(
+    name,
+    age,
+    sex,
+    caregiver_id=None,
+    diagnosis_stage=None,
+    relation=None,
+    contact=None,
+):
     """
     Insert a new patient and return the newly created patient's id.
 
@@ -141,12 +235,32 @@ def add_patient(name, age, sex):
 
     conn = get_connection()
     try:
+        if USE_POSTGRES:
+            cursor = conn.execute(
+                """
+                INSERT INTO patients
+                    (name, age, sex, created_at, caregiver_id, diagnosis_stage, relation, contact)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
+                """,
+                (
+                    str(name).strip(), age, sex, created_at, caregiver_id,
+                    diagnosis_stage, relation, contact,
+                ),
+            )
+            conn.commit()
+            return cursor.fetchone()["id"]
+
         cursor = conn.execute(
             """
-            INSERT INTO patients (name, age, sex, created_at)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO patients
+                (name, age, sex, created_at, caregiver_id, diagnosis_stage, relation, contact)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (str(name).strip(), age, sex, created_at),
+            (
+                str(name).strip(), age, sex, created_at, caregiver_id,
+                diagnosis_stage, relation, contact,
+            ),
         )
         conn.commit()
         return cursor.lastrowid
@@ -154,15 +268,83 @@ def add_patient(name, age, sex):
         conn.close()
 
 
-def get_patient(patient_id):
+def get_patient(patient_id, caregiver_id=None):
     """
     Return a single patient (as a dict) by id, or None if not found.
     """
     conn = get_connection()
     try:
+        query = "SELECT id, name, age, sex, created_at FROM patients WHERE id = ?"
+        params = [patient_id]
+        if caregiver_id is not None:
+            query += " AND caregiver_id = ?"
+            params.append(caregiver_id)
+        if USE_POSTGRES:
+            query = query.replace("?", "%s")
+        row = conn.execute(query, params).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def create_caregiver(name, email, password_hash):
+    if not name or not str(name).strip():
+        raise ValueError("Name is required.")
+    if not email or not str(email).strip():
+        raise ValueError("Email is required.")
+
+    conn = get_connection()
+    try:
+        if USE_POSTGRES:
+            cursor = conn.execute(
+                """
+                INSERT INTO caregivers (name, email, password_hash, created_at)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id
+                """,
+                (
+                    str(name).strip(),
+                    str(email).strip().lower(),
+                    password_hash,
+                    datetime.now().isoformat(timespec="seconds"),
+                ),
+            )
+            conn.commit()
+            return cursor.fetchone()["id"]
+
+        cursor = conn.execute(
+            """
+            INSERT INTO caregivers (name, email, password_hash, created_at)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                str(name).strip(),
+                str(email).strip().lower(),
+                password_hash,
+                datetime.now().isoformat(timespec="seconds"),
+            ),
+        )
+        conn.commit()
+        return cursor.lastrowid
+    except (sqlite3.IntegrityError, psycopg.errors.UniqueViolation if USE_POSTGRES else sqlite3.IntegrityError) as error:
+        raise ValueError("An account with that email already exists.") from error
+    finally:
+        conn.close()
+
+
+def get_caregiver_by_email(email):
+    conn = get_connection()
+    try:
+        if USE_POSTGRES:
+            row = conn.execute(
+                "SELECT id, name, email, password_hash FROM caregivers WHERE email = %s",
+                (str(email or "").strip().lower(),),
+            ).fetchone()
+            return dict(row) if row else None
+
         row = conn.execute(
-            "SELECT id, name, age, sex, created_at FROM patients WHERE id = ?",
-            (patient_id,),
+            "SELECT id, name, email, password_hash FROM caregivers WHERE email = ?",
+            (str(email or "").strip().lower(),),
         ).fetchone()
         return dict(row) if row else None
     finally:
@@ -188,6 +370,19 @@ def save_session(patient_id, game_type, difficulty, score, total):
 
     conn = get_connection()
     try:
+        if USE_POSTGRES:
+            cursor = conn.execute(
+                """
+                INSERT INTO sessions
+                    (patient_id, game_type, difficulty, score, total, played_at)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                RETURNING id
+                """,
+                (patient_id, game_type, difficulty, score, total, played_at),
+            )
+            conn.commit()
+            return cursor.fetchone()["id"]
+
         cursor = conn.execute(
             """
             INSERT INTO sessions (patient_id, game_type, difficulty, score, total, played_at)
@@ -210,6 +405,18 @@ def get_patient_sessions(patient_id):
     """
     conn = get_connection()
     try:
+        if USE_POSTGRES:
+            rows = conn.execute(
+                """
+                SELECT played_at, game_type, score, total, difficulty
+                FROM sessions
+                WHERE patient_id = %s
+                ORDER BY played_at ASC, id ASC
+                """,
+                (patient_id,),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
         rows = conn.execute(
             """
             SELECT played_at, game_type, score, total, difficulty
