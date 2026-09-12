@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Doctor Cognitive Report</title>
+    <title>Doctor Dashboard</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/dashboard.css') }}">
@@ -16,166 +16,119 @@
 
 <header class="report-header">
     <div>
-        <span class="report-tag">SMRITISETU • CLINICAL SUMMARY</span>
-
-        <h1>Patient Cognitive Report</h1>
-
-        <p>
-            A structured overview of the patient's recent cognitive activity,
-            performance and progress.
-        </p>
+        <p class="report-label">CLINICAL CARE REPORT</p>
+        <h1>Doctor Dashboard</h1>
+        <p>Patient cognitive performance overview</p>
     </div>
 
-    <a class="back-button" href="{{ url_for('home') }}">
-        ← Back Home
+    <a href="{{ url_for('home') }}" class="dashboard-back">
+        Back Home
     </a>
 </header>
 
 
-<main class="container">
+<main class="report-container">
 
-    <!-- Patient -->
+    <!-- PATIENT PROFILE -->
     <section class="patient-banner">
-        <div class="patient-icon">👤</div>
-
         <div>
-            <span class="label">PATIENT</span>
+            <span class="section-label">PATIENT PROFILE</span>
             <h2>{{ patient["name"] }}</h2>
-
             <p>
                 Patient ID:
                 <strong>{{ patient["id"] }}</strong>
             </p>
         </div>
 
-        <div class="status">
-            <span>●</span> Active Report
+        <div class="profile-status">
+            <span>CARE RECORD</span>
+            <strong>Active</strong>
         </div>
     </section>
 
 
-    <!-- Clinical Summary -->
+    <!-- SUMMARY -->
     <section class="summary-grid">
 
-        <div class="summary-card memory">
-            <span class="card-icon">🧠</span>
-            <span class="small-title">MEMORY SCORE</span>
-
-            <h2 id="latestScore">78<span>/100</span></h2>
-
-            <p class="trend positive">
-                ↑ Trending upward
-            </p>
+        <div class="summary-card">
+            <span>MEMORY SCORE</span>
+            <strong id="averageScore">0%</strong>
+            <p>Average game performance</p>
         </div>
 
-
-        <div class="summary-card attention">
-            <span class="card-icon">🎯</span>
-            <span class="small-title">ATTENTION</span>
-
-            <h2>Moderate</h2>
-
-            <p>Stable during recent sessions</p>
+        <div class="summary-card">
+            <span>MEMORY TREND</span>
+            <strong id="memoryTrend">No data</strong>
+            <p>Based on recorded sessions</p>
         </div>
 
-
-        <div class="summary-card activity">
-            <span class="card-icon">◷</span>
-            <span class="small-title">RECENT ACTIVITY</span>
-
-            <h2>Memory Match</h2>
-
-            <p>Latest completed session</p>
+        <div class="summary-card">
+            <span>RECENT ACTIVITY</span>
+            <strong id="recentActivity">No activity</strong>
+            <p id="recentDate">No session recorded</p>
         </div>
 
-
-        <div class="summary-card risk">
-            <span class="card-icon">✓</span>
-            <span class="small-title">RISK LEVEL</span>
-
-            <h2>Low</h2>
-
-            <p>Continue regular monitoring</p>
+        <div class="summary-card">
+            <span>TOTAL SESSIONS</span>
+            <strong id="totalSessions">0</strong>
+            <p>Recorded activities</p>
         </div>
 
     </section>
 
 
-    <!-- Clinical Interpretation -->
+    <!-- PERFORMANCE INSIGHT -->
     <section class="clinical-card">
 
-        <div class="section-heading">
+        <div class="card-heading">
             <div>
-                <span class="eyebrow">CLINICAL INTERPRETATION</span>
-                <h2>Current Cognitive Overview</h2>
+                <span class="section-label">PERFORMANCE INSIGHT</span>
+                <h2>Current Cognitive Activity</h2>
             </div>
-
-            <span class="confidence">● Good progress</span>
         </div>
 
         <div class="interpretation-grid">
 
             <div>
-                <span>Memory</span>
-                <strong>78 / 100</strong>
-                <p>
-                    Performance is showing a positive upward trend
-                    across recent activities.
-                </p>
+                <span>Latest Score</span>
+                <strong id="latestScore">0%</strong>
             </div>
 
             <div>
-                <span>Attention</span>
-                <strong>Moderate</strong>
-                <p>
-                    Attention appears stable with room for
-                    continued cognitive engagement.
-                </p>
+                <span>Latest Difficulty</span>
+                <strong id="latestDifficulty">—</strong>
             </div>
 
             <div>
-                <span>Risk</span>
-                <strong class="low-risk">Low</strong>
-                <p>
-                    No immediate concern indicated by the
-                    current activity pattern.
-                </p>
+                <span>Attention Trend</span>
+                <strong id="attentionTrend">Not available</strong>
+            </div>
+
+            <div>
+                <span>Risk Level</span>
+                <strong id="riskLevel">Not assessed</strong>
             </div>
 
         </div>
 
-    </section>
-
-
-    <!-- Recommendation -->
-    <section class="recommendation">
-
-        <div class="recommendation-icon">💡</div>
-
-        <div>
-            <span class="eyebrow">RECOMMENDATION</span>
-
-            <h2>Continue Memory Match — Level 2</h2>
-
-            <p>
-                Maintain regular cognitive activities and monitor
-                memory and attention trends during future sessions.
+        <div class="recommendation">
+            <span>PERFORMANCE RECOMMENDATION</span>
+            <p id="recommendationText">
+                Complete memory activities to build a meaningful performance history.
             </p>
         </div>
 
     </section>
 
 
-    <!-- Chart -->
+    <!-- SCORE CHART -->
     <section class="report-card">
 
-        <div class="section-heading">
+        <div class="card-heading">
             <div>
-                <span class="eyebrow">PERFORMANCE TREND</span>
-                <h2>Memory Score Over Time</h2>
+                <span class="section-label">PROGRESS HISTORY</span>
+                <h2>Score Over Time</h2>
             </div>
-
-            <span class="chart-note">Recent sessions</span>
         </div>
 
         <div class="chart-container">
@@ -185,57 +138,172 @@
     </section>
 
 
-    <!-- Past Sessions -->
+    <!-- PAST SESSIONS -->
     <section class="report-card">
 
-        <div class="section-heading">
+        <div class="card-heading">
             <div>
-                <span class="eyebrow">SESSION HISTORY</span>
-                <h2>Past Cognitive Sessions</h2>
+                <span class="section-label">ACTIVITY RECORD</span>
+                <h2>Past Sessions</h2>
             </div>
         </div>
 
         <div class="table-container">
 
             <table>
-
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Activity</th>
+                        <th>Game</th>
                         <th>Score</th>
                         <th>Difficulty</th>
                     </tr>
                 </thead>
 
                 <tbody id="sessionsTable">
-
                     <tr>
                         <td colspan="4">
-                            Loading sessions...
+                            No sessions available.
                         </td>
                     </tr>
-
                 </tbody>
-
             </table>
 
         </div>
 
     </section>
 
-
-    <!-- Footer note -->
-    <div class="report-note">
-        <strong>Doctor's note:</strong>
-        This dashboard provides a structured view of cognitive activity
-        and should be interpreted alongside clinical assessment.
-    </div>
-
 </main>
 
 
+<!-- EXISTING DASHBOARD LOGIC -->
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+
+<!-- ADDITIONAL REPORT INFORMATION -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const patientId =
+        document.getElementById("patientId")?.textContent.trim()
+        || "{{ patient['id'] }}";
+
+    const memoryTrend = document.getElementById("memoryTrend");
+    const recentActivity = document.getElementById("recentActivity");
+    const recentDate = document.getElementById("recentDate");
+    const latestDifficulty = document.getElementById("latestDifficulty");
+    const attentionTrend = document.getElementById("attentionTrend");
+    const riskLevel = document.getElementById("riskLevel");
+    const recommendationText =
+        document.getElementById("recommendationText");
+
+    fetch(`/api/patient/${patientId}/sessions`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Unable to load sessions");
+            }
+
+            return response.json();
+        })
+        .then(sessions => {
+
+            if (!sessions || sessions.length === 0) {
+                memoryTrend.textContent = "No data";
+                recentActivity.textContent = "No activity";
+                latestDifficulty.textContent = "—";
+                return;
+            }
+
+            function percentage(session) {
+                if (!session.total || session.total <= 0) {
+                    return 0;
+                }
+
+                return (session.score / session.total) * 100;
+            }
+
+            const scores = sessions.map(percentage);
+
+            const latest = sessions[sessions.length - 1];
+
+            /* Recent activity */
+            recentActivity.textContent =
+                latest.game_type || "Memory Activity";
+
+            latestDifficulty.textContent =
+                latest.difficulty || "—";
+
+            /* Recent date */
+            if (latest.played_at) {
+                const date = new Date(latest.played_at);
+
+                if (!isNaN(date.getTime())) {
+                    recentDate.textContent =
+                        date.toLocaleDateString();
+                }
+            }
+
+            /* Memory trend */
+            if (scores.length < 2) {
+                memoryTrend.textContent = "Starting";
+            } else {
+
+                const previous =
+                    scores[scores.length - 2];
+
+                const current =
+                    scores[scores.length - 1];
+
+                if (current > previous + 5) {
+                    memoryTrend.textContent = "Improving ↑";
+                }
+                else if (current < previous - 5) {
+                    memoryTrend.textContent = "Declining ↓";
+                }
+                else {
+                    memoryTrend.textContent = "Stable →";
+                }
+            }
+
+            /*
+             * Attention trend and clinical risk are NOT calculated
+             * because the current database does not contain
+             * attention or clinical assessment fields.
+             */
+            attentionTrend.textContent = "Not available";
+            riskLevel.textContent = "Not assessed";
+
+            /* Performance recommendation */
+            const average =
+                scores.reduce((sum, value) => sum + value, 0)
+                / scores.length;
+
+            if (scores.length === 1) {
+                recommendationText.textContent =
+                    "Continue regular memory activities to establish a performance baseline.";
+            }
+            else if (average >= 80) {
+                recommendationText.textContent =
+                    "Performance is currently strong. Continue regular cognitive activities.";
+            }
+            else if (average >= 50) {
+                recommendationText.textContent =
+                    "Performance is moderate. Continue regular memory activities and monitor progress over time.";
+            }
+            else {
+                recommendationText.textContent =
+                    "Performance is currently low. Continue activities and review progress across multiple sessions.";
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+});
+
+</script>
 
 </body>
 </html>
