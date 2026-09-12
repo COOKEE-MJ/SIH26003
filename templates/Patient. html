@@ -1,1 +1,1908 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmritiSetu - Better Memory. Brighter Days.</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .perspective {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        @keyframes calmPop {
+            0% {
+                transform: scale(0.92);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .calm-pop {
+            animation: calmPop 0.45s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-[#e8efe4] min-h-screen text-gray-900 pb-12">
+
+<!-- HEADER -->
+
+<header class="bg-[#fffdf8] px-5 md:px-8 py-5 flex items-center justify-between shadow-sm">
+
+    <div class="flex items-center space-x-4 cursor-pointer"
+         onclick="showHome()">
+
+        <div class="text-4xl text-[#6f8f72]">
+            <i class="fa-solid fa-brain"></i>
+        </div>
+
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+                SmritiSetu
+            </h1>
+
+            <p class="text-sm text-gray-600 font-medium">
+                Better Memory. Brighter Days.
+            </p>
+        </div>
+    </div>
+
+    <nav class="hidden lg:flex items-center space-x-3">
+
+        <button onclick="showHome()"
+                class="bg-[#dce8d5] text-gray-800 px-6 py-3 rounded-full font-semibold">
+            Home
+        </button>
+
+        <button onclick="openGameModal()"
+                class="text-gray-700 px-6 py-3 font-semibold">
+            Activities
+        </button>
+
+        <button onclick="showFamilyDashboard()"
+                class="text-gray-700 px-6 py-3 font-semibold">
+            Family
+        </button>
+
+        <button onclick="showDoctorDashboard()"
+                class="text-gray-700 px-6 py-3 font-semibold">
+            Doctor
+        </button>
+
+    </nav>
+
+    <div class="relative">
+
+        <button onclick="toggleRoleDropdown()"
+                class="flex items-center space-x-3 border border-gray-300 rounded-full px-5 py-3 bg-white text-base font-semibold">
+
+            <i id="roleIcon"
+               class="fa-regular fa-user text-gray-700"></i>
+
+            <span id="selectedRole">
+                Patient
+            </span>
+
+            <i class="fa-solid fa-chevron-down text-sm"></i>
+
+        </button>
+
+        <div id="roleDropdown"
+             class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden z-50">
+
+            <button onclick="selectRole('Patient')"
+                    class="w-full text-left px-5 py-4 text-base font-medium hover:bg-[#edf5e8]">
+
+                <i class="fa-solid fa-user mr-3"></i>
+                Patient
+
+            </button>
+
+            <button onclick="selectRole('Family')"
+                    class="w-full text-left px-5 py-4 text-base font-medium hover:bg-[#edf5e8]">
+
+                <i class="fa-solid fa-people-roof mr-3"></i>
+                Family
+
+            </button>
+
+            <button onclick="selectRole('Doctor')"
+                    class="w-full text-left px-5 py-4 text-base font-medium hover:bg-[#edf5e8]">
+
+                <i class="fa-solid fa-user-doctor mr-3"></i>
+                Doctor
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- MAIN -->
+
+<main class="max-w-7xl mx-auto px-4 md:px-6 mt-7">
+
+    <!-- HOME -->
+
+    <div id="homeScreen">
+
+        <!-- HERO -->
+
+        <section class="bg-[#f8f1e7] rounded-3xl p-8 md:p-12 mb-8 shadow-sm">
+
+            <div class="max-w-3xl">
+
+                <p class="text-[#9b5837] font-bold text-lg mb-3">
+                    Dementia Care & Cognitive Support
+                </p>
+
+                <h2 class="text-3xl md:text-5xl font-extrabold leading-tight">
+                    Welcome back.
+                    Your memory support for today is ready.
+                </h2>
+
+                <p class="text-gray-700 text-lg leading-relaxed mt-5">
+                    SmritiSetu combines cognitive activities, memory assistance,
+                    family support and doctor insights to support elderly people
+                    living with dementia.
+                </p>
+
+                <button onclick="openGameModal()"
+                        class="mt-7 bg-[#9b5837] hover:bg-[#81472d] text-white px-8 py-4 rounded-full text-lg font-bold">
+
+                    Start Today's Activity
+                    <i class="fa-solid fa-arrow-right ml-2"></i>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- HEALTH STATUS -->
+
+        <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <p class="text-gray-600 font-semibold">
+                            Today's Memory Score
+                        </p>
+
+                        <h3 class="text-4xl font-extrabold mt-2">
+                            72/100
+                        </h3>
+                    </div>
+
+                    <div class="w-14 h-14 rounded-full bg-[#dce8d5] flex items-center justify-center text-2xl text-[#6f8f72]">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+
+                <p class="text-gray-600 font-semibold">
+                    Cognitive Health Status
+                </p>
+
+                <h3 class="text-2xl font-extrabold text-[#6f8f72] mt-3">
+                    Stable & Improving
+                </h3>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Your recent activity shows steady engagement.
+                </p>
+
+            </div>
+
+
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+
+                <p class="text-gray-600 font-semibold">
+                    This Week
+                </p>
+
+                <h3 class="text-3xl font-extrabold text-[#9b5837] mt-3">
+                    ↑ 12%
+                </h3>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Improvement in activity performance.
+                </p>
+
+            </div>
+
+
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+
+                <p class="text-gray-600 font-semibold">
+                    Medication Reminder
+                </p>
+
+                <h3 class="text-xl font-extrabold mt-3">
+                    Evening Medicine
+                </h3>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Today at 8:00 PM
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- USER JOURNEYS -->
+
+        <section class="mb-8">
+
+            <h2 class="text-3xl font-extrabold mb-5">
+                Your Care Journey
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <button onclick="selectRole('Patient'); showHome();"
+                        class="bg-white rounded-3xl p-7 text-left shadow-sm hover:shadow-md">
+
+                    <div class="text-4xl text-[#6f8f72] mb-5">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Patient
+                    </h3>
+
+                    <p class="text-gray-600 mt-3">
+                        Play memory activities and receive daily cognitive support.
+                    </p>
+
+                </button>
+
+
+                <button onclick="showFamilyDashboard()"
+                        class="bg-white rounded-3xl p-7 text-left shadow-sm hover:shadow-md">
+
+                    <div class="text-4xl text-[#9b5837] mb-5">
+                        <i class="fa-solid fa-people-roof"></i>
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Family
+                    </h3>
+
+                    <p class="text-gray-600 mt-3">
+                        Follow progress and add meaningful memory notes.
+                    </p>
+
+                </button>
+
+
+                <button onclick="showDoctorDashboard()"
+                        class="bg-white rounded-3xl p-7 text-left shadow-sm hover:shadow-md">
+
+                    <div class="text-4xl text-[#b77a4a] mb-5">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Doctor
+                    </h3>
+
+                    <p class="text-gray-600 mt-3">
+                        Review cognitive trends and patient recommendations.
+                    </p>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- LANGUAGE -->
+
+        <section class="bg-white rounded-3xl p-7 md:p-9 mb-8 shadow-sm">
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+
+                <div>
+
+                    <p class="text-[#9b5837] font-bold">
+                        Voice-First Language Support
+                    </p>
+
+                    <h2 class="text-3xl font-extrabold mt-2">
+                        Speak in the language that feels familiar
+                    </h2>
+
+                    <p class="text-gray-600 mt-3">
+                        Language support is designed to make cognitive activities
+                        easier and more familiar.
+                    </p>
+
+                </div>
+
+                <i class="fa-solid fa-microphone text-6xl text-[#6f8f72]"></i>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-7">
+
+                <button class="bg-[#f8e6d5] hover:bg-[#f1d8c1] p-6 rounded-2xl text-left text-lg font-bold">
+                    <i class="fa-solid fa-microphone mr-3"></i>
+                    Speak in Assamese
+                </button>
+
+                <button class="bg-[#dce8d5] hover:bg-[#cfdfc7] p-6 rounded-2xl text-left text-lg font-bold">
+                    <i class="fa-solid fa-microphone mr-3"></i>
+                    Speak in Khasi
+                </button>
+
+                <button class="bg-[#f5ead7] hover:bg-[#ecdfc9] p-6 rounded-2xl text-left text-lg font-bold">
+                    <i class="fa-solid fa-microphone mr-3"></i>
+                    Speak in Garo
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIVITIES -->
+
+        <section class="mb-8">
+
+            <div class="flex items-end justify-between gap-4 mb-5">
+
+                <div>
+                    <p class="text-[#9b5837] font-bold">
+                        Cognitive Activities
+                    </p>
+
+                    <h2 class="text-3xl font-extrabold">
+                        Gentle exercises for today's memory
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- MEMORY -->
+
+                <div class="bg-white rounded-3xl p-7 shadow-sm flex flex-col">
+
+                    <div class="text-5xl mb-5">
+                        🧠
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Memory Match
+                    </h3>
+
+                    <p class="text-gray-600 mt-2">
+                        Find familiar matching pairs.
+                    </p>
+
+                    <div class="mt-5 bg-[#edf5e8] rounded-2xl p-4">
+
+                        <p class="font-bold text-[#527256]">
+                            Memory Skill Trained
+                        </p>
+
+                        <p class="text-sm text-gray-700 mt-1">
+                            Strengthens short-term memory and visual recall.
+                        </p>
+
+                    </div>
+
+                    <button onclick="showMemoryGameFromCard()"
+                            class="mt-6 bg-[#9b5837] text-white py-4 rounded-full text-lg font-bold">
+
+                        Start Activity
+
+                    </button>
+
+                </div>
+
+
+                <!-- VISUAL -->
+
+                <div class="bg-white rounded-3xl p-7 shadow-sm flex flex-col">
+
+                    <div class="text-5xl mb-5">
+                        👀
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Which Picture Changed?
+                    </h3>
+
+                    <p class="text-gray-600 mt-2">
+                        Remember familiar pictures and identify what is missing.
+                    </p>
+
+                    <div class="mt-5 bg-[#f8e6d5] rounded-2xl p-4">
+
+                        <p class="font-bold text-[#9b5837]">
+                            Attention Skill Trained
+                        </p>
+
+                        <p class="text-sm text-gray-700 mt-1">
+                            Supports attention, observation and visual recall.
+                        </p>
+
+                    </div>
+
+                    <button onclick="startVisualGameFromCard()"
+                            class="mt-6 bg-[#9b5837] text-white py-4 rounded-full text-lg font-bold">
+
+                        Start Activity
+
+                    </button>
+
+                </div>
+
+
+                <!-- ROUTINE -->
+
+                <div class="bg-white rounded-3xl p-7 shadow-sm flex flex-col">
+
+                    <div class="text-5xl mb-5">
+                        🌅
+                    </div>
+
+                    <h3 class="text-2xl font-bold">
+                        Daily Routine
+                    </h3>
+
+                    <p class="text-gray-600 mt-2">
+                        Put familiar daily activities in the correct order.
+                    </p>
+
+                    <div class="mt-5 bg-[#f5ead7] rounded-2xl p-4">
+
+                        <p class="font-bold text-[#8a6541]">
+                            Daily Living Skill Trained
+                        </p>
+
+                        <p class="text-sm text-gray-700 mt-1">
+                            Strengthens sequencing memory and daily habit recall.
+                        </p>
+
+                    </div>
+
+                    <button onclick="startRoutineGameFromCard()"
+                            class="mt-6 bg-[#9b5837] text-white py-4 rounded-full text-lg font-bold">
+
+                        Start Activity
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MUSIC -->
+
+        <section class="bg-[#f8f1e7] rounded-3xl p-7 md:p-9 mb-8">
+
+            <p class="font-bold text-[#9b5837]">
+                Cultural Memory & Music
+            </p>
+
+            <h2 class="text-3xl font-extrabold mt-2">
+                Music that brings back familiar memories
+            </h2>
+
+            <p class="text-gray-700 mt-3 max-w-2xl">
+                Explore familiar music through state and community selections
+                to encourage cultural memory recall.
+            </p>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-7">
+
+                <select class="p-5 rounded-2xl border-2 border-[#d7c5ae] bg-white text-lg font-semibold">
+                    <option>Select State</option>
+                    <option>Assam</option>
+                    <option>Meghalaya</option>
+                    <option>Tripura</option>
+                </select>
+
+
+                <select class="p-5 rounded-2xl border-2 border-[#d7c5ae] bg-white text-lg font-semibold">
+                    <option>Select Community</option>
+                    <option>All Communities</option>
+                    <option>Local Community</option>
+                    <option>Traditional Community</option>
+                </select>
+
+
+                <button class="bg-[#9b5837] text-white rounded-2xl text-lg font-bold">
+                    <i class="fa-solid fa-music mr-2"></i>
+                    Play Cultural Music
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- REMINDERS -->
+
+        <section class="bg-white rounded-3xl p-7 shadow-sm">
+
+            <h2 class="text-3xl font-extrabold">
+                Daily Assistance
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+
+                <div class="bg-[#edf5e8] rounded-2xl p-5">
+                    <i class="fa-solid fa-pills text-3xl text-[#6f8f72]"></i>
+                    <h3 class="font-bold text-xl mt-3">
+                        Medicine
+                    </h3>
+                    <p class="text-gray-600 mt-2">
+                        Evening medicine at 8:00 PM.
+                    </p>
+                </div>
+
+                <div class="bg-[#f8e6d5] rounded-2xl p-5">
+                    <i class="fa-solid fa-glass-water text-3xl text-[#9b5837]"></i>
+                    <h3 class="font-bold text-xl mt-3">
+                        Water
+                    </h3>
+                    <p class="text-gray-600 mt-2">
+                        Take a moment to drink water.
+                    </p>
+                </div>
+
+                <div class="bg-[#f5ead7] rounded-2xl p-5">
+                    <i class="fa-solid fa-calendar-check text-3xl text-[#8a6541]"></i>
+                    <h3 class="font-bold text-xl mt-3">
+                        Doctor Appointment
+                    </h3>
+                    <p class="text-gray-600 mt-2">
+                        Next check-up on Friday.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- FAMILY DASHBOARD -->
+
+    <div id="familyScreen" class="hidden">
+
+        <section class="bg-white rounded-3xl p-8 shadow-sm">
+
+            <p class="text-[#9b5837] font-bold">
+                Family Dashboard
+            </p>
+
+            <h2 class="text-4xl font-extrabold mt-2">
+                Memory Support
+            </h2>
+
+            <p class="text-gray-600 mt-3">
+                Follow progress and add meaningful notes that can support memory recall.
+            </p>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
+
+                <div class="bg-[#edf5e8] rounded-2xl p-6">
+                    <p class="font-semibold">Memory Score</p>
+                    <h3 class="text-4xl font-extrabold mt-2">72/100</h3>
+                </div>
+
+                <div class="bg-[#f8e6d5] rounded-2xl p-6">
+                    <p class="font-semibold">Weekly Trend</p>
+                    <h3 class="text-4xl font-extrabold mt-2">↑ 12%</h3>
+                </div>
+
+                <div class="bg-[#f5ead7] rounded-2xl p-6">
+                    <p class="font-semibold">Recent Activity</p>
+                    <h3 class="text-xl font-bold mt-3">Memory Match</h3>
+                </div>
+
+            </div>
+
+
+            <div class="mt-8">
+
+                <h3 class="text-2xl font-bold">
+                    Family Memory Notes
+                </h3>
+
+                <div class="bg-[#f8f1e7] rounded-2xl p-5 mt-4">
+                    <p class="font-semibold">
+                        Recent note
+                    </p>
+
+                    <p class="text-gray-700 mt-2">
+                        Visited granddaughter today.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <button onclick="showHome()"
+                    class="mt-8 bg-[#9b5837] text-white px-8 py-4 rounded-full font-bold">
+
+                Back to Home
+
+            </button>
+
+        </section>
+
+    </div>
+
+
+    <!-- DOCTOR DASHBOARD -->
+
+    <div id="doctorScreen" class="hidden">
+
+        <section class="bg-white rounded-3xl p-8 shadow-sm">
+
+            <p class="text-[#9b5837] font-bold">
+                Clinical Cognitive Report
+            </p>
+
+            <h2 class="text-4xl font-extrabold mt-2">
+                Patient Report
+            </h2>
+
+            <p class="text-gray-600 mt-3">
+                Cognitive activity summary based on recent platform engagement.
+            </p>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mt-8">
+
+                <div class="border border-gray-200 rounded-2xl p-6">
+                    <p class="text-gray-500 font-semibold">
+                        Memory Score
+                    </p>
+
+                    <h3 class="text-4xl font-extrabold mt-2">
+                        78/100
+                    </h3>
+
+                    <p class="text-[#6f8f72] font-bold mt-2">
+                        Trending Up
+                    </p>
+                </div>
+
+
+                <div class="border border-gray-200 rounded-2xl p-6">
+                    <p class="text-gray-500 font-semibold">
+                        Attention
+                    </p>
+
+                    <h3 class="text-3xl font-extrabold mt-2">
+                        Moderate
+                    </h3>
+                </div>
+
+
+                <div class="border border-gray-200 rounded-2xl p-6">
+                    <p class="text-gray-500 font-semibold">
+                        Risk Level
+                    </p>
+
+                    <h3 class="text-3xl font-extrabold text-[#6f8f72] mt-2">
+                        Low
+                    </h3>
+                </div>
+
+
+                <div class="border border-gray-200 rounded-2xl p-6">
+                    <p class="text-gray-500 font-semibold">
+                        Latest Activity
+                    </p>
+
+                    <h3 class="text-xl font-extrabold mt-3">
+                        Memory Match
+                    </h3>
+                </div>
+
+            </div>
+
+
+            <div class="mt-8 bg-[#edf5e8] rounded-3xl p-7">
+
+                <p class="text-[#527256] font-bold">
+                    Recommendation
+                </p>
+
+                <h3 class="text-2xl font-extrabold mt-2">
+                    Continue Memory Match Level 2
+                </h3>
+
+                <p class="text-gray-700 mt-3">
+                    Continue regular cognitive activity and monitor weekly memory and attention trends.
+                </p>
+
+            </div>
+
+
+            <button onclick="showHome()"
+                    class="mt-8 bg-[#9b5837] text-white px-8 py-4 rounded-full font-bold">
+
+                Back to Home
+
+            </button>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- GAME MODAL -->
+
+<div id="gameModal"
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-xl w-full shadow-2xl relative">
+
+        <button onclick="closeGameModal()"
+                class="absolute top-4 right-4 text-gray-500 text-3xl p-3">
+
+            &times;
+
+        </button>
+
+
+        <!-- GAME MENU -->
+
+        <div id="gameMenu">
+
+            <h3 class="text-3xl font-bold">
+                Today's Cognitive Activities
+            </h3>
+
+            <p class="text-gray-600 text-lg mt-2 mb-6">
+                Take your time. Choose the activity that feels comfortable today.
+            </p>
+
+
+            <div class="space-y-4">
+
+                <button onclick="showMemoryGame()"
+                        class="w-full bg-[#edf5e8] p-6 rounded-2xl text-left">
+
+                    <div class="text-3xl mb-2">🧠</div>
+
+                    <div class="font-bold text-xl">
+                        Memory Match
+                    </div>
+
+                    <div class="text-sm text-gray-600 mt-2">
+                        Strengthens short-term memory and visual recall.
+                    </div>
+
+                </button>
+
+
+                <button onclick="startVisualGame()"
+                        class="w-full bg-[#f8e6d5] p-6 rounded-2xl text-left">
+
+                    <div class="text-3xl mb-2">👀</div>
+
+                    <div class="font-bold text-xl">
+                        Which Picture Changed?
+                    </div>
+
+                    <div class="text-sm text-gray-600 mt-2">
+                        Supports attention and visual recall.
+                    </div>
+
+                </button>
+
+
+                <button onclick="startRoutineGame()"
+                        class="w-full bg-[#f5ead7] p-6 rounded-2xl text-left">
+
+                    <div class="text-3xl mb-2">🌅</div>
+
+                    <div class="font-bold text-xl">
+                        Daily Routine
+                    </div>
+
+                    <div class="text-sm text-gray-600 mt-2">
+                        Strengthens sequencing memory and daily habit recall.
+                    </div>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- MEMORY GAME -->
+
+        <div id="memoryGame" class="hidden">
+
+            <button onclick="showGameMenu()"
+                    class="text-lg text-[#527256] font-bold mb-4">
+
+                ← Back to Activities
+
+            </button>
+
+            <h3 class="text-3xl font-bold">
+                Memory Match
+            </h3>
+
+            <p class="text-gray-600 mt-2 mb-5">
+                Take your time and find the matching pairs.
+            </p>
+
+
+            <div class="flex justify-between items-center mb-5 bg-[#edf5e8] px-5 py-4 rounded-2xl text-[#527256] text-base font-bold">
+
+                <span>
+                    Moves:
+                    <span id="moveCount">0</span>
+                </span>
+
+                <span>
+                    Matches:
+                    <span id="matchCount">0</span>/4
+                </span>
+
+            </div>
+
+
+            <div id="gameGrid"
+                 class="grid grid-cols-4 gap-4 mb-6">
+            </div>
+
+
+            <div class="flex gap-4">
+
+                <button onclick="resetGame()"
+                        class="flex-1 bg-gray-200 py-4 rounded-full text-lg font-bold">
+
+                    Restart
+
+                </button>
+
+                <button onclick="closeGameModal()"
+                        class="flex-1 bg-[#6f8f72] text-white py-4 rounded-full text-lg font-bold">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- VISUAL GAME -->
+
+        <div id="visualGame" class="hidden">
+
+            <button onclick="showGameMenu()"
+                    class="text-lg text-[#9b5837] font-bold mb-4">
+
+                ← Back to Activities
+
+            </button>
+
+            <h3 class="text-3xl font-bold">
+                Which Picture Changed?
+            </h3>
+
+            <p id="visualInstruction"
+               class="text-gray-600 text-lg mt-2 mb-5">
+            </p>
+
+
+            <div class="bg-[#f8e6d5] rounded-3xl p-5 mb-6">
+
+                <div id="visualPictures"
+                     class="grid grid-cols-3 gap-4">
+                </div>
+
+            </div>
+
+
+            <div id="visualAnswerArea"
+                 class="hidden">
+
+                <p class="text-lg font-bold mb-4">
+                    Which picture is missing?
+                </p>
+
+                <div id="visualOptions"
+                     class="grid grid-cols-3 gap-4">
+                </div>
+
+            </div>
+
+
+            <p id="visualMessage"
+               class="text-lg font-semibold mt-5 min-h-[30px]">
+            </p>
+
+
+            <button onclick="startVisualGame()"
+                    class="w-full mt-5 bg-[#9b5837] text-white py-4 rounded-full text-lg font-bold">
+
+                Play Again
+
+            </button>
+
+        </div>
+
+
+        <!-- ROUTINE GAME -->
+
+        <div id="routineGame" class="hidden">
+
+            <button onclick="showGameMenu()"
+                    class="text-lg text-[#9b5837] font-bold mb-4">
+
+                ← Back to Activities
+
+            </button>
+
+            <h3 class="text-3xl font-bold">
+                Daily Routine
+            </h3>
+
+            <p class="text-gray-600 text-lg mt-2">
+                Tap the activities in the correct order.
+            </p>
+
+
+            <div class="bg-[#f5ead7] rounded-2xl p-5 my-5">
+
+                <p class="font-bold text-[#8a6541]">
+                    Take your time. Choose what happens first, next and last.
+                </p>
+
+            </div>
+
+
+            <p class="text-lg font-bold mb-4">
+                Your order:
+                <span id="routineProgress">0</span>/3
+            </p>
+
+
+            <div id="routineButtons"
+                 class="space-y-4">
+            </div>
+
+
+            <p id="routineMessage"
+               class="text-lg font-semibold mt-5 min-h-[30px]">
+            </p>
+
+
+            <button onclick="startRoutineGame()"
+                    class="w-full mt-5 bg-[#9b5837] text-white py-4 rounded-full text-lg font-bold">
+
+                Restart
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CALM COMPLETION -->
+
+<div id="celebrationPopup"
+     class="fixed inset-0 bg-black bg-opacity-40 z-[100] hidden flex items-center justify-center p-4">
+
+    <div class="bg-[#fffdf8] rounded-3xl p-9 max-w-md w-full text-center shadow-2xl calm-pop">
+
+        <div class="w-24 h-24 mx-auto bg-[#edf5e8] rounded-full flex items-center justify-center text-5xl">
+            🌿
+        </div>
+
+        <h2 class="text-3xl font-extrabold mt-6">
+            Wonderful!
+        </h2>
+
+        <p class="text-xl font-bold text-[#527256] mt-4">
+            You completed today's activity.
+        </p>
+
+        <p class="text-gray-600 mt-4 text-lg">
+            Great work. Take a moment to rest and feel proud of your progress.
+        </p>
+
+        <button onclick="closeCelebration()"
+                class="mt-7 bg-[#9b5837] text-white px-10 py-4 rounded-full text-lg font-bold">
+
+            Continue
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* SCREEN NAVIGATION */
+
+    function showHome() {
+        document.getElementById('homeScreen').classList.remove('hidden');
+        document.getElementById('familyScreen').classList.add('hidden');
+        document.getElementById('doctorScreen').classList.add('hidden');
+    }
+
+    function showFamilyDashboard() {
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('familyScreen').classList.remove('hidden');
+        document.getElementById('doctorScreen').classList.add('hidden');
+        selectRole('Family');
+    }
+
+    function showDoctorDashboard() {
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('familyScreen').classList.add('hidden');
+        document.getElementById('doctorScreen').classList.remove('hidden');
+        selectRole('Doctor');
+    }
+
+
+    /* ROLE DROPDOWN */
+
+    function toggleRoleDropdown() {
+        document
+            .getElementById('roleDropdown')
+            .classList
+            .toggle('hidden');
+    }
+
+
+    function selectRole(role) {
+
+        const selectedRole =
+            document.getElementById('selectedRole');
+
+        const roleIcon =
+            document.getElementById('roleIcon');
+
+        selectedRole.innerText = role;
+
+        if (role === 'Doctor') {
+
+            roleIcon.className =
+                'fa-solid fa-user-doctor text-gray-700';
+
+        } else if (role === 'Family') {
+
+            roleIcon.className =
+                'fa-solid fa-people-roof text-gray-700';
+
+        } else {
+
+            roleIcon.className =
+                'fa-regular fa-user text-gray-700';
+
+        }
+
+        document
+            .getElementById('roleDropdown')
+            .classList
+            .add('hidden');
+    }
+
+
+    /* CALM COMPLETION */
+
+    function showCelebration() {
+
+        document
+            .getElementById('celebrationPopup')
+            .classList
+            .remove('hidden');
+    }
+
+
+    function closeCelebration() {
+
+        document
+            .getElementById('celebrationPopup')
+            .classList
+            .add('hidden');
+    }
+
+
+    /* GAME MODAL */
+
+    function openGameModal() {
+
+        document
+            .getElementById('gameModal')
+            .classList
+            .remove('hidden');
+
+        showGameMenu();
+    }
+
+
+    function closeGameModal() {
+
+        document
+            .getElementById('gameModal')
+            .classList
+            .add('hidden');
+
+        if (visualTimer) {
+            clearTimeout(visualTimer);
+        }
+    }
+
+
+    function hideAllGames() {
+
+        [
+            'gameMenu',
+            'memoryGame',
+            'visualGame',
+            'routineGame'
+        ].forEach(id => {
+
+            document
+                .getElementById(id)
+                .classList
+                .add('hidden');
+
+        });
+    }
+
+
+    function showGameMenu() {
+
+        if (visualTimer) {
+            clearTimeout(visualTimer);
+        }
+
+        hideAllGames();
+
+        document
+            .getElementById('gameMenu')
+            .classList
+            .remove('hidden');
+    }
+
+
+    function shuffle(array) {
+
+        const newArray = [...array];
+
+        for (let i = newArray.length - 1; i > 0; i--) {
+
+            const j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+            [newArray[i], newArray[j]] =
+                [newArray[j], newArray[i]];
+        }
+
+        return newArray;
+    }
+
+
+    /* MEMORY MATCH */
+
+    const fruits = [
+        '🍉',
+        '🍎',
+        '🥕',
+        '🍌'
+    ];
+
+    let cardsData = [
+        ...fruits,
+        ...fruits
+    ];
+
+    let flippedCards = [];
+    let matchedCount = 0;
+    let moves = 0;
+    let lockBoard = false;
+
+
+    function showMemoryGameFromCard() {
+
+        document
+            .getElementById('gameModal')
+            .classList
+            .remove('hidden');
+
+        showMemoryGame();
+    }
+
+
+    function showMemoryGame() {
+
+        hideAllGames();
+
+        document
+            .getElementById('memoryGame')
+            .classList
+            .remove('hidden');
+
+        resetGame();
+    }
+
+
+    function resetGame() {
+
+        cardsData =
+            shuffle([
+                ...fruits,
+                ...fruits
+            ]);
+
+        flippedCards = [];
+        matchedCount = 0;
+        moves = 0;
+        lockBoard = false;
+
+        document
+            .getElementById('moveCount')
+            .innerText = moves;
+
+        document
+            .getElementById('matchCount')
+            .innerText = matchedCount;
+
+        const grid =
+            document.getElementById('gameGrid');
+
+        grid.innerHTML = '';
+
+        cardsData.forEach((symbol, index) => {
+
+            const card =
+                document.createElement('div');
+
+            card.classList.add(
+                'card',
+                'perspective',
+                'h-28',
+                'w-full'
+            );
+
+            card.dataset.symbol = symbol;
+            card.dataset.index = index;
+
+            card.innerHTML = `
+                <div class="card-inner w-full h-full">
+
+                    <div class="card-front bg-[#6f8f72] text-white text-3xl border-2 border-[#557058]">
+                        ?
+                    </div>
+
+                    <div class="card-back bg-[#edf5e8] border-2 border-[#6f8f72] text-4xl">
+                        ${symbol}
+                    </div>
+
+                </div>
+            `;
+
+            card.addEventListener(
+                'click',
+                () => flipCard(card)
+            );
+
+            grid.appendChild(card);
+        });
+    }
+
+
+    function flipCard(card) {
+
+        if (
+            lockBoard ||
+            card.classList.contains('flipped') ||
+            flippedCards.includes(card)
+        ) return;
+
+        card.classList.add('flipped');
+
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+
+            moves++;
+
+            document
+                .getElementById('moveCount')
+                .innerText = moves;
+
+            checkMatch();
+        }
+    }
+
+
+    function checkMatch() {
+
+        lockBoard = true;
+
+        const [card1, card2] =
+            flippedCards;
+
+        if (
+            card1.dataset.symbol ===
+            card2.dataset.symbol
+        ) {
+
+            matchedCount++;
+
+            document
+                .getElementById('matchCount')
+                .innerText =
+                matchedCount;
+
+            flippedCards = [];
+            lockBoard = false;
+
+            if (
+                matchedCount === fruits.length
+            ) {
+
+                setTimeout(
+                    showCelebration,
+                    500
+                );
+            }
+
+        } else {
+
+            setTimeout(() => {
+
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+
+                flippedCards = [];
+                lockBoard = false;
+
+            }, 1000);
+        }
+    }
+
+
+    /* WHICH PICTURE CHANGED */
+
+    const visualPictureSets = [
+
+        ['🍎', '🌸', '🚗'],
+        ['🐶', '🏠', '🌞'],
+        ['🍌', '🌳', '🚲'],
+        ['🐱', '🌈', '⭐'],
+        ['🍉', '🚗', '🌻']
+
+    ];
+
+    let currentVisualSet = [];
+    let changedPicture = '';
+    let visualTimer = null;
+    let visualGameCompleted = false;
+
+
+    function startVisualGameFromCard() {
+
+        document
+            .getElementById('gameModal')
+            .classList
+            .remove('hidden');
+
+        startVisualGame();
+    }
+
+
+    function startVisualGame() {
+
+        if (visualTimer) {
+            clearTimeout(visualTimer);
+        }
+
+        hideAllGames();
+
+        document
+            .getElementById('visualGame')
+            .classList
+            .remove('hidden');
+
+        visualGameCompleted = false;
+
+        currentVisualSet =
+            [
+                ...visualPictureSets[
+                    Math.floor(
+                        Math.random() *
+                        visualPictureSets.length
+                    )
+                ]
+            ];
+
+        const pictureContainer =
+            document.getElementById(
+                'visualPictures'
+            );
+
+        const optionsContainer =
+            document.getElementById(
+                'visualOptions'
+            );
+
+        const answerArea =
+            document.getElementById(
+                'visualAnswerArea'
+            );
+
+        const instruction =
+            document.getElementById(
+                'visualInstruction'
+            );
+
+        const message =
+            document.getElementById(
+                'visualMessage'
+            );
+
+        pictureContainer.innerHTML = '';
+        optionsContainer.innerHTML = '';
+
+        answerArea.classList.add('hidden');
+
+        message.innerText = '';
+
+        instruction.innerText =
+            'Remember these familiar pictures. Take your time.';
+
+        currentVisualSet.forEach(item => {
+
+            const picture =
+                document.createElement('div');
+
+            picture.className =
+                'bg-white rounded-2xl h-28 flex items-center justify-center text-5xl border-2 border-[#d7c5ae]';
+
+            picture.innerText = item;
+
+            pictureContainer.appendChild(picture);
+        });
+
+
+        changedPicture =
+            currentVisualSet[
+                Math.floor(
+                    Math.random() *
+                    currentVisualSet.length
+                )
+            ];
+
+
+        visualTimer = setTimeout(() => {
+
+            pictureContainer.innerHTML = '';
+
+            currentVisualSet.forEach(item => {
+
+                const picture =
+                    document.createElement('div');
+
+                picture.className =
+                    'bg-white rounded-2xl h-28 flex items-center justify-center text-5xl border-2 border-[#d7c5ae]';
+
+                picture.innerText =
+                    item === changedPicture
+                        ? '❓'
+                        : item;
+
+                pictureContainer.appendChild(
+                    picture
+                );
+            });
+
+
+            instruction.innerText =
+                'Which picture is missing?';
+
+            shuffle([
+                ...currentVisualSet
+            ]).forEach(option => {
+
+                const button =
+                    document.createElement('button');
+
+                button.className =
+                    'bg-[#f8f1e7] hover:bg-[#efe2d0] border-2 border-[#d7c5ae] rounded-2xl h-24 text-4xl';
+
+                button.innerText = option;
+
+                button.onclick =
+                    () =>
+                        checkVisualAnswer(
+                            option,
+                            button
+                        );
+
+                optionsContainer.appendChild(
+                    button
+                );
+            });
+
+
+            answerArea
+                .classList
+                .remove('hidden');
+
+        }, 6000);
+    }
+
+
+    function checkVisualAnswer(
+        answer,
+        selectedButton
+    ) {
+
+        if (visualGameCompleted) return;
+
+        const message =
+            document.getElementById(
+                'visualMessage'
+            );
+
+        if (answer === changedPicture) {
+
+            visualGameCompleted = true;
+
+            message.className =
+                'text-lg font-semibold mt-5 min-h-[30px] text-[#527256]';
+
+            message.innerText =
+                'Wonderful! You remembered correctly.';
+
+            selectedButton.classList.add(
+                'bg-[#dce8d5]'
+            );
+
+            setTimeout(
+                showCelebration,
+                700
+            );
+
+        } else {
+
+            message.className =
+                'text-lg font-semibold mt-5 min-h-[30px] text-[#9b5837]';
+
+            message.innerText =
+                'Good try. Take your time and try again.';
+        }
+    }
+
+
+    /* DAILY ROUTINE */
+
+    const routineSets = [
+
+        {
+            title: 'Morning Routine',
+
+            activities: [
+                {
+                    name: 'Wake Up',
+                    emoji: '🌅'
+                },
+                {
+                    name: 'Wash Face',
+                    emoji: '🧼'
+                },
+                {
+                    name: 'Eat Breakfast',
+                    emoji: '🍳'
+                }
+            ]
+        },
+
+        {
+            title: 'Getting Ready',
+
+            activities: [
+                {
+                    name: 'Brush Teeth',
+                    emoji: '🪥'
+                },
+                {
+                    name: 'Take a Bath',
+                    emoji: '🚿'
+                },
+                {
+                    name: 'Get Dressed',
+                    emoji: '👕'
+                }
+            ]
+        },
+
+        {
+            title: 'Going for a Walk',
+
+            activities: [
+                {
+                    name: 'Wear Shoes',
+                    emoji: '👟'
+                },
+                {
+                    name: 'Leave Home',
+                    emoji: '🚪'
+                },
+                {
+                    name: 'Go for a Walk',
+                    emoji: '🚶'
+                }
+            ]
+        }
+
+    ];
+
+
+    let routineOrder = [];
+    let routineStep = 0;
+    let routineGameCompleted = false;
+
+
+    function startRoutineGameFromCard() {
+
+        document
+            .getElementById('gameModal')
+            .classList
+            .remove('hidden');
+
+        startRoutineGame();
+    }
+
+
+    function startRoutineGame() {
+
+        hideAllGames();
+
+        document
+            .getElementById('routineGame')
+            .classList
+            .remove('hidden');
+
+
+        const selectedRoutine =
+            routineSets[
+                Math.floor(
+                    Math.random() *
+                    routineSets.length
+                )
+            ];
+
+        routineOrder =
+            [
+                ...selectedRoutine.activities
+            ];
+
+        routineStep = 0;
+        routineGameCompleted = false;
+
+
+        document
+            .getElementById('routineProgress')
+            .innerText =
+            routineStep;
+
+        document
+            .getElementById('routineMessage')
+            .innerText = '';
+
+
+        const container =
+            document.getElementById(
+                'routineButtons'
+            );
+
+        container.innerHTML = '';
+
+
+        shuffle([
+            ...routineOrder
+        ]).forEach(activity => {
+
+            const button =
+                document.createElement('button');
+
+            button.className =
+                'w-full bg-[#f8f1e7] hover:bg-[#efe2d0] border-2 border-[#d7c5ae] p-5 rounded-2xl flex items-center space-x-5 text-left';
+
+            button.innerHTML = `
+                <span class="text-4xl">
+                    ${activity.emoji}
+                </span>
+
+                <span class="font-bold text-xl text-gray-800">
+                    ${activity.name}
+                </span>
+            `;
+
+            button.onclick =
+                () =>
+                    checkRoutineAnswer(
+                        activity,
+                        button
+                    );
+
+            container.appendChild(button);
+        });
+    }
+
+
+    function checkRoutineAnswer(
+        activity,
+        button
+    ) {
+
+        if (routineGameCompleted) return;
+
+        const message =
+            document.getElementById(
+                'routineMessage'
+            );
+
+        if (
+            activity.name ===
+            routineOrder[routineStep].name
+        ) {
+
+            button.disabled = true;
+
+            button.classList.add(
+                'opacity-50'
+            );
+
+            routineStep++;
+
+            document
+                .getElementById(
+                    'routineProgress'
+                )
+                .innerText =
+                routineStep;
+
+
+            if (
+                routineStep ===
+                routineOrder.length
+            ) {
+
+                routineGameCompleted = true;
+
+                message.className =
+                    'text-lg font-semibold mt-5 min-h-[30px] text-[#527256]';
+
+                message.innerText =
+                    'Wonderful! You completed the activity.';
+
+                setTimeout(
+                    showCelebration,
+                    700
+                );
+
+            } else {
+
+                message.className =
+                    'text-lg font-semibold mt-5 min-h-[30px] text-[#527256]';
+
+                message.innerText =
+                    'Correct. Take your time and choose what comes next.';
+            }
+
+        } else {
+
+            message.className =
+                'text-lg font-semibold mt-5 min-h-[30px] text-[#9b5837]';
+
+            message.innerText =
+                'Good try. Think about what happens first.';
+        }
+    }
+
+</script>
+
+</body>
+</html>
