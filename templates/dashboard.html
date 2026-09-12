@@ -1,44 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Doctor Dashboard</title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Cognitive Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-<header class="header">
-	<div>
-		<h1>Care dashboard</h1>
-		<p>A clear view of {{ patient["name"] }}'s cognitive journey</p>
-	</div>
-	<a class="dashboard-back" href="{{ url_for('home') }}">Back home</a>
+
+<header class="report-header">
+    <div>
+        <span class="report-tag">SMRITISETU • CLINICAL SUMMARY</span>
+
+        <h1>Patient Cognitive Report</h1>
+
+        <p>
+            A structured overview of the patient's recent cognitive activity,
+            performance and progress.
+        </p>
+    </div>
+
+    <a class="back-button" href="{{ url_for('home') }}">
+        ← Back Home
+    </a>
 </header>
+
+
 <main class="container">
-	<section class="card patient-card">
-		<h2>Patient Information</h2>
-		<p><strong>Patient ID:</strong> <span id="patientId">{{ patient["id"] }}</span></p>
-	</section>
-	<section class="stats">
-		<div class="stat-card"><h3>Total Sessions</h3><p id="totalSessions">0</p></div>
-		<div class="stat-card"><h3>Average Score</h3><p id="averageScore">0%</p></div>
-		<div class="stat-card"><h3>Latest Score</h3><p id="latestScore">0%</p></div>
-	</section>
-	<section class="card">
-		<h2>Score Over Time</h2>
-		<div class="chart-container"><canvas id="scoreChart"></canvas></div>
-	</section>
-	<section class="card">
-		<h2>Past Sessions</h2>
-		<div class="table-container">
-			<table>
-				<thead><tr><th>Date</th><th>Game</th><th>Score</th><th>Difficulty</th></tr></thead>
-				<tbody id="sessionsTable"><tr><td colspan="4">Loading sessions...</td></tr></tbody>
-			</table>
-		</div>
-	</section>
+
+    <!-- Patient -->
+    <section class="patient-banner">
+        <div class="patient-icon">👤</div>
+
+        <div>
+            <span class="label">PATIENT</span>
+            <h2>{{ patient["name"] }}</h2>
+
+            <p>
+                Patient ID:
+                <strong>{{ patient["id"] }}</strong>
+            </p>
+        </div>
+
+        <div class="status">
+            <span>●</span> Active Report
+        </div>
+    </section>
+
+
+    <!-- Clinical Summary -->
+    <section class="summary-grid">
+
+        <div class="summary-card memory">
+            <span class="card-icon">🧠</span>
+            <span class="small-title">MEMORY SCORE</span>
+
+            <h2 id="latestScore">78<span>/100</span></h2>
+
+            <p class="trend positive">
+                ↑ Trending upward
+            </p>
+        </div>
+
+
+        <div class="summary-card attention">
+            <span class="card-icon">🎯</span>
+            <span class="small-title">ATTENTION</span>
+
+            <h2>Moderate</h2>
+
+            <p>Stable during recent sessions</p>
+        </div>
+
+
+        <div class="summary-card activity">
+            <span class="card-icon">◷</span>
+            <span class="small-title">RECENT ACTIVITY</span>
+
+            <h2>Memory Match</h2>
+
+            <p>Latest completed session</p>
+        </div>
+
+
+        <div class="summary-card risk">
+            <span class="card-icon">✓</span>
+            <span class="small-title">RISK LEVEL</span>
+
+            <h2>Low</h2>
+
+            <p>Continue regular monitoring</p>
+        </div>
+
+    </section>
+
+
+    <!-- Clinical Interpretation -->
+    <section class="clinical-card">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">CLINICAL INTERPRETATION</span>
+                <h2>Current Cognitive Overview</h2>
+            </div>
+
+            <span class="confidence">● Good progress</span>
+        </div>
+
+        <div class="interpretation-grid">
+
+            <div>
+                <span>Memory</span>
+                <strong>78 / 100</strong>
+                <p>
+                    Performance is showing a positive upward trend
+                    across recent activities.
+                </p>
+            </div>
+
+            <div>
+                <span>Attention</span>
+                <strong>Moderate</strong>
+                <p>
+                    Attention appears stable with room for
+                    continued cognitive engagement.
+                </p>
+            </div>
+
+            <div>
+                <span>Risk</span>
+                <strong class="low-risk">Low</strong>
+                <p>
+                    No immediate concern indicated by the
+                    current activity pattern.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Recommendation -->
+    <section class="recommendation">
+
+        <div class="recommendation-icon">💡</div>
+
+        <div>
+            <span class="eyebrow">RECOMMENDATION</span>
+
+            <h2>Continue Memory Match — Level 2</h2>
+
+            <p>
+                Maintain regular cognitive activities and monitor
+                memory and attention trends during future sessions.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- Chart -->
+    <section class="report-card">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">PERFORMANCE TREND</span>
+                <h2>Memory Score Over Time</h2>
+            </div>
+
+            <span class="chart-note">Recent sessions</span>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="scoreChart"></canvas>
+        </div>
+
+    </section>
+
+
+    <!-- Past Sessions -->
+    <section class="report-card">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">SESSION HISTORY</span>
+                <h2>Past Cognitive Sessions</h2>
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                        <th>Score</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+
+                <tbody id="sessionsTable">
+
+                    <tr>
+                        <td colspan="4">
+                            Loading sessions...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer note -->
+    <div class="report-note">
+        <strong>Doctor's note:</strong>
+        This dashboard provides a structured view of cognitive activity
+        and should be interpreted alongside clinical assessment.
+    </div>
+
 </main>
+
+
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
 </body>
 </html>
