@@ -1,173 +1,401 @@
+
+/* =========================================================
+   SMRITISETU — DOCTOR DASHBOARD
+   Professional, warm & elder-care focused UI
+   ========================================================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
+:root {
+    --forest: #28543b;
+    --forest-dark: #1d3f2b;
+    --sage: #dfe9d9;
+    --sage-light: #edf3e9;
+    --cream: #f7f3ea;
+    --card: #fffdf8;
+    --orange: #d8742b;
+    --orange-dark: #bd5f1e;
+    --text: #29332d;
+    --muted: #70766f;
+    --border: #ded8cc;
+    --white: #ffffff;
+    --shadow: 0 10px 30px rgba(40, 55, 44, 0.08);
 }
 
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 10% 10%, #edf3e8 0, transparent 28%),
+        radial-gradient(circle at 90% 20%, #f5e9dc 0, transparent 25%),
+        var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .header {
-    background: #1f3c88;
-    color: white;
-    padding: 25px 40px;
+    width: 100%;
+    background: rgba(255, 253, 248, 0.96);
+    border-bottom: 1px solid var(--border);
+    padding: 22px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    position: relative;
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--forest);
 }
 
 .header h1 {
-    margin-bottom: 6px;
+    color: var(--forest-dark);
+    font-size: 30px;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
 }
 
 .header p {
-    opacity: 0.9;
+    color: var(--muted);
+    font-size: 14px;
 }
+
+.dashboard-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 10px;
+    background: var(--orange);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s ease;
+    box-shadow: 0 5px 15px rgba(216, 116, 43, 0.18);
+}
+
+.dashboard-back:hover {
+    background: var(--orange-dark);
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
 
 .container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 20px;
+    width: min(92%, 1180px);
+    margin: 35px auto 70px;
 }
 
-.patient-card,
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
 .card,
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+.patient-card {
+    background: rgba(255, 253, 248, 0.98);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 27px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
 }
 
-.patient-card h2,
-.card h2 {
-    margin-bottom: 15px;
+.card h2,
+.patient-card h2 {
+    color: var(--forest-dark);
+    font-size: 21px;
+    margin-bottom: 18px;
 }
+
+
+/* =========================================================
+   PATIENT INFORMATION
+   ========================================================= */
+
+.patient-card {
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid var(--orange);
+}
+
+.patient-card::after {
+    content: "PATIENT PROFILE";
+    position: absolute;
+    right: 25px;
+    top: 24px;
+    color: #879187;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.patient-card p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 8px;
+}
+
+.patient-card strong {
+    color: var(--forest);
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
 
 .stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 18px;
+    margin-bottom: 24px;
 }
 
 .stat-card {
-    text-align: center;
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 23px;
+    min-height: 125px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(40, 55, 44, 0.12);
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--forest);
 }
 
 .stat-card h3 {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 9px;
 }
 
 .stat-card p {
-    font-size: 28px;
-    font-weight: bold;
-    color: #1f3c88;
+    color: var(--forest-dark);
+    font-size: 31px;
+    font-weight: 800;
 }
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
 
 .chart-container {
+    width: 100%;
+    height: 330px;
     position: relative;
-    height: 350px;
+    margin-top: 8px;
+    padding: 8px;
 }
 
+
+/* =========================================================
+   SESSION TABLE
+   ========================================================= */
+
 .table-container {
+    width: 100%;
     overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 650px;
+    background: var(--card);
 }
 
-th,
-td {
-    padding: 13px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+thead {
+    background: var(--sage-light);
 }
 
 th {
-    background: #f0f3f8;
+    color: var(--forest-dark);
+    text-align: left;
+    padding: 15px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid var(--border);
 }
 
-tr:hover {
-    background: #f8f9fb;
+td {
+    padding: 15px 16px;
+    color: #5e665f;
+    font-size: 14px;
+    border-bottom: 1px solid #ebe6dd;
 }
 
-@media (max-width: 700px) {
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr {
+    transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+    background: #f5f7f1;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.card > h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 21px;
+    color: var(--forest-dark);
+}
+
+.card > h2::before {
+    content: "";
+    width: 6px;
+    height: 22px;
+    border-radius: 5px;
+    background: var(--orange);
+}
+
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+   ========================================================= */
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid rgba(216, 116, 43, 0.35);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .header {
+        padding: 20px 5%;
+    }
+
+    .container {
+        width: 94%;
+        margin-top: 25px;
+    }
+
     .stats {
         grid-template-columns: 1fr;
     }
 
+    .patient-card::after {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
     .header {
-        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 22px 5%;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .dashboard-back {
+        width: 100%;
     }
 
     .container {
-        padding: 0 12px;
+        width: 94%;
+        margin: 22px auto 45px;
+    }
+
+    .card,
+    .patient-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .stat-card {
+        min-height: 110px;
+    }
+
+    .stat-card p {
+        font-size: 27px;
     }
 
     .chart-container {
-        height: 280px;
+        height: 260px;
+        padding: 0;
+    }
+
+    th,
+    td {
+        padding: 12px;
     }
 }
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
-}
 
-.header {
-    background: #1f3c88;
-    color: white;
-    padding: 25px 40px;
-}
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
 
-.header h1 {
-    margin-bottom: 6px;
-}
+@media (prefers-reduced-motion: reduce) {
 
-.header p {
-    opacity: 0.9;
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
 }
-
-.container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.patient-card,
-.card,
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
-.patient-card h2,
-.card h2 {
-    margin-bottom: 15px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.stat-card {
-    text-align: center;
-}
-
-.stat-card h3 {…
