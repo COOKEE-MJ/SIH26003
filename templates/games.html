@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Memory Games | SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="games-heading">
+    <a class="back-link" href="{{ url_for('home') }}">← Back home</a>
+    <p class="eyebrow">A little practice, a little joy</p>
+    <h1>Choose a gentle game</h1>
+    <p class="lead">Take your time. There is no rush and no wrong way to begin.</p>
+</section>
+<section class="game-choice-grid">
+    <a class="game-choice game-choice-match" href="{{ url_for('game_matching', patient_id=patient.id) }}">
+        <span class="game-choice-art">🌼</span><span class="game-choice-label">Memory Match</span>
+        <span class="game-choice-copy">Find the pairs at your own pace.</span><span class="game-choice-arrow">→</span>
+    </a>
+    <button class="game-choice game-choice-soon" type="button" disabled>
+        <span class="game-choice-art">📝</span><span class="game-choice-label">Word Recall</span>
+        <span class="game-choice-copy">Coming soon to your care circle.</span><span class="game-choice-arrow">· · ·</span>
+    </button>
+    <button class="game-choice game-choice-soon" type="button" disabled>
+        <span class="game-choice-art">🌿</span><span class="game-choice-label">Familiar Things</span>
+        <span class="game-choice-copy">A peaceful picture activity, coming soon.</span><span class="game-choice-arrow">· · ·</span>
+    </button>
+</section>
+<section class="pace-note"><span>☕</span><div><strong>Playing with {{ patient.name }}</strong><p>Keep the room comfortable and celebrate effort, not speed.</p></div></section>
+{% endblock %}

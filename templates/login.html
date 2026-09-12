@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In | SmritiSetu{% endblock %}
+
+{% block content %}
+<section class="form-shell">
+    <div class="form-card">
+        <p class="eyebrow">Welcome back</p>
+        <h1>Sign in to SmritiSetu</h1>
+        <p class="lead">Your patient's games and progress stay connected to your account.</p>
+        {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+        <form method="post" class="care-form">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+            <button class="button button-primary" type="submit">Sign in</button>
+        </form>
+        <p class="form-switch">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+    </div>
+</section>
+{% endblock %}

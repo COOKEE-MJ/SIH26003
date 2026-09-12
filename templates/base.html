@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Memory Care Platform{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="{{ url_for('home') }}" class="logo">
+                <span class="logo-symbol">✦</span> SmritiSetu
+            </a>
+
+            <nav class="nav-links">
+                {% if session.get('caregiver_id') %}
+                    <a class="nav-home" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-games" href="{{ url_for('games') }}">Games</a>
+                    <a class="nav-dashboard" href="{{ url_for('dashboard_home') }}">Dashboard</a>
+                    <a class="nav-quiet" href="{{ url_for('logout') }}">Sign out</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Sign in</a>
+                    <a class="nav-cta" href="{{ url_for('register') }}">Start your care circle</a>
+                {% endif %}
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Memory Care Platform | SIH 2026</p>
+    </footer>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>

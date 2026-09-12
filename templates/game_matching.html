@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Memory Matching Game{% endblock %}
+
+{% block content %}
+
+<div class="game-container">
+
+    <div class="game-header">
+        <h2>Memory Matching Game</h2>
+
+        <p>
+            Welcome, <strong>{{ patient.name }}</strong>
+        </p>
+
+        <p class="difficulty">
+            Difficulty Level: <strong>{{ difficulty }}</strong>
+        </p>
+    </div>
+
+    <div class="game-info">
+        <div>
+            <span>Score</span>
+            <strong id="score">0</strong>
+        </div>
+
+        <div>
+            <span>Moves</span>
+            <strong id="moves">0</strong>
+        </div>
+    </div>
+
+    <p class="game-instruction">
+        Find and match the identical cards.
+        Take your time and remember the positions.
+    </p>
+
+    <!-- Memory Cards -->
+        <div id="game-board" class="game-board"
+            data-patient-id="{{ patient.id }}"
+            data-difficulty="{{ difficulty }}">
+
+        <button class="memory-card" data-card="1">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="2">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="3">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="4">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="1">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="2">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="3">
+            <span>?</span>
+        </button>
+
+        <button class="memory-card" data-card="4">
+            <span>?</span>
+        </button>
+
+    </div>
+
+    <p id="game-message" class="game-message"></p>
+
+</div>
+
+<div id="celebration" class="celebration" role="status" aria-live="polite">
+    <div class="celebration-card">
+        <div class="celebration-icon">🎉</div>
+        <h2>Wonderful job!</h2>
+        <p>You found every pair. That was lovely work.</p>
+        <button class="button button-primary" type="button" onclick="closeCelebration()">Continue</button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/matching.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Choose Activity - Memory Care{% endblock %}
+
+{% block content %}
+
+<div class="home-container">
+
+    <h2>Choose a Memory Activity</h2>
+
+    <p class="welcome-text">
+        Hello, <strong>{{ patient.name }}</strong>!
+    </p>
+
+    <p>
+        Select an activity below to exercise memory and cognitive skills.
+    </p>
+
+    <div class="button-section">
+
+        <button class="answer-btn yes-btn"
+                onclick="window.location.href='/game/matching/{{ patient.id }}'">
+            🧩 Memory Matching
+        </button>
+
+    </div>
+
+    <div style="margin-top: 25px;">
+        <p>
+            Match identical cards and improve your memory skills.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

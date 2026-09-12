@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header class="report-header">
+    <div>
+        <p class="report-label">CLINICAL CARE REPORT</p>
+        <h1>Doctor Dashboard</h1>
+        <p>Patient cognitive performance overview</p>
+    </div>
+
+    <a href="{{ url_for('home') }}" class="dashboard-back">
+        Back Home
+    </a>
+</header>
+
+
+<main class="report-container">
+
+    <!-- PATIENT PROFILE -->
+    <section class="patient-banner">
+        <div>
+            <span class="section-label">PATIENT PROFILE</span>
+            <h2>{{ patient["name"] }}</h2>
+            <p>
+                Patient ID:
+                <strong>{{ patient["id"] }}</strong>
+            </p>
+        </div>
+
+        <div class="profile-status">
+            <span>CARE RECORD</span>
+            <strong>Active</strong>
+        </div>
+    </section>
+
+
+    <!-- SUMMARY -->
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <span>MEMORY SCORE</span>
+            <strong id="averageScore">0%</strong>
+            <p>Average game performance</p>
+        </div>
+
+        <div class="summary-card">
+            <span>MEMORY TREND</span>
+            <strong id="memoryTrend">No data</strong>
+            <p>Based on recorded sessions</p>
+        </div>
+
+        <div class="summary-card">
+            <span>RECENT ACTIVITY</span>
+            <strong id="recentActivity">No activity</strong>
+            <p id="recentDate">No session recorded</p>
+        </div>
+
+        <div class="summary-card">
+            <span>TOTAL SESSIONS</span>
+            <strong id="totalSessions">0</strong>
+            <p>Recorded activities</p>
+        </div>
+
+    </section>
+
+
+    <!-- PERFORMANCE INSIGHT -->
+    <section class="clinical-card">
+
+        <div class="card-heading">
+            <div>
+                <span class="section-label">PERFORMANCE INSIGHT</span>
+                <h2>Current Cognitive Activity</h2>
+            </div>
+        </div>
+
+        <div class="interpretation-grid">
+
+            <div>
+                <span>Latest Score</span>
+                <strong id="latestScore">0%</strong>
+            </div>
+
+            <div>
+                <span>Latest Difficulty</span>
+                <strong id="latestDifficulty">—</strong>
+            </div>
+
+            <div>
+                <span>Attention Trend</span>
+                <strong id="attentionTrend">Not available</strong>
+            </div>
+
+            <div>
+                <span>Risk Level</span>
+                <strong id="riskLevel">Not assessed</strong>
+            </div>
+
+        </div>
+
+        <div class="recommendation">
+            <span>PERFORMANCE RECOMMENDATION</span>
+            <p id="recommendationText">
+                Complete memory activities to build a meaningful performance history.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- SCORE CHART -->
+    <section class="report-card">
+
+        <div class="card-heading">
+            <div>
+                <span class="section-label">PROGRESS HISTORY</span>
+                <h2>Score Over Time</h2>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="scoreChart"></canvas>
+        </div>
+
+    </section>
+
+
+    <!-- PAST SESSIONS -->
+    <section class="report-card">
+
+        <div class="card-heading">
+            <div>
+                <span class="section-label">ACTIVITY RECORD</span>
+                <h2>Past Sessions</h2>
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Game</th>
+                        <th>Score</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+
+                <tbody id="sessionsTable">
+                    <tr>
+                        <td colspan="4">
+                            No sessions available.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- EXISTING DASHBOARD LOGIC -->
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+
+<!-- ADDITIONAL REPORT INFORMATION -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const patientId =
+        document.getElementById("patientId")?.textContent.trim()
+        || "{{ patient['id'] }}";
+
+    const memoryTrend = document.getElementById("memoryTrend");
+    const recentActivity = document.getElementById("recentActivity");
+    const recentDate = document.getElementById("recentDate");
+    const latestDifficulty = document.getElementById("latestDifficulty");
+    const attentionTrend = document.getElementById("attentionTrend");
+    const riskLevel = document.getElementById("riskLevel");
+    const recommendationText =
+        document.getElementById("recommendationText");
+
+    fetch(`/api/patient/${patientId}/sessions`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Unable to load sessions");
+            }
+
+            return response.json();
+        })
+        .then(sessions => {
+
+            if (!sessions || sessions.length === 0) {
+                memoryTrend.textContent = "No data";
+                recentActivity.textContent = "No activity";
+                latestDifficulty.textContent = "—";
+                return;
+            }
+
+            function percentage(session) {
+                if (!session.total || session.total <= 0) {
+                    return 0;
+                }
+
+                return (session.score / session.total) * 100;
+            }
+
+            const scores = sessions.map(percentage);
+
+            const latest = sessions[sessions.length - 1];
+
+            /* Recent activity */
+            recentActivity.textContent =
+                latest.game_type || "Memory Activity";
+
+            latestDifficulty.textContent =
+                latest.difficulty || "—";
+
+            /* Recent date */
+            if (latest.played_at) {
+                const date = new Date(latest.played_at);
+
+                if (!isNaN(date.getTime())) {
+                    recentDate.textContent =
+                        date.toLocaleDateString();
+                }
+            }
+
+            /* Memory trend */
+            if (scores.length < 2) {
+                memoryTrend.textContent = "Starting";
+            } else {
+
+                const previous =
+                    scores[scores.length - 2];
+
+                const current =
+                    scores[scores.length - 1];
+
+                if (current > previous + 5) {
+                    memoryTrend.textContent = "Improving ↑";
+                }
+                else if (current < previous - 5) {
+                    memoryTrend.textContent = "Declining ↓";
+                }
+                else {
+                    memoryTrend.textContent = "Stable →";
+                }
+            }
+
+            /*
+             * Attention trend and clinical risk are NOT calculated
+             * because the current database does not contain
+             * attention or clinical assessment fields.
+             */
+            attentionTrend.textContent = "Not available";
+            riskLevel.textContent = "Not assessed";
+
+            /* Performance recommendation */
+            const average =
+                scores.reduce((sum, value) => sum + value, 0)
+                / scores.length;
+
+            if (scores.length === 1) {
+                recommendationText.textContent =
+                    "Continue regular memory activities to establish a performance baseline.";
+            }
+            else if (average >= 80) {
+                recommendationText.textContent =
+                    "Performance is currently strong. Continue regular cognitive activities.";
+            }
+            else if (average >= 50) {
+                recommendationText.textContent =
+                    "Performance is moderate. Continue regular memory activities and monitor progress over time.";
+            }
+            else {
+                recommendationText.textContent =
+                    "Performance is currently low. Continue activities and review progress across multiple sessions.";
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+});
+
+</script>
+
+</body>
+</html>
