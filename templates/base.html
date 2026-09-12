@@ -8,6 +8,8 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='css/polish.css') }}">
 
     {% block head %}{% endblock %}
 </head>
@@ -18,18 +20,26 @@
         <div class="nav-container">
 
             <a href="{{ url_for('home') }}" class="logo">
-                <span class="logo-symbol">✦</span> SmritiSetu
+                <span class="logo-symbol"><img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt=""></span>
+                <span>SmritiSetu</span>
             </a>
 
             <nav class="nav-links">
                 {% if session.get('caregiver_id') %}
-                    <a class="nav-home" href="{{ url_for('home') }}">Home</a>
-                    <a class="nav-games" href="{{ url_for('games') }}">Games</a>
-                    <a class="nav-dashboard" href="{{ url_for('dashboard_home') }}">Dashboard</a>
-                    <a class="nav-quiet" href="{{ url_for('logout') }}">Sign out</a>
+                    <a class="nav-home" href="{{ url_for('home') }}" data-i18n="home">Home</a>
+                    <a class="nav-games" href="{{ url_for('games') }}" data-i18n="games">Games</a>
+                    <a class="nav-dashboard" href="{{ url_for('dashboard_home') }}" data-i18n="dashboard">Care report</a>
+                    <button class="music-nav-button" type="button" data-open-music aria-label="Open music and memories">Music</button>
+                    <label class="language-picker" aria-label="Choose language">
+                        <span aria-hidden="true">Aa</span>
+                        <select id="language-select">
+                            <option value="en">English</option><option value="hi">हिन्दी</option><option value="as">অসমীয়া</option><option value="bn">বাংলা</option><option value="kh">Khasi</option><option value="mni">মৈতৈলোন</option><option value="lus">Mizo</option>
+                        </select>
+                    </label>
+                    <a class="nav-quiet" href="{{ url_for('logout') }}" data-i18n="signOut">Sign out</a>
                 {% else %}
-                    <a href="{{ url_for('login') }}">Sign in</a>
-                    <a class="nav-cta" href="{{ url_for('register') }}">Start your care circle</a>
+                    <a href="{{ url_for('login') }}" data-i18n="signIn">Sign in</a>
+                    <a class="nav-cta" href="{{ url_for('register') }}" data-i18n="startCircle">Start your care circle</a>
                 {% endif %}
             </nav>
 
@@ -42,11 +52,26 @@
     </main>
 
     <footer class="footer">
-        <p>© 2026 Memory Care Platform | SIH 2026</p>
+        <p>© 2026 SmritiSetu | A calm memory-care companion</p>
     </footer>
+
+    {% if session.get('caregiver_id') %}
+    <dialog id="music-dialog" class="music-dialog">
+        <div class="music-dialog-inner">
+            <div class="report-intro"><div><p class="eyebrow" data-i18n="music">Music &amp; memories</p><h2>Bring a familiar sound into the room</h2></div><button class="dialog-close" type="button" data-close-music data-i18n="close">Close</button></div>
+            <p data-i18n="warmNote">Familiar sounds can make a moment feel like home.</p>
+            <div class="music-controls">
+                <label><span data-i18n="state">Choose a state</span><select id="music-state"><option value="all">All North East</option><option>Assam</option><option>Meghalaya</option><option>Arunachal</option><option>Nagaland</option><option>Manipur</option><option>Mizoram</option><option>Tripura</option></select></label>
+                <label><span data-i18n="community">Choose a community</span><select id="music-community"><option value="all" data-i18n="all">All communities</option><option>Tea garden communities</option><option>Hill communities</option><option>River communities</option></select></label>
+            </div>
+            <div id="music-playlist" class="music-playlist" aria-live="polite"></div>
+        </div>
+    </dialog>
+    {% endif %}
 
     {% block scripts %}
     {% endblock %}
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 
 </body>
 </html>

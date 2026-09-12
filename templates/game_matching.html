@@ -7,7 +7,8 @@
 <div class="game-container">
 
     <div class="game-header">
-        <h2>Memory Matching Game</h2>
+        <p class="eyebrow">A familiar picture activity</p>
+        <h2 data-i18n="memoryMatch">Memory Matching</h2>
 
         <p>
             Welcome, <strong>{{ patient.name }}</strong>
@@ -20,19 +21,18 @@
 
     <div class="game-info">
         <div>
-            <span>Score</span>
+            <span data-i18n="score">Score</span>
             <strong id="score">0</strong>
         </div>
 
         <div>
-            <span>Moves</span>
+            <span data-i18n="moves">Moves</span>
             <strong id="moves">0</strong>
         </div>
     </div>
 
     <p class="game-instruction">
-        Find and match the identical cards.
-        Take your time and remember the positions.
+        <span data-i18n="findPairs">Find the picture pairs</span> Take your time and remember the positions.
     </p>
 
     <!-- Memory Cards -->
@@ -40,36 +40,37 @@
             data-patient-id="{{ patient.id }}"
             data-difficulty="{{ difficulty }}">
 
-        <button class="memory-card" data-card="1">
-            <span>?</span>
+        <button class="memory-card" data-card="1" aria-label="Reveal card 1">
+            <span>?</span><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=82" alt="Mountain landscape">
         </button>
 
-        <button class="memory-card" data-card="2">
-            <span>?</span>
+        <button class="memory-card" data-card="2" aria-label="Reveal card 2">
+            <span>?</span><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&q=82" alt="Green leaves in sunlight">
         </button>
 
-        <button class="memory-card" data-card="3">
-            <span>?</span>
+        <button class="memory-card" data-card="3" aria-label="Reveal card 3">
+            <span>?</span><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=400&q=82" alt="Warm architecture">
         </button>
 
-        <button class="memory-card" data-card="4">
+        <button class="memory-card" data-card="4" aria-label="Reveal card 4">
             <span>?</span>
+            <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=82" alt="Green hillside">
         </button>
 
-        <button class="memory-card" data-card="1">
-            <span>?</span>
+        <button class="memory-card" data-card="1" aria-label="Reveal card 1">
+            <span>?</span><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=82" alt="Mountain landscape">
         </button>
 
-        <button class="memory-card" data-card="2">
-            <span>?</span>
+        <button class="memory-card" data-card="2" aria-label="Reveal card 2">
+            <span>?</span><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&q=82" alt="Green leaves in sunlight">
         </button>
 
-        <button class="memory-card" data-card="3">
-            <span>?</span>
+        <button class="memory-card" data-card="3" aria-label="Reveal card 3">
+            <span>?</span><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=400&q=82" alt="Warm architecture">
         </button>
 
-        <button class="memory-card" data-card="4">
-            <span>?</span>
+        <button class="memory-card" data-card="4" aria-label="Reveal card 4">
+            <span>?</span><img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=82" alt="Green hillside">
         </button>
 
     </div>
@@ -80,10 +81,10 @@
 
 <div id="celebration" class="celebration" role="status" aria-live="polite">
     <div class="celebration-card">
-        <div class="celebration-icon">🎉</div>
-        <h2>Wonderful job!</h2>
+        <div class="celebration-icon">✦</div>
+        <h2 data-i18n="wonderful">Wonderful work</h2>
         <p>You found every pair. That was lovely work.</p>
-        <button class="button button-primary" type="button" onclick="closeCelebration()">Continue</button>
+        <button class="button button-primary" type="button" onclick="closeCelebration()" data-i18n="continue">Continue</button>
     </div>
 </div>
 

@@ -6,22 +6,22 @@
 <section class="games-heading">
     <a class="back-link" href="{{ url_for('home') }}">← Back home</a>
     <p class="eyebrow">A little practice, a little joy</p>
-    <h1>Choose a gentle game</h1>
-    <p class="lead">Take your time. There is no rush and no wrong way to begin.</p>
+    <h1 data-i18n="chooseGame">Choose a gentle game</h1>
+    <p class="lead" data-i18n="takeTime">Take your time. There is no rush and no wrong way to begin.</p>
 </section>
 <section class="game-choice-grid">
     <a class="game-choice game-choice-match" href="{{ url_for('game_matching', patient_id=patient.id) }}">
-        <span class="game-choice-art">🌼</span><span class="game-choice-label">Memory Match</span>
+        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=82" alt="Warm green hillside landscape"></span><span class="game-choice-label" data-i18n="memoryMatch">Memory Match</span>
         <span class="game-choice-copy">Find the pairs at your own pace.</span><span class="game-choice-arrow">→</span>
     </a>
     <button class="game-choice game-choice-soon" type="button" disabled>
-        <span class="game-choice-art">📝</span><span class="game-choice-label">Word Recall</span>
+        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=82" alt="Leaves and sunlight"></span><span class="game-choice-label">Word Recall</span>
         <span class="game-choice-copy">Coming soon to your care circle.</span><span class="game-choice-arrow">· · ·</span>
     </button>
     <button class="game-choice game-choice-soon" type="button" disabled>
-        <span class="game-choice-art">🌿</span><span class="game-choice-label">Familiar Things</span>
+        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=900&q=82" alt="Warm terracotta architecture"></span><span class="game-choice-label">Familiar Things</span>
         <span class="game-choice-copy">A peaceful picture activity, coming soon.</span><span class="game-choice-arrow">· · ·</span>
     </button>
 </section>
-<section class="pace-note"><span>☕</span><div><strong>Playing with {{ patient.name }}</strong><p>Keep the room comfortable and celebrate effort, not speed.</p></div></section>
+<section class="pace-note"><span aria-hidden="true">✦</span><div><strong>Playing with {{ patient.name }}</strong><p>Keep the room comfortable and celebrate effort, not speed.</p></div></section>
 {% endblock %}

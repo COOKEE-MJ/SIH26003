@@ -1,0 +1,9 @@
+<svg width="96" height="72" viewBox="0 0 96 72" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">SmritiSetu brain logo</title>
+  <desc id="desc">Two connected brain halves, one terracotta and one sage green, surrounded by small sparkles.</desc>
+  <path d="M47 16C42 9 32 8 25 12C18 15 16 22 18 28C13 34 16 42 22 45C18 51 22 59 30 60C37 62 43 58 47 52V16Z" fill="#D46F3C"/>
+  <path d="M49 16C54 9 64 8 71 12C78 15 80 22 78 28C83 34 80 42 74 45C78 51 74 59 66 60C59 62 53 58 49 52V16Z" fill="#78936D"/>
+  <path d="M47.5 16V53M48 21C43 16 36 17 35 23C34 27 38 29 41 29M47 31C42 28 37 31 37 35C37 39 41 41 45 40M48 44C43 42 39 45 40 49M48.5 21C53 16 60 17 61 23C62 27 58 29 55 29M49 31C54 28 59 31 59 35C59 39 55 41 51 40M49 44C54 42 58 45 57 49" stroke="#FFF8ED" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 12L14 17L19 19L14 21L12 26L10 21L5 19L10 17L12 12ZM83 8L85 13L90 15L85 17L83 22L81 17L76 15L81 13L83 8ZM86 50L88 54L92 56L88 58L86 63L84 58L80 56L84 54L86 50Z" fill="#D8A64A"/>
+  <circle cx="7" cy="40" r="2.2" fill="#D8A64A"/><circle cx="91" cy="35" r="2.2" fill="#D46F3C"/>
+</svg>

@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (matchedPairs === cards.length / 2) {
                     messageElement.textContent =
-                        "🎉 Well done! You matched all the cards!";
+                        "Wonderful work. You found every picture pair.";
                     showCelebration();
                     submitScore();
                 }
@@ -112,16 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function showCelebration() {
         const celebration = document.getElementById("celebration");
         celebration.classList.add("is-visible");
-        const colors = ["#c96d2d", "#8fa55c", "#e39a70", "#d6ad65"];
-        for (let index = 0; index < 28; index += 1) {
-            const piece = document.createElement("span");
-            piece.className = "confetti-piece";
-            piece.style.left = `${Math.random() * 100}vw`;
-            piece.style.background = colors[index % colors.length];
-            piece.style.animationDelay = `${Math.random() * 0.4}s`;
-            document.body.appendChild(piece);
-            setTimeout(() => piece.remove(), 4000);
-        }
     }
 
 });
