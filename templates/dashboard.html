@@ -1,43 +1,1051 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Caregiver Report | SmritiSetu</title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameplay Progress Summary | SmritiSetu</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/polish.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Top Accessibility & Care Ribbon */
+        .gov-top-bar {
+            background: #192b23;
+            color: #f7f9f8;
+            font-size: 12px;
+            padding: 7px 24px;
+            border-top: 3px solid #dfb77e;
+            border-bottom: 1px solid #2d453b;
+        }
+        .gov-top-inner {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .gov-identity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gov-titles strong {
+            display: block;
+            font-size: 12px;
+            color: #ffffff;
+        }
+        .gov-titles span {
+            font-size: 11px;
+            color: #d6ad65;
+        }
+        .gov-seal-pill {
+            background: #254034;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-weight: 700;
+            color: #c9ded5;
+            font-size: 11px;
+        }
+
+        /* Distinct Personas */
+        /* Caregiver View Persona: Warm, Friendly, Reassuring */
+        .caregiver-report-section {
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+        }
+        .caregiver-report-section h2, .caregiver-report-section h3 {
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        /* Doctor View Persona: Clean, Professional, Clinical, Scientific */
+        .doctor-report-section {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+        .doctor-report-section h2, .doctor-report-section h3, .doctor-report-section h4 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Tabs */
+        .dashboard-tab-bar {
+            display: flex;
+            gap: 14px;
+            margin: 22px 0 32px;
+            border-bottom: 2px solid #dfd3c0;
+            padding-bottom: 14px;
+        }
+        .dash-tab-btn {
+            background: #fffaf0;
+            border: 1px solid #d9c5a4;
+            border-radius: 999px;
+            padding: 13px 26px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #304b3d;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dash-tab-btn.active {
+            background: #304b3d;
+            color: #ffffff;
+            border-color: #304b3d;
+            box-shadow: 0 6px 16px rgba(48,75,61,0.22);
+        }
+        .doctor-report-section { display: none; }
+        .doctor-report-section.active { display: block; }
+        .caregiver-report-section.active { display: block; }
+        .caregiver-report-section { display: none; }
+        .notes-report-section { display: none; }
+        .notes-report-section.active { display: block; }
+
+        /* Clinical Medical Card */
+        .clinical-header-card {
+            background: #ffffff;
+            border-left: 6px solid #1e5548;
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 8px 24px rgba(64,54,37,0.08);
+            margin-bottom: 24px;
+        }
+        .clinical-uhid-badge {
+            display: inline-block;
+            background: #eef5f1;
+            border: 1px solid #cad8d1;
+            color: #1e5548;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+        .clinical-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin: 22px 0;
+        }
+        .clinical-metric {
+            background: #fbf9f4;
+            border: 1px solid #e7dfd2;
+            border-radius: 14px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+        .clinical-metric h4 {
+            color: #5d6761;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+        }
+        .clinical-metric .val {
+            font-size: 30px;
+            font-weight: 800;
+            color: #1e5548;
+        }
+        .clinical-metric .badge-pill {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #d8e5df;
+            color: #1e5548;
+        }
+        .clinical-observations {
+            background: #ffffff;
+            border: 1px solid #e7ddce;
+            border-radius: 18px;
+            padding: 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 20px rgba(64,54,37,0.06);
+        }
+        .clinical-observations h3 {
+            font-size: 20px;
+            color: #1e5548;
+            margin-bottom: 14px;
+        }
+        .clinical-observations p, .clinical-observations li {
+            color: #37413c;
+            font-size: 15px;
+            line-height: 1.65;
+        }
+        .recommendation-box {
+            background: linear-gradient(135deg, #eef7f3 0%, #e5f2eb 100%);
+            border: 1px solid #c8e0d5;
+            border-left: 5px solid #1e5548;
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-top: 22px;
+            box-shadow: 0 4px 16px rgba(30,85,72,0.06);
+        }
+        .recommendation-box .rec-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .recommendation-box .rec-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .recommendation-box .rec-heading {
+            color: #1e5548;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            margin: 0;
+            display: inline-block;
+        }
+        .clinical-rec-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+        .clinical-rec-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .rec-num-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border-radius: 50%;
+            background: #1e5548;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            line-height: 1;
+            margin-top: 2px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(30,85,72,0.22);
+        }
+        .rec-text-block {
+            flex: 1;
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: #2d3b30;
+        }
+        .rec-text-block .rec-label {
+            color: #1e5548;
+            font-weight: 700;
+            margin-right: 5px;
+            display: inline;
+        }
+        .rec-text-block .rec-desc {
+            color: #37473a;
+            display: inline;
+        }
+        .print-btn {
+            background: #1e5548;
+            color: #ffffff;
+            border: 0;
+            border-radius: 999px;
+            padding: 13px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(30,85,72,0.25);
+            transition: all 0.2s ease;
+        }
+        .print-btn:hover {
+            background: #153e34;
+            transform: translateY(-2px);
+        }
+        .doctor-signature-block {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px dashed #d1c8b8;
+            color: #636d67;
+            font-size: 13px;
+        }
+
+        @media print {
+            .gov-top-bar, .header, .dashboard-tab-bar, .report-tools, .print-btn { display: none !important; }
+            body { background: #ffffff !important; }
+            body::before { display: none !important; }
+            .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .doctor-report-section { display: block !important; }
+            .caregiver-report-section { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .clinical-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
+
+<!-- Accessibility & Care Standard Ribbon (Government-inspired formatting & structure) -->
+<div class="gov-top-bar" role="banner">
+    <div class="gov-top-inner">
+        <div class="gov-identity">
+            <span aria-hidden="true">🧠</span>
+            <div class="gov-titles">
+                <strong>SmritiSetu • Caregiver Progress Portal</strong>
+                <span>Memory Activity Tracking &amp; Family Care Platform</span>
+            </div>
+        </div>
+        <span class="gov-seal-pill">Performance data only</span>
+    </div>
+</div>
+
 <header class="header">
-	<div class="report-brand"><img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt=""><div><p class="report-kicker">SmritiSetu caregiver report</p><h1 data-i18n="report">Caregiver report</h1><p>A clear, shareable view of {{ patient["name"] }}'s activity</p></div></div>
-	<div class="report-tools"><label class="dashboard-language" aria-label="Choose language"><span>Aa</span><select id="language-select"><option value="en">English</option><option value="hi">हिन्दी</option><option value="as">অসমীয়া</option><option value="bn">বাংলা</option><option value="kh">Khasi</option><option value="mni">মৈতৈলোন</option><option value="lus">Mizo</option></select></label><a class="dashboard-back" href="{{ url_for('home') }}">Back home</a></div>
+    <div class="report-brand">
+        <img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt="SmritiSetu Emblem">
+        <div>
+            <p class="report-kicker" data-i18n="caregiverReport">SmritiSetu Caregiver Progress Dashboard</p>
+            <h1 data-i18n="report">Caregiver Progress Dashboard</h1>
+            <p>Memory game activity and family care progress for <strong>{{ patient["name"] }}</strong></p>
+        </div>
+    </div>
+    <div class="report-tools">
+        {% if session.get('caregiver_id') %}
+        <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="openSidebar(event)" aria-label="Open care team navigation">
+            <span class="avatar-circle-icon">👤</span>
+            <span class="caregiver-nav-name">{{ session.get('caregiver_name', 'Care Team') }}</span>
+            <span class="sidebar-menu-tag">📋 Menu</span>
+            <span class="nav-menu-lines" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </span>
+        </button>
+        {% endif %}
+        <label class="dashboard-language" aria-label="Choose language">
+            <span>Aa</span>
+            <select id="language-select">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="as">অসমীয়া</option>
+                <option value="bn">বাংলা</option>
+                <option value="kh">Khasi</option>
+                <option value="mni">মৈতৈলোন</option>
+                <option value="lus">Mizo</option>
+            </select>
+        </label>
+        <a class="dashboard-back" href="{{ url_for('home') }}" data-i18n="backHome">← Back home</a>
+    </div>
 </header>
+
 <main class="container">
-	<section class="card patient-card">
-		<div><p class="report-kicker">Patient profile</p><h2>{{ patient["name"] }}</h2><p>Patient ID: <span id="patientId">{{ patient["id"] }}</span></p></div>
-		<p class="patient-mode-banner">Use these patterns as conversation starters with a qualified professional. They are not a diagnosis.</p>
-	</section>
-	<section class="stats">
-		<div class="stat-card"><h3>Total sessions</h3><p id="totalSessions">0</p><small>All recorded activities</small></div>
-		<div class="stat-card"><h3>Average score</h3><p id="averageScore">0%</p><small>Across completed games</small></div>
-		<div class="stat-card"><h3>Latest score</h3><p id="latestScore">0%</p><small>Most recent activity</small></div>
-	</section>
-	<section class="card">
-		<div class="report-intro"><div><p class="report-kicker">A gentle signal</p><h2>Engagement over time</h2></div><span class="report-chip">Updated from play</span></div>
-		<div class="chart-container"><canvas id="scoreChart"></canvas></div>
-	</section>
-	<section class="card">
-		<div class="report-intro"><div><p class="report-kicker">Session notes</p><h2 data-i18n="recentActivity">Recent activity</h2></div></div>
-		<div class="table-container">
-			<table>
-				<thead><tr><th>Date</th><th>Game</th><th>Score</th><th>Difficulty</th></tr></thead>
-				<tbody id="sessionsTable"><tr><td colspan="4">Loading sessions...</td></tr></tbody>
-			</table>
-		</div>
-	</section>
-	<p class="report-disclaimer">SmritiSetu supports everyday engagement and caregiver conversations. It does not diagnose or replace clinical care.</p>
+
+    <!-- Tab Switcher: Real-Life Photos in Tabs (Patient, Caregiver/Family, Doctor) -->
+    <div class="dashboard-tab-bar" role="tablist">
+        {% if patient %}
+        <a href="{{ url_for('game_matching', patient_id=patient.id) }}" class="dash-tab-btn tab-patient-link" id="tab-patient" role="tab" title="Start Patient Memory Play">
+            <img src="{{ url_for('static', filename='img/real_patient.jpg') }}" alt="" class="tab-real-photo" width="12" height="12">
+            <span class="tab-label-text">GAMES</span>
+        </a>
+        {% else %}
+        <a href="{{ url_for('dashboard_gate') }}" class="dash-tab-btn tab-patient-link" id="tab-patient" role="tab">
+            <img src="{{ url_for('static', filename='img/real_patient.jpg') }}" alt="" class="tab-real-photo" width="12" height="12">
+            <span class="tab-label-text">GAMES</span>
+        </a>
+        {% endif %}
+        <button type="button" class="dash-tab-btn {% if active_tab == 'caregiver' or (active_tab != 'doctor' and active_tab != 'notes') %}active{% endif %}" id="tab-caregiver" onclick="switchDashboardTab('caregiver')" role="tab">
+            <img src="{{ url_for('static', filename='img/real_caregiver.jpg') }}" alt="" class="tab-real-photo" width="12" height="12">
+            <span class="tab-label-text">FAMILY CARE</span>
+        </button>
+        <button type="button" class="dash-tab-btn {% if active_tab == 'notes' %}active{% endif %}" id="tab-notes" onclick="switchDashboardTab('notes')" role="tab">
+            <img src="{{ url_for('static', filename='img/family_terrace_memory.jpg') }}" alt="" class="tab-real-photo" width="12" height="12">
+            <span class="tab-label-text">MEMORY NOTES</span>
+        </button>
+        <button type="button" class="dash-tab-btn {% if active_tab == 'doctor' %}active{% endif %}" id="tab-doctor" onclick="switchDashboardTab('doctor')" role="tab">
+            <img src="{{ url_for('static', filename='img/real_doctor.jpg') }}" alt="" class="tab-real-photo" width="12" height="12">
+            <span class="tab-label-text">PERFORMANCE OVERVIEW</span>
+        </button>
+    </div>
+
+    <!-- TAB 1: CAREGIVER & FAMILY VIEW (Friendly, Reassuring, Beautiful) -->
+    <div class="caregiver-report-section {% if active_tab == 'caregiver' or (active_tab != 'doctor' and active_tab != 'notes') %}active{% endif %}" id="view-caregiver">
+        <section class="card patient-card organized-patient-profile">
+            <!-- Hidden DOM anchor for longitudinal Chart.js integration -->
+            <span id="patientId" style="display: none;">{{ patient["id"] }}</span>
+
+            <!-- Essential Patient Information in Individual Block-Shaped Boxes with Space -->
+            <div class="patient-blocks-grid">
+                <div class="patient-detail-block">
+                    <span class="block-field-label" data-i18n="name">Name</span>
+                    <strong class="block-field-value block-name-value">{{ patient["name"] }}</strong>
+                </div>
+                <div class="patient-detail-block">
+                    <span class="block-field-label" data-i18n="labelAge">Age</span>
+                    <strong class="block-field-value">{{ patient["age"] or 'Elder' }} Years</strong>
+                </div>
+                <div class="patient-detail-block">
+                    <span class="block-field-label" data-i18n="labelGender">Gender</span>
+                    <strong class="block-field-value">{{ patient["sex"] or '—' }}</strong>
+                </div>
+                <div class="patient-detail-block block-stage">
+                    <span class="block-field-label" data-i18n="dementiaStage">Caregiver-Reported Stage</span>
+                    <strong class="block-field-value block-stage-pill">{% if patient["diagnosis_stage"] and patient["diagnosis_stage"] != 'unknown' %}{{ patient["diagnosis_stage"] | capitalize }}{% else %}Not specified{% endif %}</strong>
+                </div>
+            </div>
+
+            <!-- Mandatory SIH 2026 In-App Performance Disclaimer -->
+            <div class="sih-disclaimer-banner" style="background: #fdfaf4; border: 1px solid #e5dccb; border-left: 5px solid #1e5548; border-radius: 12px; padding: 14px 18px; margin: 18px 0 10px; color: #2d3748; font-size: 13.5px; line-height: 1.5;">
+                <strong>🛡️ Notice:</strong> This summary reflects in-app game performance only. It is not a medical assessment, diagnosis, or treatment recommendation.
+            </div>
+
+            <!-- Care Recommendation & Memory Guidance Section -->
+            <div class="patient-recommendation-section" style="margin-top: 14px;">
+                <div class="rec-header-highlight-wrap">
+                    <span class="rec-title-highlight">Daily Care Recommendation &amp; Memory Guidance</span>
+                </div>
+                <div class="rec-content-box">
+                    <p class="patient-mode-banner rec-text" data-i18n="patientBanner">
+                        These gentle trends reflect comforting practice over time. Use them to celebrate everyday victories, keep routines calm, and encourage warm family conversations.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        {% if not summary or not summary.has_sessions %}
+        <!-- Empty State (No Game Sessions Yet) -->
+        <section class="card" style="padding: 44px 24px; text-align: center; margin-top: 20px;">
+            <div style="font-size: 44px; margin-bottom: 12px;">🎮</div>
+            <h3 style="font-size: 20px; color: #1e3d30; margin-bottom: 8px;">No Game Activity Yet</h3>
+            <p style="color: #64748b; font-size: 15px; max-width: 540px; margin: 0 auto 20px; line-height: 1.5;">
+                No game activity yet. A progress summary will be available after the patient completes a game.
+            </p>
+            <a href="{{ url_for('game_matching', patient_id=patient.id) }}" class="dash-tab-btn" style="background: #1e5548; color: #ffffff; text-decoration: none; display: inline-flex; border: none; font-size: 16px; padding: 14px 28px;">
+                <span>🌸 Start {{ patient.name }}'s First Game</span>
+            </a>
+        </section>
+        {% else %}
+        <!-- Active Gameplay Progress Summary -->
+        <section class="stats">
+            <div class="stat-card">
+                <h3 data-i18n="totalSessions">Total sessions</h3>
+                <p id="totalSessions">{{ summary.total_sessions }}</p>
+                <small data-i18n="totalSessionsSub">Recorded memory activities</small>
+            </div>
+            <div class="stat-card">
+                <h3 data-i18n="averageScore">Average accuracy</h3>
+                <p id="averageScore">{{ summary.avg_accuracy }}%</p>
+                <small data-i18n="averageScoreSub">Across completed gentle games</small>
+            </div>
+            <div class="stat-card">
+                <h3 data-i18n="latestScore">Latest score</h3>
+                <p id="latestScore">{{ summary.latest_score }}%</p>
+                <small data-i18n="latestScoreSub">Most recent activity</small>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Response Time</h3>
+                <p>{{ summary.avg_response_time }}s</p>
+                <small>Average time per matched pair</small>
+            </div>
+        </section>
+
+        {% if summary.total_sessions >= 2 %}
+        <section class="card">
+            <div class="report-intro">
+                <div>
+                    <p class="report-kicker" data-i18n="engagementTagline">Activity Trend</p>
+                    <h2 data-i18n="engagementHeading">Accuracy Trend Over Time</h2>
+                </div>
+                <span class="report-chip" data-i18n="updatedFromPlay">Updated from daily play</span>
+            </div>
+            <div class="chart-container"><canvas id="scoreChart"></canvas></div>
+        </section>
+        {% else %}
+        <section class="card" style="padding: 24px 20px; text-align: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; margin-top: 14px;">
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">
+                Trend data will appear after at least two completed game sessions.
+            </p>
+        </section>
+        {% endif %}
+
+        <section class="card">
+            <div class="report-intro">
+                <div>
+                    <p class="report-kicker" data-i18n="sessionNotes">Session notes</p>
+                    <h2 data-i18n="recentActivity">Recent Game Sessions</h2>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-i18n="colDate">Date</th>
+                            <th data-i18n="colGame">Activity</th>
+                            <th data-i18n="colScore">Score</th>
+                            <th>Accuracy</th>
+                            <th>Response Time</th>
+                            <th data-i18n="colDifficulty">Difficulty</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionsTable">
+                        {% for s in summary.sessions %}
+                        <tr>
+                            <td>{{ s.played_at[:16].replace('T', ' ') }}</td>
+                            <td><strong>{{ 'Memory Match' if s.game_type == 'matching' else s.game_type }}</strong></td>
+                            <td>{{ s.score }} / {{ s.total }}</td>
+                            <td><span class="badge-pill" style="background: #eef6f2; color: #1e5548; font-weight: 700;">{{ s.accuracy }}%</span></td>
+                            <td>{{ s.response_time ~ 's' if s.response_time else '—' }}</td>
+                            <td>Level {{ s.difficulty }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% endif %}
+        
+        <!-- Family Memory Notes & Anchors in Caregiver View -->
+        <section class="card caregiver-notes-summary-card" style="margin-top: 24px;">
+            <div class="report-intro">
+                <div>
+                    <p class="report-kicker" data-i18n="familyMemoryNotesAnchors" style="color: #c96b3c;">Family Care Circle</p>
+                    <h2 style="color: #304b3d;">Memory Notes &amp; Emotional Anchors</h2>
+                </div>
+                <button type="button" class="btn-create-note" onclick="openMemoryNoteModal()">
+                    <span>💌</span>
+                    <span>+ Leave a Memory Note</span>
+                </button>
+            </div>
+            <p style="color: #6d6b5f; font-size: 14px; margin: -6px 0 16px 0;">
+                Personal memories, favorite tunes, and comforting routines recorded for <strong>{{ patient.name }}</strong>.
+            </p>
+            <div class="notes-feed" id="caregiver-notes-feed">
+                {% if family_notes %}
+                    {% for note in family_notes %}
+                        <div class="note-bubble">
+                            <div class="note-header">
+                                <div class="note-author-group">
+                                    <strong>{{ note.author }}</strong>
+                                    {% if note.anchor_type %}
+                                    <span class="anchor-pill">{{ note.anchor_type }}</span>
+                                    {% endif %}
+                                </div>
+                                <small>{{ note.time }}</small>
+                            </div>
+                            <p class="note-body">"{{ note.text }}"</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="notes-empty-state">No family memory notes recorded yet. Leave a gentle note for {{ patient.name }}.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB 2: PERFORMANCE OVERVIEW & GAMEPLAY PROGRESS SUMMARY -->
+    <div class="doctor-report-section {% if active_tab == 'doctor' %}active{% endif %}" id="view-doctor">
+        <div class="clinical-header-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="report-kicker" style="color: #1e5548;">Performance data only</span>
+                    <h2 style="font-size: 28px; color: #1e5548; margin: 6px 0;">Gameplay Progress Summary: {{ patient["name"] }}</h2>
+                    <span class="clinical-uhid-badge">UHID Record #{{ patient["id"] }}</span>
+                    <p style="color: #55625c; font-size: 14px; margin-top: 8px;">
+                        Age: {{ patient["age"] or 'Elder' }} | Gender: {{ patient["sex"] }} | Caregiver Contact: {{ patient["contact"] or 'On file' }}
+                    </p>
+                </div>
+                <button type="button" class="print-btn" onclick="window.print()">
+                    🖨️ Print Summary
+                </button>
+            </div>
+
+            <!-- Mandatory SIH 2026 In-App Performance Disclaimer -->
+            <div class="sih-disclaimer-banner" style="background: #fdfaf4; border: 1px solid #e5dccb; border-left: 5px solid #1e5548; border-radius: 12px; padding: 14px 18px; margin: 18px 0 10px; color: #2d3748; font-size: 13.5px; line-height: 1.5;">
+                <strong>🛡️ Notice:</strong> This summary reflects in-app game performance only. It is not a medical assessment, diagnosis, or treatment recommendation.
+            </div>
+
+            {% if not summary or not summary.has_sessions %}
+            <!-- Empty State for Performance Overview -->
+            <div style="padding: 44px 24px; text-align: center; margin-top: 14px; background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 14px;">
+                <div style="font-size: 44px; margin-bottom: 12px;">📊</div>
+                <h3 style="font-size: 20px; color: #1e3d30; margin-bottom: 8px;">No Game Activity Recorded</h3>
+                <p style="color: #64748b; font-size: 15px; max-width: 520px; margin: 0 auto 20px; line-height: 1.5;">
+                    No game activity yet. A progress summary will be available after the patient completes a game.
+                </p>
+                <a href="{{ url_for('game_matching', patient_id=patient.id) }}" class="dash-tab-btn" style="background: #1e5548; color: #ffffff; text-decoration: none; display: inline-flex; border: none; font-size: 16px; padding: 14px 28px;">
+                    <span>🌸 Start {{ patient.name }}'s First Game</span>
+                </a>
+            </div>
+            {% else %}
+            <!-- 4 Structured Performance Overview Metrics -->
+            <div class="clinical-grid">
+                <div class="clinical-metric">
+                    <h4>Accuracy Rate</h4>
+                    <div class="val">{{ summary.avg_accuracy }}%</div>
+                    <span class="badge-pill">Average Performance</span>
+                </div>
+                <div class="clinical-metric">
+                    <h4>Response-Time Trend</h4>
+                    <div class="val">{{ summary.avg_response_time }}s</div>
+                    <span class="badge-pill">Per Matched Pair</span>
+                </div>
+                <div class="clinical-metric">
+                    <h4>Reaction Time</h4>
+                    <div class="val" style="color: #1e5548;">{{ summary.avg_reaction_time }}s</div>
+                    <span class="badge-pill" style="background: #eef6f2; color: #1e5548;">Initial Move Speed</span>
+                </div>
+                <div class="clinical-metric">
+                    <h4>Recent Game Sessions</h4>
+                    <div class="val">{{ summary.total_sessions }}</div>
+                    <span class="badge-pill">Completed Sessions</span>
+                </div>
+            </div>
+
+            <div class="clinical-observations">
+                <h3>Game Performance Overview</h3>
+                <p>
+                    Recorded gameplay metrics for <strong>{{ patient["name"] }}</strong> across completed Memory Match sessions.
+                </p>
+                <ul style="margin: 14px 0 0 22px; color: #475569; font-size: 14.5px; line-height: 1.7;">
+                    <li><strong>Recorded Accuracy:</strong> Average accuracy across {{ summary.total_sessions }} completed session{{ 's' if summary.total_sessions != 1 else '' }} is <strong>{{ summary.avg_accuracy }}%</strong>.</li>
+                    <li><strong>Average Response Time:</strong> Average time recorded per matched pair is <strong>{{ summary.avg_response_time }} seconds</strong>.</li>
+                    <li><strong>Average Reaction Time:</strong> Recorded initial turn reaction time averages <strong>{{ summary.avg_reaction_time }} seconds</strong>.</li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if summary and summary.total_sessions >= 2 %}
+        <!-- Trend Chart in Performance Overview -->
+        <section class="card" style="margin-top: 24px;">
+            <div class="report-intro" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <p class="report-kicker" style="color: #1e5548; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin: 0 0 4px;">Activity Trend</p>
+                    <h2 style="font-size: 22px; color: #0f172a; margin: 0;">Game Accuracy Progression (%)</h2>
+                </div>
+                <div>
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #e0f2fe; color: #0369a1; font-size: 12px; font-weight: 600;">
+                        ● Session Accuracy Rate (%)
+                    </span>
+                </div>
+            </div>
+
+            <div class="chart-container" style="position: relative; height: 320px; width: 100%; margin-top: 14px;">
+                <canvas id="doctorScoreChart" width="800" height="320" style="display: block; width: 100%; height: 100%;"></canvas>
+            </div>
+        </section>
+        {% elif summary and summary.has_sessions %}
+        <section class="card" style="margin-top: 24px; padding: 32px 20px; text-align: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px;">
+            <p style="color: #64748b; font-size: 15px; margin: 0; font-weight: 500;">
+                Trend data will appear after at least two completed game sessions.
+            </p>
+        </section>
+        {% endif %}
+
+        <!-- Detailed Sessions Table in Performance View -->
+        <section class="card" style="margin-top: 24px;">
+            <div class="report-intro">
+                <div>
+                    <p class="report-kicker" style="color: #1e5548; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin: 0 0 4px;">Recent Game Sessions</p>
+                    <h2 style="font-size: 22px; color: #0f172a; margin: 0;">Session History &amp; Detailed Metrics</h2>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Activity</th>
+                            <th>Score</th>
+                            <th>Accuracy</th>
+                            <th>Response Time</th>
+                            <th>Duration</th>
+                            <th>Difficulty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in summary.sessions %}
+                        <tr>
+                            <td>{{ s.played_at[:16].replace('T', ' ') }}</td>
+                            <td><strong>{{ 'Memory Match' if s.game_type == 'matching' else s.game_type }}</strong></td>
+                            <td>{{ s.score }} / {{ s.total }}</td>
+                            <td><span class="badge-pill" style="background: #eef6f2; color: #1e5548; font-weight: 700;">{{ s.accuracy }}%</span></td>
+                            <td>{{ s.response_time ~ 's' if s.response_time else '—' }}</td>
+                            <td>{{ s.duration_seconds ~ 's' if s.duration_seconds else '—' }}</td>
+                            <td>Level {{ s.difficulty }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- TAB 3: FAMILY MEMORY NOTES & ANCHORS (Full View) -->
+    <div class="notes-report-section {% if active_tab == 'notes' %}active{% endif %}" id="view-notes">
+        <section class="card notes-hub-card">
+            <div class="notes-hub-header">
+                <div class="notes-hub-title-block">
+                    <span class="report-kicker" style="color: #c96b3c;">Preserving Identity &amp; Emotional Comfort</span>
+                    <h2 style="color: #304b3d; font-size: 26px; margin: 4px 0 8px 0;">Family Memory Notes &amp; Emotional Anchors</h2>
+                </div>
+                <button type="button" class="btn-create-note" onclick="openMemoryNoteModal()">
+                    <span class="btn-icon">💌</span>
+                    <span>+ Add New Memory Note</span>
+                </button>
+            </div>
+
+            <!-- Memory Anchor Stats / Highlights -->
+            <div class="anchor-summary-pills">
+                <div class="anchor-pill-stat">
+                    <span class="pill-icon">📝</span>
+                    <div>
+                        <strong id="notes-count-val">{{ family_notes|length if family_notes else 0 }}</strong>
+                        <span>Recorded Notes</span>
+                    </div>
+                </div>
+                <div class="anchor-pill-stat">
+                    <span class="pill-icon">🍵</span>
+                    <div>
+                        <strong>Daily Anchors</strong>
+                        <span>Tea, Walk &amp; Music Routines</span>
+                    </div>
+                </div>
+                <div class="anchor-pill-stat">
+                    <span class="pill-icon">🌸</span>
+                    <div>
+                        <strong>Connected Care</strong>
+                        <span>Family Circle Updates</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Grid -->
+            <div class="dashboard-notes-grid" id="dashboard-notes-grid">
+                {% if family_notes %}
+                    {% for note in family_notes %}
+                        <div class="dash-note-card">
+                            <div class="dash-note-top">
+                                <div class="dash-note-author-group">
+                                    <span class="dash-note-avatar">❤️</span>
+                                    <div>
+                                        <strong class="dash-note-author">{{ note.author }}</strong>
+                                        <span class="dash-note-time">{{ note.time }}</span>
+                                    </div>
+                                </div>
+                                <span class="dash-note-anchor-badge">{{ note.anchor_type or 'Memory Note' }}</span>
+                            </div>
+                            <p class="dash-note-content">"{{ note.text }}"</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="notes-empty-card">
+                        <span class="empty-icon">💌</span>
+                        <h3>No memory notes recorded yet</h3>
+                        <p>Share a warm observation, calming habit, or family memory to support {{ patient.name }}'s daily care circle.</p>
+                        <button type="button" class="btn-create-note" onclick="openMemoryNoteModal()">+ Add the First Note</button>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <p class="report-disclaimer">
+        SmritiSetu provides structured cognitive assistance and memory engagement tracking. Observational analytics support healthcare providers and families in early dementia care.
+    </p>
+
 </main>
+
+<script>
+    function switchDashboardTab(tab) {
+        const viewCaregiver = document.getElementById("view-caregiver");
+        const viewDoctor = document.getElementById("view-doctor");
+        const viewNotes = document.getElementById("view-notes");
+        const tabCaregiver = document.getElementById("tab-caregiver");
+        const tabDoctor = document.getElementById("tab-doctor");
+        const tabNotes = document.getElementById("tab-notes");
+
+        if (viewCaregiver) viewCaregiver.classList.remove("active");
+        if (viewDoctor) viewDoctor.classList.remove("active");
+        if (viewNotes) viewNotes.classList.remove("active");
+        if (tabCaregiver) tabCaregiver.classList.remove("active");
+        if (tabDoctor) tabDoctor.classList.remove("active");
+        if (tabNotes) tabNotes.classList.remove("active");
+
+        if (tab === "doctor") {
+            if (viewDoctor) viewDoctor.classList.add("active");
+            if (tabDoctor) tabDoctor.classList.add("active");
+            setTimeout(initDoctorChart, 50);
+        } else if (tab === "notes") {
+            if (viewNotes) viewNotes.classList.add("active");
+            if (tabNotes) tabNotes.classList.add("active");
+        } else {
+            if (viewCaregiver) viewCaregiver.classList.add("active");
+            if (tabCaregiver) tabCaregiver.classList.add("active");
+            const curPid = "{{ patient['id'] }}" || document.getElementById("patientId")?.textContent?.trim();
+            const curSessions = (window._patientSessionCache && curPid) ? window._patientSessionCache[curPid] : null;
+            if (window.updateCaregiverChart && curSessions) {
+                window.updateCaregiverChart(curSessions);
+            }
+        }
+        if (window.smritiApplyLanguage) {
+            window.smritiApplyLanguage(localStorage.getItem("smritisetu-language") || "en");
+        }
+    }
+
+    let doctorChart = null;
+
+    // Native HTML5 Canvas 2D Fallback renderer (runs 100% reliably even without CDN)
+    function renderFallbackCanvas(canvas, labels, patientData) {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const w = rect.width || canvas.width || 700;
+        const h = rect.height || canvas.height || 300;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.scale(dpr, dpr);
+
+        const pad = { top: 35, right: 25, bottom: 45, left: 52 };
+        const plotW = w - pad.left - pad.right;
+        const plotH = h - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Grid lines (0, 25, 50, 75, 100%)
+        ctx.strokeStyle = "#e2ece7";
+        ctx.lineWidth = 1;
+        ctx.font = "11px Inter, sans-serif";
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+
+        const yTicks = [0, 25, 50, 75, 100];
+        yTicks.forEach(val => {
+            const y = pad.top + plotH - (val / 100) * plotH;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, y);
+            ctx.lineTo(pad.left + plotW, y);
+            ctx.stroke();
+            ctx.fillText(val + "%", pad.left - 8, y);
+        });
+
+        // X-axis labels
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        const step = labels.length > 1 ? plotW / (labels.length - 1) : plotW / 2;
+        labels.forEach((lbl, i) => {
+            const x = pad.left + i * step;
+            if (i % 2 === 0 || i === labels.length - 1) {
+                ctx.fillText(lbl, x, pad.top + plotH + 10);
+            }
+        });
+
+        // Patient Accuracy Curve (Emerald line with gradient area fill)
+        if (patientData && patientData.length) {
+            const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + plotH);
+            grad.addColorStop(0, "rgba(30, 85, 72, 0.25)");
+            grad.addColorStop(1, "rgba(30, 85, 72, 0.02)");
+            ctx.fillStyle = grad;
+
+            ctx.beginPath();
+            patientData.forEach((val, i) => {
+                const x = pad.left + i * step;
+                const y = pad.top + plotH - (val / 100) * plotH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.lineTo(pad.left + (patientData.length - 1) * step, pad.top + plotH);
+            ctx.lineTo(pad.left, pad.top + plotH);
+            ctx.closePath();
+            ctx.fill();
+
+            // Line stroke
+            ctx.beginPath();
+            ctx.strokeStyle = "#1e5548";
+            ctx.lineWidth = 3;
+            patientData.forEach((val, i) => {
+                const x = pad.left + i * step;
+                const y = pad.top + plotH - (val / 100) * plotH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Data point dots
+            patientData.forEach((val, i) => {
+                const x = pad.left + i * step;
+                const y = pad.top + plotH - (val / 100) * plotH;
+                ctx.beginPath();
+                ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = "#1e5548";
+                ctx.stroke();
+            });
+        }
+    }
+
+    async function initDoctorChart() {
+        const docCanvas = document.getElementById("doctorScoreChart");
+        if (!docCanvas) return;
+
+        // Obtain patient ID safely
+        const patientId = "{{ patient['id'] }}" || document.getElementById("patientId")?.textContent?.trim();
+        if (!patientId) return;
+
+        let sessions = (window._patientSessionCache && window._patientSessionCache[patientId]) ? window._patientSessionCache[patientId] : null;
+        if (!sessions) {
+            try {
+                const res = await fetch(`/api/patient/${patientId}/sessions`);
+                if (res.ok) {
+                    sessions = await res.json();
+                    window._patientSessionCache = window._patientSessionCache || {};
+                    window._patientSessionCache[patientId] = sessions;
+                }
+            } catch (err) {
+                console.error("Failed to load sessions:", err);
+                sessions = [];
+            }
+        }
+        sessions = sessions || [];
+
+        if (!sessions || sessions.length < 2) {
+            if (doctorChart) {
+                doctorChart.destroy();
+                doctorChart = null;
+            }
+            const ctx = docCanvas.getContext("2d");
+            if (ctx) ctx.clearRect(0, 0, docCanvas.width, docCanvas.height);
+            return;
+        }
+
+        // Build actual session timeline (chronological order)
+        // Format labels with session number and date/time to avoid repeated identical date labels
+        const labels = sessions.map((s, idx) => {
+            const dt = formatDate(s.played_at);
+            return `Session ${idx + 1} (${dt})`;
+        });
+        const patientData = sessions.map(s => {
+            return (s.accuracy !== undefined && s.accuracy !== null) 
+                ? Number(s.accuracy) 
+                : (s.total ? Math.round((s.score / s.total) * 100) : 0);
+        });
+
+        // Try Chart.js if loaded
+        if (typeof Chart !== "undefined") {
+            try {
+                if (doctorChart) {
+                    doctorChart.destroy();
+                    doctorChart = null;
+                }
+                doctorChart = new Chart(docCanvas, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Accuracy Rate (%)",
+                                data: patientData,
+                                borderColor: "#1e5548",
+                                backgroundColor: "rgba(30, 85, 72, 0.14)",
+                                tension: 0.32,
+                                fill: true,
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                                pointBackgroundColor: "#ffffff",
+                                pointBorderColor: "#1e5548",
+                                pointBorderWidth: 2.5,
+                                borderWidth: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: "index", intersect: false },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: "top",
+                                labels: {
+                                    boxWidth: 14,
+                                    font: { family: "Inter, sans-serif", size: 12, weight: "600" },
+                                    color: "#334155"
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        return ctx.dataset.label + ": " + ctx.parsed.y + "%";
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: { stepSize: 20, callback: v => v + "%", font: { family: "Inter", size: 11 }, color: "#64748b" },
+                                grid: { color: "#e2ece7" }
+                            },
+                            x: {
+                                ticks: { font: { family: "Inter", size: 10.5 }, color: "#64748b", maxRotation: 45 },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+                return;
+            } catch (err) {
+                console.warn("Chart.js failed, using canvas fallback:", err);
+            }
+        }
+
+        // Use native Canvas 2D fallback renderer
+        renderFallbackCanvas(docCanvas, labels, patientData);
+    }
+
+    // Auto initialize immediately on DOM ready and window load
+    window.initDoctorChart = initDoctorChart;
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        if (tabParam && (tabParam === 'doctor' || tabParam === 'notes' || tabParam === 'caregiver')) {
+            switchDashboardTab(tabParam);
+        }
+        setTimeout(initDoctorChart, 50);
+    });
+    window.addEventListener("load", () => {
+        setTimeout(initDoctorChart, 100);
+    });
+    window.addEventListener("resize", () => {
+        if (document.getElementById("view-doctor")?.classList.contains("active")) {
+            initDoctorChart();
+        }
+    });
+</script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+{% if session.get('caregiver_id') %}
+{% include "_sidebar_drawer.html" %}
+<script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/music_player.js') }}"></script>
+{% endif %}
 </body>
 </html>

@@ -2,42 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 
-    <title>{% block title %}Memory Care Platform{% endblock %}</title>
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}SmritiSetu | Memory Care & Cognitive Gaming for Elders{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}SmritiSetu is a gentle cognitive gaming and memory care platform for elderly patients with dementia, designed for families and caregivers in North East India.{% endblock %}">
+    <meta name="keywords" content="dementia care, memory games, memory support, elder care, North East India, SmritiSetu, Alzheimer, caregiver">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="SmritiSetu Team">
+    <meta name="theme-color" content="#285f54">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
-        <link rel="stylesheet"
-            href="{{ url_for('static', filename='css/polish.css') }}">
+    <!-- Open Graph (Facebook / WhatsApp preview) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SmritiSetu">
+    <meta property="og:title" content="{% block og_title %}SmritiSetu — Memory Care & Cognitive Gaming{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Gentle memory games and longitudinal care tracking for elderly patients. Designed for families & caregivers across North East India.{% endblock %}">
+    <meta property="og:locale" content="en_IN">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="SmritiSetu — Memory Care">
+    <meta name="twitter:description" content="Gentle cognitive gaming for elderly patients with dementia. Designed for caregivers in North East India.">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SmritiSetu",
+      "description": "Cognitive gaming and memory care platform for elderly patients",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Elderly patients, caregivers, healthcare professionals"
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/polish.css') }}?v=7">
 
     {% block head %}{% endblock %}
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
+
+    {% block gov_top_bar %}
+    <!-- Accessibility & Care Standard Ribbon -->
+    <div class="gov-top-bar" role="banner">
+        <div class="gov-top-inner">
+            <div class="gov-identity">
+                <span class="gov-flag" aria-hidden="true">🌿</span>
+                <div class="gov-titles">
+                    <strong>SmritiSetu | Cognitive Gaming &amp; Memory Care</strong>
+                    <span class="gov-subtitle-text">Elder Assistive Technology &amp; Neuro-Care Initiative • North Eastern Region</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
     <header class="navbar">
         <div class="nav-container">
 
-            <a href="{{ url_for('home') }}" class="logo">
-                <span class="logo-symbol"><img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt=""></span>
-                <span>SmritiSetu</span>
+            <a href="{{ url_for('home') }}" class="logo" aria-label="SmritiSetu Home">
+                <span class="logo-symbol"><img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt="SmritiSetu Emblem" width="48" height="48"></span>
+                <div class="logo-text-block">
+                    <span class="logo-title">SmritiSetu</span>
+                    <span class="logo-subtitle logo-subtitle-hide-sm">স্মৃতিসেতু • Cognitive Care Portal</span>
+                </div>
             </a>
 
-            <nav class="nav-links">
+            <!-- Mobile Navigation Hamburger -->
+            <button class="nav-hamburger" id="nav-hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links-menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="nav-links" id="nav-links-menu" role="navigation" aria-label="Main navigation">
                 {% if session.get('caregiver_id') %}
                     <a class="nav-home" href="{{ url_for('home') }}" data-i18n="home">Home</a>
                     <a class="nav-games" href="{{ url_for('games') }}" data-i18n="games">Games</a>
-                    <a class="nav-dashboard" href="{{ url_for('dashboard_home') }}" data-i18n="dashboard">Care report</a>
-                    <button class="music-nav-button" type="button" data-open-music aria-label="Open music and memories">Music</button>
                     <label class="language-picker" aria-label="Choose language">
                         <span aria-hidden="true">Aa</span>
                         <select id="language-select">
                             <option value="en">English</option><option value="hi">हिन्दी</option><option value="as">অসমীয়া</option><option value="bn">বাংলা</option><option value="kh">Khasi</option><option value="mni">মৈতৈলোন</option><option value="lus">Mizo</option>
                         </select>
                     </label>
-                    <a class="nav-quiet" href="{{ url_for('logout') }}" data-i18n="signOut">Sign out</a>
+                    <!-- Sidebar Toggle Button (Opens Care Navigation & Profiles) -->
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" type="button" onclick="openSidebar(event)" aria-label="Open sidebar menu and profiles" aria-expanded="false" aria-controls="app-sidebar">
+                        <span class="avatar-circle-icon" aria-hidden="true">👤</span>
+                        <span class="caregiver-nav-name">{{ current_caregiver.name if current_caregiver else (session.get('caregiver_name') or 'Caregiver') }}</span>
+                        <span class="sidebar-menu-tag">📋 Menu</span>
+                        <span class="nav-menu-lines" aria-hidden="true">
+                            <span></span><span></span><span></span>
+                        </span>
+                    </button>
                 {% else %}
+                    <label class="language-picker" aria-label="Choose language">
+                        <span aria-hidden="true">Aa</span>
+                        <select id="language-select">
+                            <option value="en">English</option><option value="hi">हिन्दी</option><option value="as">অসমীয়া</option><option value="bn">বাংলা</option><option value="kh">Khasi</option><option value="mni">মৈতৈলোন</option><option value="lus">Mizo</option>
+                        </select>
+                    </label>
                     <a href="{{ url_for('login') }}" data-i18n="signIn">Sign in</a>
                     <a class="nav-cta" href="{{ url_for('register') }}" data-i18n="startCircle">Start your care circle</a>
                 {% endif %}
@@ -46,7 +117,7 @@
         </div>
     </header>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         {% block content %}
         {% endblock %}
     </main>
@@ -56,22 +127,37 @@
     </footer>
 
     {% if session.get('caregiver_id') %}
-    <dialog id="music-dialog" class="music-dialog">
-        <div class="music-dialog-inner">
-            <div class="report-intro"><div><p class="eyebrow" data-i18n="music">Music &amp; memories</p><h2>Bring a familiar sound into the room</h2></div><button class="dialog-close" type="button" data-close-music data-i18n="close">Close</button></div>
-            <p data-i18n="warmNote">Familiar sounds can make a moment feel like home.</p>
-            <div class="music-controls">
-                <label><span data-i18n="state">Choose a state</span><select id="music-state"><option value="all">All North East</option><option>Assam</option><option>Meghalaya</option><option>Arunachal</option><option>Nagaland</option><option>Manipur</option><option>Mizoram</option><option>Tripura</option></select></label>
-                <label><span data-i18n="community">Choose a community</span><select id="music-community"><option value="all" data-i18n="all">All communities</option><option>Tea garden communities</option><option>Hill communities</option><option>River communities</option></select></label>
-            </div>
-            <div id="music-playlist" class="music-playlist" aria-live="polite"></div>
-        </div>
-    </dialog>
+    {% include "_sidebar_drawer.html" %}
     {% endif %}
+
+
 
     {% block scripts %}
     {% endblock %}
+
+    <script>
+
+        // Mobile hamburger menu
+        (function() {
+            const btn   = document.getElementById('nav-hamburger');
+            const menu  = document.getElementById('nav-links-menu');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', function() {
+                const open = menu.classList.toggle('nav-open');
+                btn.setAttribute('aria-expanded', open);
+            });
+            // Close on outside click
+            document.addEventListener('click', function(e) {
+                if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                    menu.classList.remove('nav-open');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        })();
+    </script>
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/music_player.js') }}"></script>
 
 </body>
 </html>

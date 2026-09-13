@@ -1,0 +1,604 @@
+{% extends "base.html" %}
+{% block title %}Daily Routine Sequence | SmritiSetu{% endblock %}
+{% block body_class %}page-game-routine{% endblock %}
+{% block gov_top_bar %}{% endblock %}
+
+{% block head %}
+<style>
+/* ── Page layout ── */
+.routine-container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 22px 22px 36px;
+    box-sizing: border-box;
+}
+
+.routine-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+.routine-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #5a4a3a;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    background: #f5ede0;
+    border: 1.5px solid #d9c4a3;
+    border-radius: 999px;
+    padding: 10px 18px;
+}
+.routine-back-link:hover { background: #eddfc8; }
+
+/* ── Header ── */
+.routine-header {
+    text-align: center;
+    margin-bottom: 14px;
+}
+.routine-length-badge {
+    display: inline-block;
+    background: #eef6f2;
+    border: 1.5px solid #b2d4c8;
+    color: #1e5548;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 16px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.routine-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(24px, 4.5vw, 34px);
+    font-weight: 700;
+    color: #1e3d30;
+    margin: 0 0 6px;
+    line-height: 1.2;
+}
+.routine-subtitle {
+    font-size: clamp(15px, 2.5vw, 18px);
+    color: #3a4a3d;
+    margin: 0 0 4px;
+    font-weight: 500;
+}
+.routine-calm-note {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+    font-style: italic;
+}
+
+.routine-mascot-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto 18px;
+}
+.routine-mascot-img {
+    width: 88px;
+    height: 120px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.12));
+}
+.routine-mascot-bubble {
+    background: #fffcf5;
+    border: 2.5px solid #dfb77e;
+    border-radius: 20px 20px 20px 6px;
+    padding: 12px 18px;
+    max-width: 290px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.routine-mascot-bubble p {
+    color: #1e5548;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0;
+}
+
+/* ── Activity card grid ── */
+.routine-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.routine-card {
+    background: #fffcf5;
+    border: 2.5px solid #dfc6a3;
+    border-radius: 16px;
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+    user-select: none;
+    min-height: 150px;
+    box-sizing: border-box;
+    position: relative;
+}
+.routine-card:hover {
+    border-color: #c96b3c;
+    transform: translateY(-2px);
+}
+.routine-card.dimmed {
+    opacity: 0.38;
+    pointer-events: none;
+    cursor: default;
+}
+
+.routine-card-icon {
+    width: 82px;
+    height: 82px;
+    flex-shrink: 0;
+}
+.routine-card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.routine-card-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e3d30;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+}
+
+/* ── Chosen order tray ── */
+.routine-order-section {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 16px;
+}
+.routine-order-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+.routine-order-slots {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+.routine-slot {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f5f0e8;
+    border: 1.5px solid #dfc6a3;
+    border-radius: 12px;
+    padding: 8px;
+    text-align: center;
+}
+.routine-slot-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #64748b;
+    line-height: 1.25;
+}
+.routine-slot.filled .routine-slot-text {
+    color: #1e3d30;
+}
+
+/* ── Feedback area ── */
+.routine-feedback {
+    min-height: 26px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1e5548;
+    margin-bottom: 8px;
+    padding: 0 8px;
+    line-height: 1.4;
+    transition: opacity 0.2s ease;
+}
+.routine-feedback.feedback-try {
+    color: #a0530a;
+}
+
+/* ── Action buttons ── */
+.routine-actions { display: none; }
+
+.routine-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+    white-space: nowrap;
+    line-height: 1;
+}
+.routine-btn:hover  { transform: translateY(-2px); }
+.routine-btn:active { transform: translateY(1px); }
+
+.routine-btn-primary {
+    background: #1e5548;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(30,85,72,0.28);
+}
+.routine-btn-primary:hover {
+    background: #164039;
+    box-shadow: 0 8px 22px rgba(30,85,72,0.36);
+    color: #ffffff;
+}
+.routine-btn-secondary {
+    background: transparent;
+    color: #1e5548;
+    border: 2.5px solid #1e5548;
+}
+.routine-btn-secondary:hover {
+    background: rgba(30,85,72,0.07);
+}
+.routine-btn-exit {
+    background: #f5ede0;
+    color: #5a4a3a;
+    border: 1.5px solid #d9c4a3;
+    font-size: 15px;
+    padding: 12px 22px;
+}
+.routine-btn-exit:hover {
+    background: #eddfc8;
+    border-color: #c9a87c;
+    color: #3d2e1e;
+}
+
+/* ── Completion panel (hidden until complete) ── */
+.routine-complete-panel {
+    display: none;
+    background: #fffcf5;
+    border: 1.5px solid #dfc6a3;
+    border-radius: 18px;
+    padding: 32px 24px;
+    text-align: center;
+    margin: 18px auto 0;
+    max-width: 540px;
+    box-shadow: 0 12px 30px rgba(64,54,37,0.12);
+}
+.routine-complete-panel.visible {
+    display: block;
+}
+.routine-complete-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e3d30;
+    margin: 0 0 8px;
+    font-family: Georgia, serif;
+}
+.routine-complete-sub {
+    font-size: 15px;
+    color: #3a5a4a;
+    margin: 0 0 20px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .routine-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .routine-order-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .routine-mascot-img { width: 72px; height: 100px; }
+    .routine-mascot-bubble p { font-size: 16px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="routine-container screen-patient">
+
+    <div class="routine-top-bar">
+        <div class="routine-length-badge" id="routine-length-badge">Routine Length {{ routine_length }}</div>
+        <a class="routine-back-link" href="{{ url_for('games') }}" onclick="routineGame.onExit()">Exit activity</a>
+    </div>
+
+    <!-- Header -->
+    <div class="routine-header">
+        <h1 class="routine-title">Daily Routine Sequence</h1>
+        <p class="routine-subtitle">Choose the activities in their usual order.</p>
+        <p class="routine-calm-note">Take your time. There is no rush.</p>
+    </div>
+
+    <div class="routine-mascot-row notranslate" aria-live="polite">
+        <img class="routine-mascot-img" src="{{ url_for('static', filename='img/mascot/smiling.png') }}" alt="Companion Girl" width="88" height="120">
+        <div class="routine-mascot-bubble notranslate">
+            <p id="routine-mascot-message">Let's arrange this routine together.</p>
+        </div>
+    </div>
+
+    <!-- Completion panel (shown after correct completion) -->
+    <div class="routine-complete-panel" id="routine-complete-panel" role="dialog" aria-modal="true" aria-labelledby="routine-complete-heading">
+        <div class="routine-complete-heading" id="routine-complete-heading">Routine completed.</div>
+        <p class="routine-complete-sub">You arranged the activities in their usual order.</p>
+        <div class="routine-actions" style="display:flex;">
+            <a class="routine-btn routine-btn-primary" href="{{ url_for('game_routine', patient_id=patient.id) }}">Try another routine</a>
+            <a class="routine-btn routine-btn-exit" href="{{ url_for('games') }}">Back to activities</a>
+        </div>
+    </div>
+
+    <!-- Activity card grid -->
+    <div class="routine-card-grid" id="routine-card-grid" role="group" aria-label="Activity cards">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Feedback message -->
+    <div class="routine-feedback" id="routine-feedback" role="status" aria-live="polite"></div>
+
+    <!-- Chosen order tray -->
+    <div class="routine-order-section" id="routine-order-section">
+        <div class="routine-order-label">Your chosen order</div>
+        <div class="routine-order-slots" id="routine-order-slots">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="routine-disclaimer" style="margin-top: 28px; background: #fdfaf4; border: 1px solid #e5dccb; border-left: 4px solid #1e5548; border-radius: 10px; padding: 12px 16px; font-size: 12.5px; color: #4a5568; line-height: 1.5;">
+        <strong>Notice:</strong> This summary reflects in-app game performance only. It is not a medical assessment, diagnosis, or treatment recommendation.
+    </div>
+
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    // ── Game data ──────────────────────────────────────────────────────────
+    const PATIENT_ID   = {{ patient.id | tojson }};
+    const ROUTINE_LEN  = {{ routine_length | tojson }};  // 1, 2, or 3
+
+    // All activities available, keyed by id
+    const ACTIVITIES = {
+        wake_up:      { label: 'Wake up',          img: '{{ url_for("static", filename="img/routine/wake_up.svg") }}' },
+        wash_face:    { label: 'Wash face',         img: '{{ url_for("static", filename="img/routine/wash_face.svg") }}' },
+        breakfast:    { label: 'Breakfast',         img: '{{ url_for("static", filename="img/routine/breakfast.svg") }}' },
+        drink_water:  { label: 'Drink water',       img: '{{ url_for("static", filename="img/routine/drink_water.svg") }}' },
+        short_walk:   { label: 'Short walk',        img: '{{ url_for("static", filename="img/routine/short_walk.svg") }}' },
+        rest:         { label: 'Rest',              img: '{{ url_for("static", filename="img/routine/rest.svg") }}' },
+        tea:          { label: 'Tea',               img: '{{ url_for("static", filename="img/tea_cup.svg") }}' },
+        family_talk:  { label: 'Family talk',       img: '{{ url_for("static", filename="img/routine/family_talk.svg") }}' },
+        calm_music:   { label: 'Calm music',        img: '{{ url_for("static", filename="img/routine/calm_music.svg") }}' },
+        morning_lamp: { label: 'Morning lamp',      img: '{{ url_for("static", filename="img/diya_lamp.svg") }}' },
+    };
+
+    // Sequences: each entry is { steps: [id, ...] }
+    // Total steps = 4; we slice to routine length (2, 3, or 4 steps)
+    const SEQUENCES = [
+        { steps: ['wake_up',     'wash_face',   'breakfast',  'short_walk'] },
+        { steps: ['drink_water', 'short_walk',  'rest',       'calm_music'] },
+        { steps: ['tea',         'family_talk', 'calm_music', 'rest'] },
+        { steps: ['morning_lamp','breakfast',   'short_walk', 'rest'] },
+    ];
+
+    // Map routine_length → number of steps shown
+    function stepsForLength(len) {
+        if (len <= 1) return 2;
+        if (len === 2) return 3;
+        return 4;  // len >= 3, max 4
+    }
+
+    // ── State ──────────────────────────────────────────────────────────────
+    let currentSequence   = null;   // array of activity ids (correct order)
+    let displayCards      = [];     // shuffled array of ids shown on screen
+    let selectedOrder     = [];     // ids tapped so far
+    let stepCount         = 0;      // how many steps in this round
+    let startTime         = null;   // Date.now() when round begins
+    let firstTapTime      = null;   // Date.now() of first card tap
+    let sessionSaved      = false;
+    let roundLocked       = false;
+
+    // ── DOM refs ───────────────────────────────────────────────────────────
+    const gridEl       = document.getElementById('routine-card-grid');
+    const slotsEl      = document.getElementById('routine-order-slots');
+    const feedbackEl   = document.getElementById('routine-feedback');
+    const mascotMsgEl  = document.getElementById('routine-mascot-message');
+    const completePanel= document.getElementById('routine-complete-panel');
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function setFeedback(msg, isRetry) {
+        feedbackEl.textContent = msg;
+        feedbackEl.className   = 'routine-feedback' + (isRetry ? ' feedback-try' : '');
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    function renderCards() {
+        gridEl.innerHTML = '';
+        displayCards.forEach(function (id) {
+            const act = ACTIVITIES[id];
+            const card = document.createElement('div');
+            card.className   = 'routine-card';
+            card.dataset.id  = id;
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', act.label);
+            card.innerHTML =
+                '<div class="routine-card-icon"><img src="' + act.img + '" alt="' + act.label + '"></div>' +
+                '<span class="routine-card-label">' + act.label + '</span>';
+            card.addEventListener('click',   function () { routineGame.selectCard(id); });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); routineGame.selectCard(id); }
+            });
+            gridEl.appendChild(card);
+        });
+    }
+
+    function renderSlots() {
+        slotsEl.innerHTML = '';
+        for (let i = 0; i < stepCount; i++) {
+            const slot   = document.createElement('div');
+            const filled = i < selectedOrder.length;
+            slot.className = 'routine-slot' + (filled ? ' filled' : '');
+            const label  = filled ? ACTIVITIES[selectedOrder[i]].label : ['First activity', 'Next activity', 'Next activity', 'Last activity'][i];
+            slot.innerHTML = (filled ? '<img class="routine-slot-icon" src="' + ACTIVITIES[selectedOrder[i]].img + '" alt="' + label + '">' : '') +
+                '<div class="routine-slot-text">' + label + '</div>';
+            slotsEl.appendChild(slot);
+        }
+    }
+
+    function setMascotMessage(msg) { mascotMsgEl.textContent = msg; }
+
+    // ── Init round ─────────────────────────────────────────────────────────
+    function initRound() {
+        sessionSaved  = false;
+        selectedOrder = [];
+        startTime     = Date.now();
+        firstTapTime  = null;
+        stepCount     = stepsForLength(ROUTINE_LEN);
+
+        // Pick a random sequence
+        const seq = SEQUENCES[Math.floor(Math.random() * SEQUENCES.length)];
+        currentSequence = seq.steps.slice(0, stepCount);
+
+        // Shuffle for display
+        displayCards = shuffle(currentSequence.slice());
+
+        completePanel.classList.remove('visible');
+        setFeedback('', false);
+        setMascotMessage("Let's arrange this routine together.");
+
+        renderCards();
+        renderSlots();
+    }
+
+    function resetRound() {
+        selectedOrder = [];
+        firstTapTime = null;
+        startTime = Date.now();
+        roundLocked = false;
+        setFeedback('', false);
+        setMascotMessage("Let's arrange this routine together.");
+        renderCards();
+        renderSlots();
+    }
+
+    // ── Public API ─────────────────────────────────────────────────────────
+    window.routineGame = {
+
+        selectCard: function (id) {
+            if (roundLocked) return;
+            if (selectedOrder.includes(id)) return;
+            if (selectedOrder.length >= stepCount) return;
+
+            if (!firstTapTime) firstTapTime = Date.now();
+
+            const expectedId = currentSequence[selectedOrder.length];
+            selectedOrder.push(id);
+
+            // Update card visual
+            const cardEl  = gridEl.querySelector('[data-id="' + id + '"]');
+            if (cardEl) {
+                cardEl.classList.add('dimmed');
+            }
+
+            renderSlots();
+            if (id !== expectedId) {
+                roundLocked = true;
+                setFeedback("Let's try that order again.", true);
+                setMascotMessage("Let's try that order again.");
+                setTimeout(resetRound, 950);
+                return;
+            }
+
+            if (selectedOrder.length === 1) setMascotMessage('That comes first.');
+            else if (selectedOrder.length < stepCount) setMascotMessage('Good. What comes next?');
+            else setMascotMessage('You are doing well.');
+
+            if (selectedOrder.length === stepCount) routineGame.finish();
+        },
+
+        restart: function () {
+            // Deselect all cards and reset
+            resetRound();
+        },
+
+        finish: function () {
+            if (selectedOrder.length !== stepCount) return;
+
+            routineGame._saveSession(true);
+            completePanel.classList.add('visible');
+            gridEl.style.display = 'none';
+            document.getElementById('routine-order-section').style.display = 'none';
+            feedbackEl.style.display = 'none';
+        },
+
+        onExit: function () {
+            // Feedback on leaving without completing — do NOT save unfinished session
+            setFeedback('You can return whenever you are ready.', false);
+            // Navigation proceeds normally via the href
+        },
+
+        _saveSession: function (completed) {
+            if (sessionSaved || !completed) return;
+            sessionSaved = true;
+
+            const now        = Date.now();
+            const duration   = Math.round((now - startTime) / 1000);
+            const reactionMs = firstTapTime ? (firstTapTime - startTime) : 0;
+            const responseMs = firstTapTime ? (now - firstTapTime) : 0;
+
+            const payload = {
+                patient_id:       PATIENT_ID,
+                game_type:        'routine_sequence',
+                difficulty:       Math.min(Math.max(ROUTINE_LEN, 1), 3),
+                score:            stepCount,   // all steps correct = full score
+                total:            stepCount,
+                accuracy:         100,
+                reaction_time:    parseFloat((reactionMs / 1000).toFixed(2)),
+                response_time:    parseFloat((responseMs / 1000).toFixed(2)),
+                duration_seconds: duration,
+            };
+
+            fetch('/api/score', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            }).catch(function (err) {
+                console.error('Session save failed:', err);
+            });
+        },
+    };
+
+    // ── Start ──────────────────────────────────────────────────────────────
+    initRound();
+
+})();
+</script>
+{% endblock %}
+

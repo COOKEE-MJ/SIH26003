@@ -1,0 +1,359 @@
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- SLIDE-OVER SIDEBAR DRAWER                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+<aside id="app-sidebar" class="app-sidebar" role="dialog" aria-modal="true" aria-label="Sidebar Menu &amp; Profiles">
+    <div class="sidebar-inner">
+
+        <!-- Sidebar Top Header -->
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/smritisetu-logo.svg') }}" alt="SmritiSetu Emblem" width="28" height="28">
+                <span class="sidebar-title">Care Navigation</span>
+            </div>
+            <button type="button" id="sidebar-close-btn" class="sidebar-close-btn" onclick="closeSidebar(event)" aria-label="Close sidebar">✕</button>
+        </div>
+
+        <!-- ── Top Profile Viewing Section ── -->
+        <div class="sidebar-profiles-panel">
+            <div class="profile-panel-header">
+                <span class="panel-icon">📋</span>
+                <strong class="panel-title" data-i18n="careCircleProfiles">Care Circle Profiles</strong>
+            </div>
+
+            <!-- 1. Caregiver Profile Block -->
+            <div class="profile-block profile-block-caregiver">
+                <div class="profile-block-header">
+                    <div class="profile-title-group">
+                        <span class="profile-type-badge">Caregiver</span>
+                        <h3 class="profile-heading" data-i18n="caregiverProfile">Caregiver Profile</h3>
+                    </div>
+                    <button type="button" class="btn-pencil-edit" id="btn-edit-caregiver" onclick="openCaregiverEditModal()" title="Edit Caregiver Profile" aria-label="Edit Caregiver Profile">
+                        <svg class="pencil-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                        <span class="btn-pencil-label" data-i18n="edit">Edit</span>
+                    </button>
+                </div>
+                <div class="profile-details-grid">
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="name">Name</span>
+                        <strong class="field-value" id="sidebar-cg-name">{{ current_caregiver.name if current_caregiver else (session.get('caregiver_name') or 'Caregiver') }}</strong>
+                    </div>
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="email">Email</span>
+                        <span class="field-value field-value-sm" id="sidebar-cg-email">{{ current_caregiver.email if current_caregiver else '—' }}</span>
+                    </div>
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="contact">Contact</span>
+                        <span class="field-value field-value-sm" id="sidebar-cg-contact">{{ current_caregiver.contact if current_caregiver and current_caregiver.contact else '—' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Patient Profile Block -->
+            <div class="profile-block profile-block-patient">
+                <div class="profile-block-header">
+                    <div class="profile-title-group">
+                        <span class="profile-type-badge profile-badge-patient">Patient</span>
+                        <h3 class="profile-heading" data-i18n="patientProfile">Patient Profile</h3>
+                    </div>
+                    <button type="button" class="btn-pencil-edit" id="btn-edit-patient" onclick="openPatientEditModal()" title="Edit Patient Profile" aria-label="Edit Patient Profile">
+                        <svg class="pencil-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                        <span class="btn-pencil-label" data-i18n="edit">Edit</span>
+                    </button>
+                </div>
+                <div class="profile-details-grid">
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="patientName">Patient Name</span>
+                        <strong class="field-value" id="sidebar-pt-name">{{ active_patient.name if active_patient else 'No patient registered' }}</strong>
+                    </div>
+                    <div class="profile-field-row">
+                        <div class="profile-field">
+                            <span class="field-label" data-i18n="ageGender">Age &amp; Sex</span>
+                            <span class="field-value" id="sidebar-pt-age-sex">{{ active_patient.age if active_patient and active_patient.age else '—' }} yrs • {{ active_patient.sex if active_patient else '—' }}</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="field-label" data-i18n="relationship">Relationship</span>
+                            <span class="field-value" id="sidebar-pt-relation">{{ active_patient.relation if active_patient and active_patient.relation else '—' }}</span>
+                        </div>
+                    </div>
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="dementiaStage">Dementia Stage</span>
+                        <span class="badge-stage-pill" id="sidebar-pt-stage">{{ active_patient.diagnosis_stage if active_patient and active_patient.diagnosis_stage else 'Not specified' }}</span>
+                    </div>
+                    <div class="profile-field">
+                        <span class="field-label" data-i18n="contact">Contact</span>
+                        <span class="field-value field-value-sm" id="sidebar-pt-contact">{{ active_patient.contact if active_patient and active_patient.contact else '—' }}</span>
+                    </div>
+
+                    <!-- Instant Patient Switcher (Guarantees Strict Patient Isolation) -->
+                    {% if caregiver_patients and caregiver_patients|length > 1 %}
+                    <div class="profile-field" style="margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+                        <span class="field-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span>Active Patient Selection</span>
+                            <a href="{{ url_for('dashboard_gate') }}" style="font-size: 11px; color: #1e5548; font-weight: 700; text-decoration: none;">+ Add Patient</a>
+                        </span>
+                        <select id="sidebar-patient-switcher" onchange="window.location.href='/patient/select/' + this.value" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1.5px solid #1e5548; background: #ffffff; font-weight: 600; color: #1e3d30; font-size: 13px; cursor: pointer;">
+                            {% for pt in caregiver_patients %}
+                            <option value="{{ pt.id }}" {% if active_patient and active_patient.id == pt.id %}selected{% endif %}>
+                                {{ pt.name }} (UHID #{{ pt.id }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% elif caregiver_patients %}
+                    <div style="margin-top: 10px; text-align: right;">
+                        <a href="{{ url_for('dashboard_gate') }}" style="font-size: 12px; color: #1e5548; font-weight: 700; text-decoration: none;">+ Register Another Patient</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Sidebar Navigation Menu Links ── -->
+        <div class="sidebar-nav-section">
+            <span class="sidebar-section-kicker" data-i18n="quickNavigation">Care Modules</span>
+            <nav class="sidebar-nav-list" aria-label="Sidebar Care Navigation">
+                <a class="sidebar-nav-link" href="{{ url_for('home') }}">
+                    <span class="sidebar-nav-icon">🏡</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">HOME</span>
+                    </div>
+                </a>
+                <a class="sidebar-nav-link" href="{{ url_for('games') }}">
+                    <span class="sidebar-nav-icon">🎮</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">GAMES</span>
+                    </div>
+                </a>
+                <a class="sidebar-nav-link" href="{{ url_for('dashboard_home') }}">
+                    <span class="sidebar-nav-icon">🏠</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">FAMILY CARE</span>
+                    </div>
+                </a>
+                <a class="sidebar-nav-link" href="{{ url_for('dashboard_home', tab='notes') }}">
+                    <span class="sidebar-nav-icon">💌</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">MEMORY NOTES</span>
+                    </div>
+                </a>
+                <a class="sidebar-nav-link" href="{{ url_for('doctor_report') }}">
+                    <span class="sidebar-nav-icon">🩺</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">DOCTOR REPORT</span>
+                    </div>
+                </a>
+                <button type="button" class="sidebar-nav-link sidebar-nav-btn" data-open-music>
+                    <span class="sidebar-nav-icon">🎵</span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text">MUSIC</span>
+                    </div>
+                </button>
+                <a class="sidebar-nav-link sidebar-nav-signout" href="{{ url_for('logout') }}">
+                    <span class="sidebar-nav-icon signout-icon-wrap" aria-hidden="true">
+                        <svg class="power-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                            <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </svg>
+                    </span>
+                    <div class="nav-item-text">
+                        <span class="sidebar-nav-text" data-i18n="signOut">Sign out</span>
+                    </div>
+                </a>
+            </nav>
+        </div>
+
+    </div>
+</aside>
+
+<!-- ── Edit Caregiver Profile Modal ── -->
+<div id="modal-edit-caregiver" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="title-edit-cg">
+    <div class="profile-modal-card">
+        <div class="modal-header-row">
+            <h3 id="title-edit-cg" class="modal-title">
+                <svg class="pencil-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    <path d="m15 5 4 4"/>
+                </svg>
+                <span data-i18n="editCaregiverProfile">Edit Caregiver Profile</span>
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeCaregiverEditModal()" aria-label="Close modal">✕</button>
+        </div>
+        <form id="form-edit-caregiver" onsubmit="submitCaregiverEdit(event)">
+            <p id="edit-cg-error" class="modal-error-msg"></p>
+            <div class="form-field">
+                <label for="edit-cg-name" data-i18n="registerName">Caregiver Name</label>
+                <input type="text" id="edit-cg-name" name="name" required placeholder="Your full name">
+            </div>
+            <div class="form-field">
+                <label for="edit-cg-email" data-i18n="loginEmail">Email Address</label>
+                <input type="email" id="edit-cg-email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-field">
+                <label for="edit-cg-contact" data-i18n="contact">Contact Number</label>
+                <input type="tel" id="edit-cg-contact" name="contact" placeholder="+91 98765 43210">
+            </div>
+            <div class="modal-actions-row">
+                <button type="submit" id="btn-save-cg" class="btn-modal-save" data-i18n="saveChanges">Save Changes</button>
+                <button type="button" class="btn-modal-cancel" onclick="closeCaregiverEditModal()" data-i18n="cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Edit Patient Profile Modal ── -->
+<div id="modal-edit-patient" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="title-edit-pt">
+    <div class="profile-modal-card">
+        <div class="modal-header-row">
+            <h3 id="title-edit-pt" class="modal-title">
+                <svg class="pencil-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    <path d="m15 5 4 4"/>
+                </svg>
+                <span data-i18n="editPatientProfile">Edit Patient Profile</span>
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closePatientEditModal()" aria-label="Close modal">✕</button>
+        </div>
+        <form id="form-edit-patient" onsubmit="submitPatientEdit(event)">
+            <p id="edit-pt-error" class="modal-error-msg"></p>
+            <div class="form-field">
+                <label for="edit-pt-name" data-i18n="labelPatientName">Patient Full Name</label>
+                <input type="text" id="edit-pt-name" name="name" required placeholder="e.g. Sunita Devi">
+            </div>
+            <div class="form-row-2">
+                <div class="form-field">
+                    <label for="edit-pt-age" data-i18n="labelAge">Age</label>
+                    <input type="number" id="edit-pt-age" name="age" min="1" max="130" placeholder="e.g. 74">
+                </div>
+                <div class="form-field">
+                    <label for="edit-pt-sex" data-i18n="labelGender">Gender</label>
+                    <select id="edit-pt-sex" name="sex">
+                        <option value="Female" data-i18n="optionFemale">Female</option>
+                        <option value="Male" data-i18n="optionMale">Male</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-field">
+                <label for="edit-pt-stage" data-i18n="labelStage">Dementia Stage</label>
+                <select id="edit-pt-stage" name="diagnosis_stage">
+                    <option value="Not sure / undiagnosed" data-i18n="optionUnknown">Not sure / undiagnosed</option>
+                    <option value="Early stage" data-i18n="optionEarly">Early stage</option>
+                    <option value="Middle stage" data-i18n="optionMiddle">Middle stage</option>
+                    <option value="Advanced stage" data-i18n="optionAdvanced">Advanced stage</option>
+                </select>
+            </div>
+            <div class="form-row-2">
+                <div class="form-field">
+                    <label for="edit-pt-relation" data-i18n="labelRelation">Relationship</label>
+                    <input type="text" id="edit-pt-relation" name="relation" placeholder="e.g. Daughter, Son, Caregiver">
+                </div>
+                <div class="form-field">
+                    <label for="edit-pt-contact" data-i18n="labelContact">Contact Number</label>
+                    <input type="text" id="edit-pt-contact" name="contact" placeholder="e.g. +91 9876543210">
+                </div>
+            </div>
+            <div class="modal-actions-row">
+                <button type="submit" id="btn-save-pt" class="btn-modal-save" data-i18n="saveChanges">Save Changes</button>
+                <button type="button" class="btn-modal-cancel" onclick="closePatientEditModal()" data-i18n="cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Add Family Memory Note & Anchor Modal ── -->
+<div id="modal-add-memory-note" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="title-add-note">
+    <div class="profile-modal-card">
+        <div class="modal-header-row">
+            <h3 id="title-add-note" class="modal-title">
+                <span aria-hidden="true">💌</span>
+                <span data-i18n="addMemoryNoteTitle">Leave a Memory Note &amp; Anchor</span>
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeMemoryNoteModal()" aria-label="Close modal">✕</button>
+        </div>
+        <p class="modal-subtitle" style="font-size: 13px; color: #64748b; margin: -8px 0 16px 0; line-height: 1.4;">
+            Record a calming routine, favorite song, positive memory, or daily encouragement for the care circle.
+        </p>
+        <form id="form-add-memory-note" onsubmit="submitMemoryNote(event)">
+            <p id="add-note-error" class="modal-error-msg"></p>
+            <input type="hidden" id="note-patient-id" value="{{ active_patient.id if active_patient else (patient.id if patient else '') }}">
+            
+            <div class="form-field">
+                <label for="note-author-name" data-i18n="noteAuthor">Your Name &amp; Relation</label>
+                <input type="text" id="note-author-name" required placeholder="e.g. Priya (Daughter)" value="{{ current_caregiver.name if current_caregiver else (session.get('caregiver_name') or '') }}">
+            </div>
+
+            <div class="form-field">
+                <label for="note-anchor-type" data-i18n="noteAnchorCategory">Memory Anchor Category</label>
+                <select id="note-anchor-type">
+                    <option value="🍵 Calm Morning &amp; Tea Routine">🍵 Calm Morning &amp; Tea Routine</option>
+                    <option value="🎵 Familiar Melodies &amp; Music">🎵 Familiar Melodies &amp; Music</option>
+                    <option value="🖼️ Photo &amp; Hometown Memories">🖼️ Photo &amp; Hometown Memories</option>
+                    <option value="❤️ Family Love &amp; Reassurance">❤️ Family Love &amp; Reassurance</option>
+                    <option value="🧩 Cognitive Play Observation">🧩 Cognitive Play Observation</option>
+                    <option value="🌿 Calming Walk &amp; Nature">🌿 Calming Walk &amp; Nature</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="note-text-content" data-i18n="noteContent">Memory Note / Observation</label>
+                <textarea id="note-text-content" rows="3" required placeholder="e.g. Maa enjoyed her morning ginger tea and hummed along to the Bihu flute music. Recognised old family photo from Tezpur." style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+            </div>
+
+            <div class="modal-actions-row">
+                <button type="submit" id="btn-save-note" class="btn-modal-save" data-i18n="saveNoteBtn">Save Memory Note 🌸</button>
+                <button type="button" class="btn-modal-cancel" onclick="closeMemoryNoteModal()" data-i18n="cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- MUSIC & MEMORIES MODAL (CENTERED VIEWPORT DIALOG)          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<dialog id="music-dialog" class="music-dialog" aria-labelledby="music-modal-title" aria-modal="true">
+    <div class="music-dialog-inner">
+        <div class="report-intro">
+            <div>
+                <p class="eyebrow" data-i18n="music">Music &amp; memories</p>
+                <h2 id="music-modal-title">Bring a familiar sound into the room</h2>
+            </div>
+            <button class="dialog-close" type="button" data-close-music data-i18n="close" aria-label="Close music dialog">Close</button>
+        </div>
+        <p data-i18n="warmNote">Familiar sounds can make a moment feel like home.</p>
+        <div class="music-controls">
+            <label>
+                <span data-i18n="state">Choose a state</span>
+                <select id="music-state">
+                    <option value="all">All North East</option>
+                    <option>Assam</option>
+                    <option>Meghalaya</option>
+                    <option>Arunachal</option>
+                    <option>Nagaland</option>
+                    <option>Manipur</option>
+                    <option>Mizoram</option>
+                    <option>Tripura</option>
+                </select>
+            </label>
+            <label>
+                <span data-i18n="community">Choose a community</span>
+                <select id="music-community">
+                    <option value="all" data-i18n="all">All communities</option>
+                    <option>Tea garden communities</option>
+                    <option>Hill communities</option>
+                    <option>River communities</option>
+                </select>
+            </label>
+        </div>
+        <div id="music-playlist" class="music-playlist" aria-live="polite"></div>
+    </div>
+</dialog>
+
+
+

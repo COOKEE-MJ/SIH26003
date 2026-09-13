@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <!-- Background -->
+  <circle cx="80" cy="80" r="74" fill="#fffcf5" stroke="#c96b3c" stroke-width="3.5"/>
+  <!-- Glass body -->
+  <path d="M56 38 L64 112 L96 112 L104 38 Z" fill="none" stroke="#1e5548" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Glass rim -->
+  <line x1="56" y1="38" x2="104" y2="38" stroke="#1e5548" stroke-width="3" stroke-linecap="round"/>
+  <!-- Water fill level -->
+  <path d="M58 70 L62 112 L98 112 L102 70 Z" fill="#1e5548" opacity="0.12"/>
+  <!-- Water surface line -->
+  <line x1="58" y1="70" x2="102" y2="70" stroke="#1e5548" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <!-- Water highlight reflection -->
+  <line x1="64" y1="50" x2="64" y2="108" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <!-- Water drops on outside -->
+  <circle cx="46" cy="62" r="3" fill="#1e5548" opacity="0.35"/>
+  <circle cx="42" cy="72" r="2" fill="#1e5548" opacity="0.25"/>
+  <!-- Label banner -->
+  <rect x="22" y="120" width="116" height="24" rx="12" fill="#1e5548"/>
+  <text x="80" y="136" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">DRINK WATER</text>
+</svg>
+

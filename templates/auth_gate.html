@@ -1,21 +1,53 @@
 {% extends "base.html" %}
-
-{% block title %}Welcome to SmritiSetu{% endblock %}
-
+{% block title %}Welcome | SmritiSetu{% endblock %}
+{% block body_class %}screen-auth-gate{% endblock %}
 {% block content %}
 <section class="auth-shell">
-    <div class="auth-illustration auth-landscape" aria-hidden="true">
-        <span class="auth-sun"></span><span class="auth-hill auth-hill-back"></span><span class="auth-hill auth-hill-front"></span>
-    </div>
     <div class="auth-card">
         <p class="eyebrow">SmritiSetu</p>
-        <h1>A gentler way to care for memory.</h1>
-        <p class="lead">Keep games, patient progress, and family support together in one warm, simple place.</p>
-        <div class="auth-actions">
-            <a class="button button-primary" href="{{ url_for('login') }}">Sign in to my account</a>
-            <a class="button button-outline" href="{{ url_for('register') }}">Create a new account</a>
+        <h1 data-i18n="authTagline">A gentler way to care for memory.</h1>
+        <p class="lead" data-i18n="authLead">Keep games, patient progress and family support in one warm, simple place.</p>
+
+        <!-- Choose Language Option -->
+        <div class="auth-language-section" aria-labelledby="auth-lang-heading">
+            <div class="auth-language-header">
+                <span class="auth-lang-globe" aria-hidden="true">🌐</span>
+                <span id="auth-lang-heading" class="auth-language-title" data-i18n="chooseLanguage">Choose Language</span>
+            </div>
+            <div class="auth-language-pills" role="radiogroup" aria-label="Select preferred language">
+                <button type="button" class="lang-pill notranslate active" data-lang-btn="en" aria-pressed="true">
+                    <span class="pill-native">English</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="hi" aria-pressed="false">
+                    <span class="pill-native">हिन्दी</span>
+                    <span class="pill-roman">Hindi</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="as" aria-pressed="false">
+                    <span class="pill-native">অসমীয়া</span>
+                    <span class="pill-roman">Assamese</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="bn" aria-pressed="false">
+                    <span class="pill-native">বাংলা</span>
+                    <span class="pill-roman">Bengali</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="kh" aria-pressed="false">
+                    <span class="pill-native">Khasi</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="mni" aria-pressed="false">
+                    <span class="pill-native">মৈতৈলোন</span>
+                    <span class="pill-roman">Manipuri</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="lus" aria-pressed="false">
+                    <span class="pill-native">Mizo</span>
+                </button>
+            </div>
         </div>
-        <p class="quiet-note">For caregivers, families, and care teams.</p>
+
+        <div class="auth-actions">
+            <a class="button button-primary" href="{{ url_for('login') }}" data-i18n="authSignIn">Sign in to my account</a>
+            <a class="button button-outline" href="{{ url_for('register') }}" data-i18n="authCreate">Create a new account</a>
+        </div>
+        <p class="quiet-note" data-i18n="authNote">For caregivers, families and care teams.</p>
     </div>
 </section>
 {% endblock %}

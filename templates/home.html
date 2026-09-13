@@ -1,39 +1,752 @@
 {% extends "base.html" %}
-
-{% block title %}Home | SmritiSetu{% endblock %}
+{% block title %}Home | SmritiSetu - Dementia Care &amp; Cognitive Assistance Portal{% endblock %}
 
 {% block content %}
+
+<!-- Care Initiative Alignment Bar (Clean structured formatting) -->
+<div class="gov-accreditation-bar">
+    <span class="gov-acc-item">🌿 <strong>Care Focus:</strong> Dementia &amp; Memory Support</span>
+    <span class="gov-acc-item">📋 <strong>Activity Tracking:</strong> Structured Memory Activity Sessions</span>
+    <span class="gov-acc-item">🔒 <strong>Privacy First:</strong> Secure Patient-Isolated Care Circle</span>
+    <span class="gov-acc-item">🌐 <strong>Inclusion:</strong> Multilingual interface with selected North East Indian language support</span>
+</div>
+
+{% if patient %}
+<!-- Heartwarming Emotional Return Banner (Only shown when patient is registered) -->
+<section class="emotional-welcome-card" id="emotional-welcome-banner">
+    <div class="emotional-welcome-inner">
+        <div class="elder-msg-pic">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion">
+        </div>
+        <div class="emotional-text-group">
+            <div class="elder-kicker">Daily Joy &amp; Warmth</div>
+            <h2 class="elder-msg-title">Welcome Back, {{ patient.name }}!</h2>
+        </div>
+        <div class="emotional-stats-badge">
+            <span class="heart-pulse">❤️</span>
+            <small>Care Circle Active</small>
+            <strong>{% if stats.total_sessions > 0 %}{{ stats.total_sessions }} Gentle Sessions Completed{% else %}First Session Ready{% endif %}</strong>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Warm Personalized Hero -->
 <section class="home-hero">
     <div class="hero-copy">
-        <p class="eyebrow">Designed for elders and caregivers</p>
-        <h1>Care that remembers, so they feel <em>remembered.</em></h1>
-        <p class="lead">Gentle activities, familiar rhythms, and a simple family dashboard for the person you care for.</p>
+        <h1>
+            <span data-i18n="heroHeading">Care that remembers,</span><br>
+            <em data-i18n="heroHeadingEm">so they feel remembered.</em>
+        </h1>
+
         <div class="hero-actions">
             {% if patient %}
-                <a class="button button-primary" href="{{ url_for('games') }}">Explore activities <span aria-hidden="true">→</span></a>
-                <a class="text-link" href="{{ url_for('dashboard_home') }}">View progress <span aria-hidden="true">↗</span></a>
+                <a class="button button-primary hero-btn-large" href="{{ url_for('games') }}">
+                    <img src="{{ url_for('static', filename='img/real_patient.jpg') }}" alt="Patient" class="hero-btn-thumb">
+                    <span>Start Patient Memory Activity →</span>
+                </a>
+                <a class="button button-outline hero-btn-large" href="{{ url_for('doctor_report') }}">
+                    <img src="{{ url_for('static', filename='img/real_doctor.jpg') }}" alt="Doctor" class="hero-btn-thumb">
+                    <span>View Gameplay Progress Summary</span>
+                </a>
             {% else %}
-                <a class="button button-primary" href="{{ url_for('dashboard_gate') }}">Add a patient <span aria-hidden="true">→</span></a>
+                <a class="button button-primary hero-btn-large" href="{{ url_for('dashboard_gate') }}">
+                    + Register Patient to Begin →
+                </a>
             {% endif %}
         </div>
-        <div class="trust-line"><span class="trust-mark">✦</span> A calm, caregiver-first space for everyday progress</div>
+        <div class="trust-line">
+            <span class="trust-mark" aria-hidden="true">✦</span>
+            <span>Gentle memory activities with caregiver support • Multilingual interface and calming soundscapes • Family care loop</span>
+        </div>
     </div>
-    <div class="hero-visual" aria-label="A warm illustration of a family sharing time together">
-        <div class="sun-disc"></div>
-        <div class="family-illustration"><span>👵🏽</span><span>🌿</span><span>👧🏽</span></div>
-        <div class="floating-note note-top">Gentle, familiar moments</div>
-        <div class="floating-note note-bottom">Today can be a good day</div>
+
+    <div class="hero-visual" aria-label="A warm photograph of a family sharing peaceful memory care time together on a mountain terrace">
+        {% if patient and stats.has_played %}
+        <div class="floating-note note-top">Today: {{ stats.today_score }}% Accuracy</div>
+        <div class="floating-note note-bottom">🌱 {{ stats.weekly_trend }}</div>
+        {% elif patient %}
+        <div class="floating-note note-top">Care Circle: {{ patient.name }}</div>
+        <div class="floating-note note-bottom">🌱 Ready for first game</div>
+        {% else %}
+        <div class="floating-note note-top">SmritiSetu Cognitive Support</div>
+        <div class="floating-note note-bottom">🌱 Gentle Memory Care</div>
+        {% endif %}
     </div>
 </section>
 
-<section class="story-band">
-    <div class="story-intro"><p class="eyebrow">The care loop</p><h2>Small moments. Meaningful insight.</h2></div>
-    <div class="story-grid">
-        <article class="story-card"><span class="story-icon" aria-hidden="true">01</span><h3>Play together</h3><p>Large, friendly games that feel like a welcome activity, never a test.</p></article>
-        <article class="story-card"><span class="story-icon" aria-hidden="true">02</span><h3>Notice progress</h3><p>Scores and session history turn everyday play into a gentle care signal.</p></article>
-        <article class="story-card"><span class="story-icon" aria-hidden="true">03</span><h3>Stay connected</h3><p>Keep the family and doctor conversation grounded in what is changing.</p></article>
+<!-- Innovation: How SmritiSetu Works (Tab Block & Interactive Step Popup) -->
+<section class="how-it-works-tab-block" id="how-it-works" aria-labelledby="how-it-works-heading">
+    <div class="how-tab-inner">
+        <div class="how-tab-info">
+            <span class="how-tab-eyebrow" data-i18n="howItWorksEyebrow">Interactive Care Pathway</span>
+            <h2 id="how-it-works-heading" class="how-tab-title" data-i18n="howItWorksHeading">How SmritiSetu Works</h2>
+            <p class="how-tab-subheading" data-i18n="howItWorksSubheading">A simple journey from cognitive engagement to meaningful care insights.</p>
+        </div>
+        <div class="how-tab-action">
+            <button type="button" class="btn-how-it-works" id="open-how-it-works" onclick="openHowItWorksModal()" aria-haspopup="dialog" aria-controls="how-modal-overlay">
+                <span class="how-btn-icon" aria-hidden="true">💡</span>
+                <span class="how-btn-text">How It Works</span>
+                <span class="how-btn-arrow" aria-hidden="true">→</span>
+            </button>
+        </div>
     </div>
 </section>
 
-<section class="home-footer-note"><strong>Signed in as {{ caregiver_name }}.</strong> {% if patient %}Caring for {{ patient.name }}.{% else %}Register a patient to begin.{% endif %} <a href="{{ url_for('logout') }}">Sign out</a></section>
+<!-- Dementia-Friendly Step-by-Step Pop-up Cards Modal (Calm, Soft Contrast, No Bright Glare) -->
+<div class="how-modal-overlay" id="how-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="how-modal-step-title" style="display: none;" onclick="handleHowOverlayClick(event)">
+    <div class="how-modal-card">
+        <!-- Close Button -->
+        <button type="button" class="how-modal-close" onclick="closeHowItWorksModal()" aria-label="Close How It Works popup">✕</button>
+        
+        <!-- Header & Step Progress Indicator -->
+        <div class="how-modal-header">
+            <div class="how-modal-top-row">
+                <span class="how-step-badge" id="how-modal-step-badge">Step 1 of 5</span>
+            </div>
+            <!-- Progress Dots -->
+            <div class="how-step-dots" role="tablist" aria-label="Step progress indicator">
+                <button type="button" class="how-dot-btn active" onclick="goToHowStep(1)" aria-label="Go to Step 1" title="Step 1"></button>
+                <button type="button" class="how-dot-btn" onclick="goToHowStep(2)" aria-label="Go to Step 2" title="Step 2"></button>
+                <button type="button" class="how-dot-btn" onclick="goToHowStep(3)" aria-label="Go to Step 3" title="Step 3"></button>
+                <button type="button" class="how-dot-btn" onclick="goToHowStep(4)" aria-label="Go to Step 4" title="Step 4"></button>
+                <button type="button" class="how-dot-btn" onclick="goToHowStep(5)" aria-label="Go to Step 5" title="Step 5"></button>
+            </div>
+        </div>
+
+        <!-- Pop-up Step Cards Container -->
+        <div class="how-modal-body">
+            <!-- Step 1: Choose Language -->
+            <div class="how-step-slide active" id="how-step-1" data-step="1">
+                <div class="step-card-badge-row">
+                    <span class="step-num-badge">Step 1</span>
+                </div>
+                <div class="step-modal-icon-wrap" aria-hidden="true">
+                    <span class="step-modal-icon">🌐</span>
+                </div>
+                <h3 class="step-modal-title" id="how-modal-step-title" data-i18n="step1Title">Choose Language</h3>
+                <p class="step-modal-desc" data-i18n="step1Desc">
+                    Select English, Hindi, Assamese, Bengali, Khasi, Manipuri, or Mizo.
+                </p>
+                <div class="step-modal-highlight">
+                    <span class="tag-accent-dot" aria-hidden="true"></span>
+                    <span data-i18n="step1Highlight">Multilingual interface with selected North East Indian language support.</span>
+                </div>
+            </div>
+
+            <!-- Step 2: Play Memory Match -->
+            <div class="how-step-slide" id="how-step-2" data-step="2">
+                <div class="step-card-badge-row">
+                    <span class="step-num-badge">Step 2</span>
+                </div>
+                <div class="step-modal-icon-wrap" aria-hidden="true">
+                    <span class="step-modal-icon">🧩</span>
+                </div>
+                <h3 class="step-modal-title" data-i18n="step2Title">Memory Match Activity</h3>
+                <p class="step-modal-desc" data-i18n="step2Desc">
+                    Patient plays a gentle visual card-matching activity with culturally familiar everyday objects.
+                </p>
+                <div class="step-modal-highlight">
+                    <span class="tag-accent-dot" aria-hidden="true"></span>
+                    <span data-i18n="step2Highlight">Gentle memory activity with familiar cultural items.</span>
+                </div>
+            </div>
+
+            <!-- Step 3: Track Gameplay Metrics -->
+            <div class="how-step-slide" id="how-step-3" data-step="3">
+                <div class="step-card-badge-row">
+                    <span class="step-num-badge">Step 3</span>
+                </div>
+                <div class="step-modal-icon-wrap" aria-hidden="true">
+                    <span class="step-modal-icon">📊</span>
+                </div>
+                <h3 class="step-modal-title" data-i18n="step3Title">Gameplay Metric Tracking</h3>
+                <p class="step-modal-desc" data-i18n="step3Desc">
+                    Tracks game accuracy, response time, reaction time, and session duration strictly for that patient.
+                </p>
+                <div class="step-modal-highlight">
+                    <span class="tag-accent-dot" aria-hidden="true"></span>
+                    <span data-i18n="step3Highlight">Adaptive game difficulty adjusts automatically.</span>
+                </div>
+            </div>
+
+            <!-- Step 4: Caregiver Insights -->
+            <div class="how-step-slide" id="how-step-4" data-step="4">
+                <div class="step-card-badge-row">
+                    <span class="step-num-badge">Step 4</span>
+                </div>
+                <div class="step-modal-icon-wrap" aria-hidden="true">
+                    <span class="step-modal-icon">🏡</span>
+                </div>
+                <h3 class="step-modal-title" data-i18n="step4Title">Caregiver Progress Dashboard</h3>
+                <p class="step-modal-desc" data-i18n="step4Desc">
+                    Daily care routines, family memory notes, and session history remain isolated by patient ID.
+                </p>
+                <div class="step-modal-highlight">
+                    <span class="tag-accent-dot" aria-hidden="true"></span>
+                    <span data-i18n="step4Highlight">Patient-isolated data tracking.</span>
+                </div>
+            </div>
+
+            <!-- Step 5: Printable Gameplay Summary -->
+            <div class="how-step-slide" id="how-step-5" data-step="5">
+                <div class="step-card-badge-row">
+                    <span class="step-num-badge">Step 5</span>
+                </div>
+                <div class="step-modal-icon-wrap" aria-hidden="true">
+                    <span class="step-modal-icon">📋</span>
+                </div>
+                <h3 class="step-modal-title" data-i18n="step5Title">Printable Gameplay Summary</h3>
+                <p class="step-modal-desc" data-i18n="step5Desc">
+                    Gameplay progress metrics and session summaries are organized for caregiver review and consultations.
+                </p>
+                <div class="step-modal-highlight">
+                    <span class="tag-accent-dot" aria-hidden="true"></span>
+                    <span data-i18n="step5Highlight">Performance data only.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons: Back Arrow, Next Arrow, and I Got It on Last Step -->
+        <div class="how-modal-footer">
+            <button type="button" class="how-step-btn btn-back" id="how-step-prev" onclick="prevHowStep()" aria-label="Go to previous step">
+                <span class="btn-arrow" aria-hidden="true">←</span> <span>Back</span>
+            </button>
+            <div class="how-modal-footer-spacer"></div>
+            <button type="button" class="how-step-btn btn-next" id="how-step-next" onclick="nextHowStep()" aria-label="Go to next step">
+                <span>Next</span> <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="how-step-btn btn-got-it" id="how-step-got-it" onclick="closeHowItWorksModal()" style="display: none;" aria-label="I got it, close pop-up">
+                <span>✓ I Got It</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Innovation Section 1: Dementia Care Command Center (PDF Issue 1) -->
+<section class="command-center-section">
+    <div class="section-title-row">
+        <div>
+            <p class="eyebrow">Caregiver Dashboard &amp; Memory Portal</p>
+            <h2>Today's Gameplay Performance &amp; Daily Living Overview</h2>
+        </div>
+        {% if patient %}
+            <span class="patient-pill">Patient: <strong>{{ patient.name }}</strong> (UHID #{{ patient.id }})</span>
+        {% endif %}
+    </div>
+
+    <!-- Current MVP Note -->
+    <div class="mvp-badge-note" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; font-size: 13.5px; color: #166534; line-height: 1.5; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #16a34a; color: #ffffff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Current MVP</span>
+        <span>Current MVP: Memory Match, patient-specific progress tracking, caregiver routines and notes, multilingual interface, and printable gameplay summaries.</span>
+    </div>
+
+    <!-- Mandatory SIH 2026 In-App Performance Disclaimer -->
+    <div class="sih-disclaimer-banner" style="background: #fdfaf4; border: 1px solid #e5dccb; border-left: 5px solid #1e5548; border-radius: 12px; padding: 12px 18px; margin: 0 0 20px; color: #2d3748; font-size: 13.5px; line-height: 1.5;">
+        <strong>🛡️ Notice:</strong> This summary reflects in-app game performance only. It is not a medical assessment, diagnosis, or treatment recommendation.
+    </div>
+
+    <div class="command-grid">
+        <!-- Metric 1: Today's Memory Score -->
+        <div class="cmd-card metric-card">
+            <div class="cmd-card-header">
+                <span class="cmd-icon">🧠</span>
+                <span class="cmd-label">Latest Game Accuracy</span>
+            </div>
+            {% if patient and stats.has_played %}
+                <div class="score-display">
+                    <span class="score-num">{{ stats.today_score }}</span>
+                    <span class="score-max">%</span>
+                </div>
+                <div class="metric-trend up">
+                    <span>📈 {{ stats.weekly_trend }}</span>
+                    <small>Based on {{ stats.total_sessions }} completed session{{ 's' if stats.total_sessions != 1 else '' }}</small>
+                </div>
+                <p class="cmd-subtext">Visual memory recall &amp; matching accuracy.</p>
+            {% elif patient %}
+                <div class="score-display">
+                    <span class="score-num" style="color: #94a3b8;">—</span>
+                    <span class="score-max">%</span>
+                </div>
+                <div class="metric-trend" style="color: #64748b; margin-top: 6px;">
+                    <p style="font-size: 13.5px; color: #64748b; line-height: 1.4; margin: 0 0 8px;">
+                        No game activity yet. A progress summary will be available after the patient completes a game.
+                    </p>
+                </div>
+                <p class="cmd-subtext"><a href="{{ url_for('games') }}" class="text-link" style="color: #1b4d3e; font-weight: 700;">Start {{ patient.name }}'s first game →</a></p>
+            {% else %}
+                <div class="score-display">
+                    <span class="score-num" style="color: #94a3b8;">—</span>
+                    <span class="score-max">/ 100</span>
+                </div>
+                <div class="metric-trend" style="color: #64748b;">
+                    <span>👤 No patient registered</span>
+                    <small>Register patient to track game scores</small>
+                </div>
+                <p class="cmd-subtext"><a href="{{ url_for('dashboard_gate') }}" class="text-link" style="color: #1b4d3e; font-weight: 700;">Register patient to begin →</a></p>
+            {% endif %}
+        </div>
+
+        <!-- Metric 2: Gameplay Progress Summary -->
+        <div class="cmd-card status-card">
+            <div class="cmd-card-header">
+                <span class="cmd-icon">🌿</span>
+                <span class="cmd-label">Gameplay Progress Summary</span>
+            </div>
+            {% if patient and stats.has_played %}
+                <div class="status-badge-row">
+                    <span class="status-pill active">{{ stats.gameplay_status }}</span>
+                    <span class="risk-pill low">Avg {{ stats.avg_score }}</span>
+                </div>
+                <ul class="status-breakdown">
+                    <li><strong>Overall Accuracy:</strong> {{ stats.avg_score }}</li>
+                    <li><strong>Response Time:</strong> {{ stats.avg_response_time }}</li>
+                    <li><strong>Completed Games:</strong> {{ stats.total_sessions }}</li>
+                </ul>
+                <div class="cmd-footer-link">
+                    <a href="{{ url_for('doctor_report') }}">View Performance Overview ↗</a>
+                </div>
+            {% elif patient %}
+                <div class="status-badge-row">
+                    <span class="status-pill" style="background: #e2ece7; color: #1e3d30;">No games played yet</span>
+                </div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.4; margin: 12px 0 10px;">
+                    No game activity yet. A progress summary will be available after the patient completes a game.
+                </p>
+                <div class="cmd-footer-link">
+                    <a href="{{ url_for('games') }}">Start First Activity ↗</a>
+                </div>
+            {% else %}
+                <div class="status-badge-row">
+                    <span class="status-pill" style="background: #f1f5f9; color: #64748b;">Not Registered</span>
+                    <span class="risk-pill" style="background: #f8fafc; color: #94a3b8; border-color: #cbd5e1;">Awaiting Patient</span>
+                </div>
+                <ul class="status-breakdown">
+                    <li><strong>Status:</strong> Register patient to enable tracking</li>
+                </ul>
+                <div class="cmd-footer-link">
+                    <a href="{{ url_for('dashboard_gate') }}">+ Register Patient Profile ↗</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Metric 3: Medication & Daily Living Reminders (PDF Page 5) -->
+        <div class="cmd-card reminders-card">
+            <div class="cmd-card-header">
+                <span class="cmd-icon">⏰</span>
+                <span class="cmd-label">Daily Care &amp; Medication Routine</span>
+                {% if patient and reminders %}
+                <button type="button" class="btn-refresh-routine" onclick="refreshDailyRoutines()" title="Refresh Daily Routine block (resets daily tasks for today)">
+                    🔄 Refresh
+                </button>
+                {% endif %}
+            </div>
+            {% if patient %}
+                <ul class="reminder-list" id="home-routine-list">
+                    {% if reminders %}
+                        {% for r in reminders %}
+                            <li class="reminder-item {% if r.done %}is-done{% endif %}" id="routine-row-{{ r.id }}" data-id="{{ r.id }}">
+                                <label class="routine-check-wrap" for="chk-routine-{{ r.id }}" title="Mark as {% if r.done %}scheduled{% else %}completed{% endif %}">
+                                    <input type="checkbox" id="chk-routine-{{ r.id }}" class="routine-checkbox" data-id="{{ r.id }}" {% if r.done %}checked{% endif %} onchange="toggleRoutineCheck({{ r.id }}, this)">
+                                    <span class="custom-checkbox-ui" aria-hidden="true"></span>
+                                </label>
+                                <div class="rem-content">
+                                    <strong class="routine-title">{{ r.title }}</strong>
+                                    <small class="routine-meta">
+                                        <span class="routine-time">{{ r.time }}</span> • 
+                                        <span class="routine-status-label {% if r.done %}text-success{% else %}text-warn{% endif %}">
+                                            {% if r.done %}Completed{% else %}Scheduled{% endif %}
+                                        </span>
+                                        {% if r.frequency == 'daily' or not r.frequency %}
+                                        <span class="routine-freq-badge">Daily</span>
+                                        {% else %}
+                                        <span class="routine-freq-badge one-time">One-time</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="routine-actions">
+                                    <button type="button" class="btn-routine-edit" onclick="openEditRoutineModal({{ r.id }}, '{{ r.title|replace('\'', '\\\'') }}', '{{ r.time }}', '{{ r.category }}', '{{ r.frequency or 'daily' }}')" title="Edit routine">
+                                        ✎
+                                    </button>
+                                    <button type="button" class="btn-routine-delete" onclick="deleteRoutineItem({{ r.id }})" title="Remove routine">
+                                        ✕
+                                    </button>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <p class="notes-empty-state" id="routine-empty-state">No care routine scheduled yet. Add daily medications, hydration, or calming activities for {{ patient.name }}.</p>
+                    {% endif %}
+                </ul>
+                <button class="add-note-trigger" type="button" onclick="openAddRoutineModal()" style="margin-top: auto;">
+                    + Add Schedule / Routine Activity
+                </button>
+            {% else %}
+                <p class="notes-empty-state" style="padding: 24px 12px; color: #64748b; text-align: center;">
+                    Register a patient profile to manage daily medication and calming routine schedules.
+                </p>
+                <a href="{{ url_for('dashboard_gate') }}" class="add-note-trigger" style="text-align: center; text-decoration: none; display: block; margin-top: auto;">
+                    + Register Patient to Set Routines
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Metric 4: Family Care Circle Notes (PDF Page 5) -->
+        <div class="cmd-card notes-card">
+            <div class="cmd-card-header">
+                <span class="cmd-icon">💌</span>
+                <span class="cmd-label" data-i18n="familyMemoryNotesAnchors">Family Memory Notes &amp; Anchors</span>
+            </div>
+            <div class="notes-feed" id="home-notes-feed">
+                {% if patient and family_notes %}
+                    {% for note in family_notes %}
+                        <div class="note-bubble">
+                            <div class="note-header">
+                                <div class="note-author-group">
+                                    <strong>{{ note.author }}</strong>
+                                    {% if note.anchor_type %}
+                                    <span class="anchor-pill">{{ note.anchor_type }}</span>
+                                    {% endif %}
+                                </div>
+                                <small>{{ note.time }}</small>
+                            </div>
+                            <p class="note-body">"{{ note.text }}"</p>
+                        </div>
+                    {% endfor %}
+                {% elif patient %}
+                    <p class="notes-empty-state">No family memory notes recorded yet. Leave a gentle note for {{ patient.name }}.</p>
+                {% else %}
+                    <p class="notes-empty-state">Register a patient to begin recording family memory notes and anchors.</p>
+                {% endif %}
+            </div>
+            {% if patient %}
+                <button class="add-note-trigger" type="button" onclick="openMemoryNoteModal()">
+                    + Leave a Memory Note for Today
+                </button>
+            {% else %}
+                <a href="{{ url_for('dashboard_gate') }}" class="add-note-trigger" style="text-align: center; text-decoration: none; display: block;">
+                    + Register Patient to Add Notes
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Innovation Section 2: Distinct User Journeys (PDF Issue 3) -->
+<section class="user-journeys-section">
+    <div class="section-title-row">
+        <div>
+            <p class="eyebrow">Three Connected Care Journeys</p>
+            <h2>Built for Patient, Family, and Doctor</h2>
+        </div>
+    </div>
+
+    <div class="journeys-grid">
+        <!-- Journey 1: Patient -->
+        <div class="journey-card journey-patient">
+            <div class="journey-badge">01 • Patient Journey</div>
+            <div class="journey-photo-box">
+                <img src="{{ url_for('static', filename='img/real_patient.jpg') }}" alt="Patient Elder" class="journey-photo-img">
+            </div>
+            <h3>Calm Cognitive Play</h3>
+            <div class="journey-subline">For the Elderly User</div>
+            <p>Gentle, large-button memory games with high-contrast everyday objects. Designed to improve memory recall, attention span, and everyday object recognition through familiar activities.</p>
+            <ul class="journey-features">
+                <li>✓ Large, dementia-friendly picture matching</li>
+                <li>✓ Soothing North Eastern folk lullabies &amp; soundscapes</li>
+                <li>✓ Full support for 7 North Eastern regional languages</li>
+            </ul>
+            {% if patient %}
+                <a class="button button-primary" href="{{ url_for('game_matching', patient_id=patient.id) }}">
+                    Play Memory Match →
+                </a>
+            {% else %}
+                <a class="button button-primary" href="{{ url_for('dashboard_gate') }}">
+                    Register Patient →
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Journey 2: Family & Caregiver -->
+        <div class="journey-card journey-family">
+            <div class="journey-badge">02 • Family Care Circle</div>
+            <div class="journey-photo-box">
+                <img src="{{ url_for('static', filename='img/real_caregiver.jpg') }}" alt="Family Caregiver" class="journey-photo-img">
+            </div>
+            <h3>Daily Support Hub</h3>
+            <div class="journey-subline">For Caregivers &amp; Family Members</div>
+            <p>Empowers daughters, sons, and professional caregivers to keep medication on track, log daily mood observations, and observe gradual cognitive trends.</p>
+            <ul class="journey-features">
+                <li>✓ Medication &amp; hydration timing reminders</li>
+                <li>✓ Family members can add photos, notes, and important memories that patients can revisit during daily sessions.</li>
+                <li>✓ Easy session trends &amp; engagement history</li>
+            </ul>
+            <a class="button button-outline" href="{{ url_for('dashboard_home') }}">
+                Open Care Circle Dashboard →
+            </a>
+        </div>
+
+        <!-- Journey 3: Doctor & Consultations -->
+        <div class="journey-card journey-doctor">
+            <div class="journey-badge">03 • Progress Summary</div>
+            <div class="journey-photo-box">
+                <img src="{{ url_for('static', filename='img/real_doctor.jpg') }}" alt="Consultation Summary" class="journey-photo-img">
+            </div>
+            <h3>Gameplay Progress Summary</h3>
+            <div class="journey-subline">For Caregivers &amp; Healthcare Consultations</div>
+            <p>Summarizes in-app game sessions into clear, printable performance metrics for family record-keeping and consultations. Tracks session accuracy, response speed, and duration.</p>
+            <ul class="journey-features">
+                <li>✓ Session accuracy &amp; response time tracking</li>
+                <li>✓ Activity trend data available after multiple completed sessions</li>
+                <li>✓ Printable gameplay progress summary for family consultations</li>
+            </ul>
+            <a class="button button-primary doctor-btn" href="{{ url_for('doctor_report') }}">
+                View Gameplay Progress Summary →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer note -->
+<section class="home-footer-note">
+    <strong>Signed in as {{ caregiver_name }}.</strong>
+    {% if patient %}
+        Caring for <strong>{{ patient.name }}</strong> (Age: {{ patient.age }}, Gender: {{ patient.sex }}).
+    {% else %}
+        Register a patient profile to connect the care circle.
+    {% endif %}
+    <a href="{{ url_for('logout') }}" class="signout-link-red">
+        <svg class="power-btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align: -2px; margin-right: 4px;">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+        </svg>
+        <span data-i18n="signOut">Sign out</span>
+    </a>
+<!-- ── Add Daily Routine Modal ── -->
+<div id="modal-add-routine" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="title-add-routine" style="display: none;">
+    <div class="profile-modal-card">
+        <div class="modal-header-row">
+            <h3 id="title-add-routine" class="modal-title">
+                <span style="margin-right: 6px;">⏰</span> Add Care &amp; Medication Routine
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeAddRoutineModal()" aria-label="Close modal">✕</button>
+        </div>
+        <form id="form-add-routine" onsubmit="submitAddRoutine(event)">
+            <p id="add-routine-error" class="modal-error-msg"></p>
+            <div class="form-field">
+                <label for="routine-title">Activity or Medication Name</label>
+                <input type="text" id="routine-title" name="title" required placeholder="e.g. Morning Memory Medication">
+            </div>
+            <div class="form-row-2">
+                <div class="form-field">
+                    <label for="routine-time">Scheduled Time</label>
+                    <input type="text" id="routine-time" name="time" required placeholder="e.g. 9:00 AM">
+                </div>
+                <div class="form-field">
+                    <label for="routine-category">Category</label>
+                    <select id="routine-category" name="category">
+                        <option value="med">💊 Medication</option>
+                        <option value="water">🍵 Hydration &amp; Meals</option>
+                        <option value="game">🧩 Picture Memory Play</option>
+                        <option value="music">🎵 Music &amp; Calming</option>
+                        <option value="general">🌿 General Routine</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-field">
+                <label>Schedule Frequency</label>
+                <div class="routine-freq-selector">
+                    <label class="freq-radio-label">
+                        <input type="radio" name="frequency" value="daily" checked>
+                        <span><strong>Daily Routine</strong> (Repeats everyday, resets on refresh)</span>
+                    </label>
+                    <label class="freq-radio-label">
+                        <input type="radio" name="frequency" value="one_time">
+                        <span><strong>One-Time Task</strong> (Today only)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions-row">
+                <button type="submit" id="btn-save-routine" class="btn-modal-save">Save Routine Schedule</button>
+                <button type="button" class="btn-modal-cancel" onclick="closeAddRoutineModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Edit Daily Routine Modal ── -->
+<div id="modal-edit-routine" class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="title-edit-routine" style="display: none;">
+    <div class="profile-modal-card">
+        <div class="modal-header-row">
+            <h3 id="title-edit-routine" class="modal-title">
+                <span style="margin-right: 6px;">✎</span> Edit Routine Activity
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeEditRoutineModal()" aria-label="Close modal">✕</button>
+        </div>
+        <form id="form-edit-routine" onsubmit="submitEditRoutine(event)">
+            <input type="hidden" id="edit-routine-id" name="id">
+            <p id="edit-routine-error" class="modal-error-msg"></p>
+            <div class="form-field">
+                <label for="edit-routine-title">Activity or Medication Name</label>
+                <input type="text" id="edit-routine-title" name="title" required>
+            </div>
+            <div class="form-row-2">
+                <div class="form-field">
+                    <label for="edit-routine-time">Scheduled Time</label>
+                    <input type="text" id="edit-routine-time" name="time" required>
+                </div>
+                <div class="form-field">
+                    <label for="edit-routine-category">Category</label>
+                    <select id="edit-routine-category" name="category">
+                        <option value="med">💊 Medication</option>
+                        <option value="water">🍵 Hydration &amp; Meals</option>
+                        <option value="game">🧩 Picture Memory Play</option>
+                        <option value="music">🎵 Music &amp; Calming</option>
+                        <option value="general">🌿 General Routine</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-field">
+                <label>Schedule Frequency</label>
+                <div class="routine-freq-selector">
+                    <label class="freq-radio-label">
+                        <input type="radio" name="edit_frequency" id="edit-freq-daily" value="daily">
+                        <span><strong>Daily Routine</strong> (Repeats everyday)</span>
+                    </label>
+                    <label class="freq-radio-label">
+                        <input type="radio" name="edit_frequency" id="edit-freq-onetime" value="one_time">
+                        <span><strong>One-Time Task</strong> (Today only)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions-row">
+                <button type="submit" id="btn-update-routine" class="btn-modal-save">Update Routine</button>
+                <button type="button" class="btn-routine-delete-modal" onclick="deleteCurrentEditRoutine()">Remove Routine</button>
+                <button type="button" class="btn-modal-cancel" onclick="closeEditRoutineModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* How SmritiSetu Works Modal Interaction */
+    let currentHowStep = 1;
+    const totalHowSteps = 5;
+
+    function openHowItWorksModal() {
+        currentHowStep = 1;
+        renderHowStep();
+        const modal = document.getElementById('how-modal-overlay');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Subtle transition without harsh bright flash
+            requestAnimationFrame(() => {
+                modal.classList.add('is-open');
+            });
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeHowItWorksModal() {
+        const modal = document.getElementById('how-modal-overlay');
+        if (modal) {
+            modal.classList.remove('is-open');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 220);
+        }
+    }
+
+    function handleHowOverlayClick(event) {
+        if (event.target.id === 'how-modal-overlay') {
+            closeHowItWorksModal();
+        }
+    }
+
+    function nextHowStep() {
+        if (currentHowStep < totalHowSteps) {
+            currentHowStep++;
+            renderHowStep();
+        }
+    }
+
+    function prevHowStep() {
+        if (currentHowStep > 1) {
+            currentHowStep--;
+            renderHowStep();
+        }
+    }
+
+    function goToHowStep(step) {
+        if (step >= 1 && step <= totalHowSteps) {
+            currentHowStep = step;
+            renderHowStep();
+        }
+    }
+
+    function renderHowStep() {
+        // Step count pill
+        const badge = document.getElementById('how-modal-step-badge');
+        if (badge) {
+            badge.textContent = `Step ${currentHowStep} of ${totalHowSteps}`;
+        }
+
+        // Indicator dots
+        const dots = document.querySelectorAll('.how-dot-btn');
+        dots.forEach((dot, idx) => {
+            if (idx + 1 === currentHowStep) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Cards switching
+        for (let i = 1; i <= totalHowSteps; i++) {
+            const card = document.getElementById(`how-step-${i}`);
+            if (card) {
+                if (i === currentHowStep) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            }
+        }
+
+        // Navigation button logic
+        const prevBtn = document.getElementById('how-step-prev');
+        const nextBtn = document.getElementById('how-step-next');
+        const gotItBtn = document.getElementById('how-step-got-it');
+
+        if (prevBtn) {
+            if (currentHowStep === 1) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('disabled');
+            }
+        }
+
+        if (currentHowStep === totalHowSteps) {
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (gotItBtn) gotItBtn.style.display = 'inline-flex';
+        } else {
+            if (nextBtn) nextBtn.style.display = 'inline-flex';
+            if (gotItBtn) gotItBtn.style.display = 'none';
+        }
+    }
+
+    // Support Escape key to close popup
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('how-modal-overlay');
+            if (modal && modal.classList.contains('is-open')) {
+                closeHowItWorksModal();
+            }
+        }
+    });
+</script>
+
 {% endblock %}

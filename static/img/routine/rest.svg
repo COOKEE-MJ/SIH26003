@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <!-- Background -->
+  <circle cx="80" cy="80" r="74" fill="#fffcf5" stroke="#c96b3c" stroke-width="3.5"/>
+  <!-- Chair seat -->
+  <rect x="34" y="88" width="70" height="12" rx="6" fill="none" stroke="#1e5548" stroke-width="3"/>
+  <!-- Chair back (tall) -->
+  <rect x="86" y="44" width="18" height="56" rx="8" fill="none" stroke="#1e5548" stroke-width="3"/>
+  <!-- Left front leg -->
+  <line x1="40" y1="100" x2="36" y2="122" stroke="#1e5548" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Right front leg -->
+  <line x1="98" y1="100" x2="94" y2="122" stroke="#1e5548" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Left arm of chair -->
+  <rect x="30" y="76" width="14" height="8" rx="4" fill="none" stroke="#1e5548" stroke-width="2.5"/>
+  <!-- Right arm of chair (hidden behind back) -->
+  <rect x="94" y="76" width="14" height="8" rx="4" fill="none" stroke="#1e5548" stroke-width="2.5"/>
+  <!-- Seat cushion line -->
+  <line x1="36" y1="94" x2="102" y2="94" stroke="#c96b3c" stroke-width="2" stroke-dasharray="4 3" opacity="0.7"/>
+  <!-- Zzz rest dots above -->
+  <text x="50" y="68" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#1e5548" opacity="0.45">z z</text>
+  <!-- Label banner -->
+  <rect x="22" y="128" width="116" height="24" rx="12" fill="#1e5548"/>
+  <text x="80" y="144" font-family="Segoe UI, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">REST</text>
+</svg>
+

@@ -1,97 +1,627 @@
 {% extends "base.html" %}
+{% block title %}Memory Match | SmritiSetu{% endblock %}
+{% block body_class %}page-game-matching{% endblock %}
+{% block gov_top_bar %}{% endblock %}
 
-{% block title %}Memory Matching Game{% endblock %}
+{% block head %}
+<style>
+/* ── Celebration buttons — scoped styles for this page ── */
+.celebration-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Base button */
+.cel-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 18px 32px;
+    border-radius: 999px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    line-height: 1;
+}
+.cel-btn:hover  { transform: translateY(-3px); }
+.cel-btn:active { transform: translateY(1px); }
+
+/* 🚀 Next Round — dark forest green, primary CTA */
+.cel-btn-primary {
+    background: linear-gradient(135deg, #1e5548 0%, #2a7060 100%);
+    color: #ffffff !important;
+    box-shadow: 0 8px 24px rgba(30,85,72,0.38);
+    font-size: 20px;
+    padding: 20px 38px;
+}
+.cel-btn-primary:hover {
+    background: linear-gradient(135deg, #164039 0%, #1e5548 100%);
+    box-shadow: 0 14px 32px rgba(30,85,72,0.48);
+    color: #ffffff !important;
+}
+
+/* 🔁 Play Again — outlined, forest green border */
+.cel-btn-secondary {
+    background: transparent;
+    color: #1e5548 !important;
+    border: 3px solid #1e5548;
+    font-size: 18px;
+}
+.cel-btn-secondary:hover {
+    background: rgba(30,85,72,0.08);
+    box-shadow: 0 6px 16px rgba(30,85,72,0.14);
+}
+
+/* 🎮 More Games — warm parchment */
+.cel-btn-games {
+    background: #f5ede0;
+    color: #5a4a3a !important;
+    border: 2px solid #d9c4a3;
+    font-size: 16px;
+    padding: 15px 26px;
+}
+.cel-btn-games:hover {
+    background: #eddfc8;
+    border-color: #c9a87c;
+    color: #3d2e1e !important;
+    box-shadow: 0 4px 12px rgba(100,70,30,0.15);
+}
+
+/* Celebration card improvements */
+.celebration-card {
+    padding: 44px 36px !important;
+    max-width: 500px !important;
+    width: calc(100% - 32px) !important;
+    text-align: center;
+}
+.cel-mascot-face { font-size: 72px; display: block; margin-bottom: 6px; line-height: 1; }
+.cel-title {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    color: #1e5548;
+    margin: 0 0 8px;
+    font-family: Georgia, serif;
+}
+.cel-body {
+    font-size: clamp(17px, 3vw, 21px);
+    color: #3a4a3d;
+    margin-bottom: 22px;
+    line-height: 1.45;
+}
+
+/* Mobile: stack buttons */
+@media (max-width: 540px) {
+    .celebration-actions { flex-direction: column; align-items: stretch; }
+    .cel-btn { width: 100%; font-size: 18px; padding: 18px 20px; }
+    .cel-btn-primary { font-size: 19px; padding: 20px 20px; }
+    .celebration-card { padding: 30px 20px !important; }
+}
+
+/* ── Container & Strict Board Containment ── */
+.game-container {
+    max-width: 820px !important;
+    width: 100% !important;
+    padding: 24px 22px 36px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    margin: 20px auto !important;
+}
+
+.game-header {
+    margin: 0 auto 16px !important;
+    text-align: center;
+}
+.game-header .game-title {
+    margin-bottom: 2px !important;
+}
+
+/* Stage bar: stats on left, girl companion on right closer to cards */
+.game-stage-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 680px;
+    margin: 0 auto 18px;
+    padding: 0 4px;
+}
+
+.game-info {
+    display: flex !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+.info-stat-card {
+    padding: 10px 16px !important;
+    min-width: 90px !important;
+    background: #fffcf5 !important;
+    border: 1.5px solid #dfc6a3 !important;
+    border-radius: 14px !important;
+    text-align: center;
+}
+
+.info-stat-card .stat-val {
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+    color: #1e5548 !important;
+}
+
+.info-stat-card .stat-lbl {
+    font-size: 13px !important;
+    font-weight: 700;
+}
+
+/* Girl mascot right next to cards */
+.mascot-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    flex: 1;
+}
+
+.mascot-figure {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 118px;
+    height: 160px;
+}
+
+.mascot-girl-img {
+    height: 160px !important;
+    width: 118px !important;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.15));
+    transition: transform 0.22s ease-out;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.mascot-girl-img.pop-anim {
+    transform: scale(1.04);
+}
+
+.mascot-bubble {
+    background: #fffcf5;
+    border: 2.5px solid #dfb77e;
+    border-radius: 20px 20px 20px 6px;
+    padding: 12px 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    max-width: 240px;
+    min-width: 150px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+}
+.mascot-bubble p {
+    font-size: 19px !important;
+    font-weight: 700;
+    color: #1e5548;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* ── Game Board Containment (Never overflows) ── */
+.game-board {
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    padding: 4px !important;
+    justify-content: center !important;
+}
+
+/* Memory Cards: perfectly proportional square blocks */
+.memory-card {
+    aspect-ratio: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: unset !important;
+    max-width: 115px !important;
+    max-height: 115px !important;
+    margin: 0 auto !important;
+    border: 5px solid #fffdf8 !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 5px 12px rgba(48,75,61,0.14) !important;
+    cursor: pointer;
+}
+
+.card-back {
+    font-size: clamp(24px, 4vw, 36px) !important;
+    line-height: 1;
+}
+
+.card-front {
+    font-size: clamp(32px, 5.5vw, 50px) !important;
+    line-height: 1;
+}
+
+.cel-mascot-box {
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: center;
+}
+.cel-mascot-girl {
+    height: 210px !important;
+    width: auto !important;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 22px rgba(0,0,0,0.22));
+    animation: gentleWiggle 2.5s infinite ease-in-out;
+}
+@keyframes gentleWiggle {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@media (max-width: 640px) {
+    .game-stage-bar {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 12px;
+    }
+    .mascot-row {
+        justify-content: center !important;
+    }
+    .mascot-figure {
+        width: 95px !important;
+        height: 130px !important;
+    }
+    .mascot-girl-img {
+        width: 95px !important;
+        height: 130px !important;
+    }
+    .cel-mascot-girl {
+        height: 170px !important;
+    }
+    .game-board {
+        gap: 8px !important;
+        padding: 0 !important;
+    }
+    .memory-card {
+        border-width: 4px !important;
+        border-radius: 12px !important;
+    }
+    .btn-game-exit {
+        padding: 10px 18px !important;
+        font-size: 15px !important;
+    }
+    .btn-game-exit-lg {
+        width: 100% !important;
+        max-width: 360px !important;
+        font-size: 18px !important;
+        padding: 16px 24px !important;
+    }
+}
+
+/* ─── Big Exit Button & Modal Styles ─── */
+.game-header-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 6px;
+    gap: 12px;
+}
+
+.btn-game-exit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff8f0;
+    color: #9c431b;
+    border: 2.5px solid #c96b3c;
+    border-radius: 999px;
+    padding: 11px 22px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(201, 107, 60, 0.18);
+    transition: all 0.2s ease;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.btn-game-exit:hover {
+    background: #fdf0e0;
+    border-color: #b55729;
+    color: #823412;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(201, 107, 60, 0.28);
+}
+
+.btn-game-exit:active {
+    transform: translateY(1px);
+}
+
+.exit-btn-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Big Centered Exit Action */
+.game-exit-footer {
+    margin: 26px auto 6px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.btn-game-exit-lg {
+    font-size: 19px;
+    padding: 17px 38px;
+    min-height: 56px;
+    border-width: 3px;
+    background: #fdf4ea;
+    box-shadow: 0 8px 22px rgba(201, 107, 60, 0.22);
+}
+
+.btn-game-exit-lg:hover {
+    background: #fbebd6;
+    box-shadow: 0 12px 28px rgba(201, 107, 60, 0.32);
+}
+
+/* Exit Confirmation Modal */
+.exit-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(25, 40, 34, 0.72);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.exit-modal.is-visible {
+    display: flex;
+    animation: fadeIn 0.22s ease-out;
+}
+
+.exit-modal-card {
+    background: #fffdf9;
+    border: 3px solid #dfb77e;
+    border-radius: 28px;
+    padding: 38px 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(25, 40, 34, 0.35);
+    animation: zoomIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.exit-mascot-box {
+    margin-bottom: 8px;
+}
+
+.exit-mascot-img {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(48, 75, 61, 0.2));
+}
+
+.exit-modal-title {
+    font-family: Georgia, serif;
+    font-size: clamp(24px, 4.5vw, 30px);
+    color: #1e5548;
+    margin: 8px 0 10px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.exit-modal-desc {
+    font-size: clamp(16px, 3vw, 19px);
+    color: #4a483e;
+    line-height: 1.5;
+    margin: 0 0 26px;
+}
+
+.exit-modal-desc strong {
+    color: #c96b3c;
+    font-size: 1.15em;
+}
+
+.exit-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.cel-btn-exit-confirm {
+    background: linear-gradient(135deg, #c95a3f 0%, #b3452b 100%);
+    color: #ffffff !important;
+    box-shadow: 0 8px 24px rgba(179, 69, 43, 0.35);
+    font-size: 19px;
+    padding: 18px 32px;
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cel-btn-exit-confirm:hover {
+    background: linear-gradient(135deg, #a83b23 0%, #8f2f19 100%);
+    box-shadow: 0 12px 28px rgba(179, 69, 43, 0.45);
+    transform: translateY(-2px);
+    color: #ffffff !important;
+}
+
+.cel-btn-exit-cancel {
+    background: transparent;
+    color: #1e5548 !important;
+    border: 2.5px solid #1e5548;
+    font-size: 18px;
+    padding: 16px 28px;
+    width: 100%;
+    border-radius: 999px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cel-btn-exit-cancel:hover {
+    background: rgba(30, 85, 72, 0.08);
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="game-container screen-patient">
 
-<div class="game-container">
-
+    <!-- ── 1. Text Header with Level & Top Exit Button ── -->
     <div class="game-header">
-        <p class="eyebrow">A familiar picture activity</p>
-        <h2 data-i18n="memoryMatch">Memory Matching</h2>
-
-        <p>
-            Welcome, <strong>{{ patient.name }}</strong>
-        </p>
-
-        <p class="difficulty">
-            Difficulty Level: <strong>{{ difficulty }}</strong>
-        </p>
+        <div class="game-header-top-bar">
+            <p class="game-level-badge">🧠 Level <span class="js-level-num">{{ difficulty }}</span></p>
+            <button type="button" id="btn-top-exit" class="btn-game-exit" onclick="smritiGame.requestExit()" aria-label="Exit Game">
+                <span class="exit-btn-icon">🚪</span>
+                <span class="exit-btn-text" data-i18n="exitGame">Exit Game</span>
+            </button>
+        </div>
+        <h1 class="game-title" data-i18n="memoryMatch">Memory Match</h1>
     </div>
 
-    <div class="game-info">
-        <div>
-            <span data-i18n="score">Score</span>
-            <strong id="score">0</strong>
+    <!-- ── 2. Stage Bar: Stats & Girl Mascot Closer to Cards ── -->
+    <div class="game-stage-bar">
+        <div class="game-info">
+            <div class="info-stat-card">
+                <span class="stat-lbl" data-i18n="score">Score</span>
+                <strong id="score" class="stat-val">0</strong>
+            </div>
+            <div class="info-stat-card">
+                <span class="stat-lbl" data-i18n="moves">Moves</span>
+                <strong id="moves" class="stat-val">0</strong>
+            </div>
         </div>
 
-        <div>
-            <span data-i18n="moves">Moves</span>
-            <strong id="moves">0</strong>
+        <div class="mascot-row notranslate" id="mascot" data-no-translate="true">
+            <div class="mascot-figure">
+                <img id="mascot-img"
+                     class="mascot-girl-img"
+                     src="{{ url_for('static', filename='img/mascot/smiling.png') }}"
+                     alt="Companion Girl"
+                     width="118"
+                     height="160">
+            </div>
+            <div class="mascot-bubble notranslate" data-no-translate="true">
+                <p id="mascot-msg" class="notranslate" data-no-translate="true">Let's play! 😊</p>
+            </div>
         </div>
     </div>
 
-    <p class="game-instruction">
-        <span data-i18n="findPairs">Find the picture pairs</span> Take your time and remember the positions.
-    </p>
-
-    <!-- Memory Cards -->
-        <div id="game-board" class="game-board"
-            data-patient-id="{{ patient.id }}"
-            data-difficulty="{{ difficulty }}">
-
-        <button class="memory-card" data-card="1" aria-label="Reveal card 1">
-            <span>?</span><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=82" alt="Mountain landscape">
-        </button>
-
-        <button class="memory-card" data-card="2" aria-label="Reveal card 2">
-            <span>?</span><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&q=82" alt="Green leaves in sunlight">
-        </button>
-
-        <button class="memory-card" data-card="3" aria-label="Reveal card 3">
-            <span>?</span><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=400&q=82" alt="Warm architecture">
-        </button>
-
-        <button class="memory-card" data-card="4" aria-label="Reveal card 4">
-            <span>?</span>
-            <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=82" alt="Green hillside">
-        </button>
-
-        <button class="memory-card" data-card="1" aria-label="Reveal card 1">
-            <span>?</span><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=82" alt="Mountain landscape">
-        </button>
-
-        <button class="memory-card" data-card="2" aria-label="Reveal card 2">
-            <span>?</span><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&q=82" alt="Green leaves in sunlight">
-        </button>
-
-        <button class="memory-card" data-card="3" aria-label="Reveal card 3">
-            <span>?</span><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=400&q=82" alt="Warm architecture">
-        </button>
-
-        <button class="memory-card" data-card="4" aria-label="Reveal card 4">
-            <span>?</span><img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=82" alt="Green hillside">
-        </button>
-
+    <!-- ── 3. Game Board (Strictly Contained within Game Block) ── -->
+    <div id="game-board" class="game-board"
+         data-patient-id="{{ patient.id }}"
+         data-difficulty="{{ difficulty }}">
     </div>
 
     <p id="game-message" class="game-message"></p>
 
+    <!-- ── 4. Large Bottom Exit Action (Prominent for Patients) ── -->
+    <div class="game-exit-footer">
+        <button type="button" id="btn-bottom-exit" class="btn-game-exit btn-game-exit-lg" onclick="smritiGame.requestExit()" aria-label="Exit Game and Save Score">
+            <span class="exit-btn-icon">🚪</span>
+            <span class="exit-btn-text" data-i18n="exitGameLg">Exit &amp; Save Progress</span>
+        </button>
+    </div>
+
 </div>
 
-<div id="celebration" class="celebration" role="status" aria-live="polite">
-    <div class="celebration-card">
-        <div class="celebration-icon">✦</div>
-        <h2 data-i18n="wonderful">Wonderful work</h2>
-        <p>You found every pair. That was lovely work.</p>
-        <button class="button button-primary" type="button" onclick="closeCelebration()" data-i18n="continue">Continue</button>
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- Exit & Save Confirmation Modal                              -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title">
+    <div class="exit-modal-card">
+        <div class="exit-mascot-box">
+            <img src="{{ url_for('static', filename='img/mascot/thoughtful.png') }}" alt="Companion Girl" class="exit-mascot-img">
+        </div>
+        <h2 id="exit-modal-title" class="exit-modal-title" data-i18n="exitPromptTitle">Would you like to stop for now?</h2>
+        <p id="exit-modal-desc" class="exit-modal-desc">
+            Your progress of <strong id="exit-pairs-matched">0</strong> pairs will be safely saved.
+        </p>
+
+        <div class="exit-modal-actions">
+            <button type="button" id="btn-confirm-exit" class="cel-btn cel-btn-exit-confirm" onclick="smritiGame.confirmExit()">
+                <span id="txt-confirm-exit" data-i18n="btnConfirmExit">🚪 Yes, Exit &amp; Save</span>
+            </button>
+            <button type="button" id="btn-cancel-exit" class="cel-btn cel-btn-exit-cancel" onclick="smritiGame.cancelExit()">
+                <span id="txt-cancel-exit" data-i18n="btnCancelExit">🌸 Keep Playing</span>
+            </button>
+        </div>
     </div>
 </div>
 
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- Celebration Modal                                          -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div id="celebration" class="celebration" role="status" aria-live="polite">
+    <div class="celebration-card">
+
+        <!-- Cheerful Mascot in modal -->
+        <div class="cel-mascot-box">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion Girl" class="cel-mascot-girl">
+        </div>
+        <h2 class="cel-title" data-i18n="celWellDone">Well done! 🌟</h2>
+
+        <div class="celebration-stats-pill">
+            <span id="celebration-stats-text" data-i18n="celAllMatched">✨ All Pairs Matched</span>
+            <span data-i18n="celScoreSaved">📈 Score Saved</span>
+        </div>
+
+        <!-- 3 big elderly-friendly buttons -->
+        <div class="celebration-actions">
+            <button id="btn-play-next"
+                    class="cel-btn cel-btn-primary"
+                    onclick="smritiGame.playNext()">
+                <span id="txt-play-next" data-i18n="btnNextRound">🚀 Next Round</span>
+            </button>
+            <button id="btn-play-again"
+                    class="cel-btn cel-btn-secondary"
+                    onclick="smritiGame.playAgain()">
+                <span id="txt-play-again" data-i18n="btnPlayAgain">🔁 Play Again</span>
+            </button>
+            <a class="cel-btn cel-btn-games"
+               href="{{ url_for('games') }}">
+                <span id="txt-more-games" data-i18n="btnMoreGames">🎮 More Games</span>
+            </a>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-
 <script src="{{ url_for('static', filename='js/matching.js') }}"></script>
-
 {% endblock %}

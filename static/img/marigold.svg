@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <radialGradient id="flowerBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8eb"/>
+      <stop offset="100%" stop-color="#faedd2"/>
+    </radialGradient>
+    <radialGradient id="petalGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd026"/>
+      <stop offset="65%" stop-color="#f98e04"/>
+      <stop offset="100%" stop-color="#d65700"/>
+    </radialGradient>
+  </defs>
+  <!-- High contrast clean border -->
+  <circle cx="80" cy="80" r="74" fill="url(#flowerBg)" stroke="#d97736" stroke-width="4"/>
+
+  <!-- Green Leaves behind -->
+  <path d="M42 54 C30 70 38 88 56 82 C56 68 48 56 42 54 Z" fill="#4d7c43" stroke="#2c5225" stroke-width="2.5"/>
+  <path d="M118 54 C130 70 122 88 104 82 C104 68 112 56 118 54 Z" fill="#4d7c43" stroke="#2c5225" stroke-width="2.5"/>
+  <path d="M80 114 C80 126 72 134 64 136 C64 124 74 116 80 114 Z" fill="#4d7c43" stroke="#2c5225" stroke-width="2.5"/>
+
+  <!-- Outer Marigold Petals (Layer 1) -->
+  <g fill="url(#petalGrad)" stroke="#aa4400" stroke-width="2">
+    <circle cx="80" cy="40" r="14"/>
+    <circle cx="106" cy="48" r="14"/>
+    <circle cx="120" cy="72" r="14"/>
+    <circle cx="114" cy="98" r="14"/>
+    <circle cx="92" cy="114" r="14"/>
+    <circle cx="68" cy="114" r="14"/>
+    <circle cx="46" cy="98" r="14"/>
+    <circle cx="40" cy="72" r="14"/>
+    <circle cx="54" cy="48" r="14"/>
+  </g>
+
+  <!-- Inner Petals (Layer 2) -->
+  <g fill="#ffba08" stroke="#d65700" stroke-width="2">
+    <circle cx="80" cy="52" r="11"/>
+    <circle cx="98" cy="60" r="11"/>
+    <circle cx="104" cy="78" r="11"/>
+    <circle cx="94" cy="96" r="11"/>
+    <circle cx="76" cy="100" r="11"/>
+    <circle cx="62" cy="88" r="11"/>
+    <circle cx="58" cy="70" r="11"/>
+    <circle cx="68" cy="56" r="11"/>
+  </g>
+
+  <!-- Marigold Center -->
+  <circle cx="80" cy="76" r="18" fill="#e85d04" stroke="#9d0208" stroke-width="2.5"/>
+  <circle cx="80" cy="76" r="9" fill="#ffdd00"/>
+
+  <!-- Dementia-friendly label -->
+  <rect x="25" y="128" width="110" height="24" rx="12" fill="#2d4a3e"/>
+  <text x="80" y="144" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">GENDA PHOOL</text>
+</svg>
+

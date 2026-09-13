@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <radialGradient id="lampBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8e8"/>
+      <stop offset="100%" stop-color="#fcedd0"/>
+    </radialGradient>
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ff3300"/>
+      <stop offset="40%" stop-color="#ff9900"/>
+      <stop offset="85%" stop-color="#ffea00"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <radialGradient id="flameGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffdd77" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffaa00" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="clayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4683b"/>
+      <stop offset="100%" stop-color="#8a300d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Clean background circle -->
+  <circle cx="80" cy="80" r="74" fill="url(#lampBg)" stroke="#c96b3c" stroke-width="4"/>
+
+  <!-- Flame Radiant Glow -->
+  <circle cx="80" cy="46" r="32" fill="url(#flameGlow)"/>
+
+  <!-- Outer Flame -->
+  <path d="M80 18 C94 36 96 52 88 64 C80 72 72 68 68 60 C64 48 72 32 80 18 Z" fill="url(#flameGrad)" stroke="#d93800" stroke-width="2"/>
+  
+  <!-- Inner Flame Core -->
+  <path d="M80 32 C87 44 86 54 82 58 C78 62 75 60 74 54 C73 48 76 38 80 32 Z" fill="#ffffff"/>
+
+  <!-- Diya Base / Clay Pot -->
+  <!-- Base Stand -->
+  <ellipse cx="80" cy="116" rx="28" ry="7" fill="#752a0c" stroke="#521c07" stroke-width="2"/>
+
+  <!-- Diya Bowl Body -->
+  <path d="M30 84 C34 114 62 120 80 120 C98 120 126 114 130 84 C116 94 98 94 80 94 C62 94 44 94 30 84 Z" fill="url(#clayGrad)" stroke="#521c07" stroke-width="3.5"/>
+
+  <!-- Diya Rim -->
+  <ellipse cx="80" cy="84" rx="50" ry="14" fill="#bd5226" stroke="#521c07" stroke-width="3"/>
+  <ellipse cx="80" cy="84" rx="42" ry="9" fill="#802804"/>
+  <!-- Glowing Oil reservoir -->
+  <ellipse cx="80" cy="84" rx="36" ry="6" fill="#fca311" opacity="0.9"/>
+
+  <!-- Traditional Decorative Dots on Diya -->
+  <circle cx="56" cy="98" r="3" fill="#ffeaa7"/>
+  <circle cx="68" cy="103" r="3.5" fill="#ffeaa7"/>
+  <circle cx="80" cy="105" r="4" fill="#ffeaa7"/>
+  <circle cx="92" cy="103" r="3.5" fill="#ffeaa7"/>
+  <circle cx="104" cy="98" r="3" fill="#ffeaa7"/>
+
+  <!-- Dementia-friendly label -->
+  <rect x="25" y="128" width="110" height="24" rx="12" fill="#2d4a3e"/>
+  <text x="80" y="144" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">MITTI KA DIYA</text>
+</svg>
+

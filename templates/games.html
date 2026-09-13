@@ -1,27 +1,214 @@
 {% extends "base.html" %}
-
 {% block title %}Memory Games | SmritiSetu{% endblock %}
-
+{% block body_class %}page-games{% endblock %}
+{% block gov_top_bar %}{% endblock %}
 {% block content %}
-<section class="games-heading">
-    <a class="back-link" href="{{ url_for('home') }}">← Back home</a>
-    <p class="eyebrow">A little practice, a little joy</p>
-    <h1 data-i18n="chooseGame">Choose a gentle game</h1>
-    <p class="lead" data-i18n="takeTime">Take your time. There is no rush and no wrong way to begin.</p>
+<div class="screen-patient">
+
+<section class="games-heading" style="padding: 10px 0 16px;">
+    <a class="back-link" href="{{ url_for('home') }}" data-i18n="backHome" style="margin-bottom: 0;">← Back home</a>
 </section>
+
+<!-- Small size girl mascot with speech box above the game tabs -->
+<section class="games-mascot-section" aria-label="Mascot Greeting &amp; Encouragement">
+    <div class="games-mascot-card" id="games-mascot-card" role="region" aria-live="polite">
+        <div class="games-mascot-figure">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion Girl" class="games-mascot-img">
+        </div>
+        <div class="games-mascot-bubble">
+            <div class="games-bubble-kicker" id="games-bubble-kicker">🌸 Friendly Companion</div>
+            <p class="games-bubble-message" id="games-bubble-msg">
+                {% if patient and patient.name %}
+                "Namaste {{ patient.name }}! Take your time, relax, and let's enjoy a gentle activity together! You are doing wonderfully. 💛"
+                {% else %}
+                "Namaste! Take your time, relax, and let's enjoy a gentle activity together! You are doing wonderfully. 💛"
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</section>
+
 <section class="game-choice-grid">
+    <!-- Game 1: Memory Matching (Active MVP Activity) -->
     <a class="game-choice game-choice-match" href="{{ url_for('game_matching', patient_id=patient.id) }}">
-        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=82" alt="Warm green hillside landscape"></span><span class="game-choice-label" data-i18n="memoryMatch">Memory Match</span>
-        <span class="game-choice-copy">Find the pairs at your own pace.</span><span class="game-choice-arrow">→</span>
+        <div class="game-skill-tag">
+            <span class="skill-dot"></span>
+            <strong>Active MVP Game:</strong> Visual Recall &amp; Pattern Matching
+        </div>
+        <span class="game-choice-art">
+            <img src="{{ url_for('static', filename='img/tea_cup.svg') }}" alt="Familiar Tea Cup & Everyday Items" style="object-fit: contain; padding: 12px; background: #fffcf4;">
+        </span>
+        <span class="game-choice-label" data-i18n="memoryMatch">Memory Match</span>
+        <p class="game-purpose"><strong>Activity:</strong> Gentle visual matching of familiar cultural items with adaptive difficulty.</p>
+        <span class="game-choice-arrow">Start Activity →</span>
     </a>
-    <button class="game-choice game-choice-soon" type="button" disabled>
-        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=82" alt="Leaves and sunlight"></span><span class="game-choice-label">Word Recall</span>
-        <span class="game-choice-copy">Coming soon to your care circle.</span><span class="game-choice-arrow">· · ·</span>
-    </button>
-    <button class="game-choice game-choice-soon" type="button" disabled>
-        <span class="game-choice-art"><img src="https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=900&q=82" alt="Warm terracotta architecture"></span><span class="game-choice-label">Familiar Things</span>
-        <span class="game-choice-copy">A peaceful picture activity, coming soon.</span><span class="game-choice-arrow">· · ·</span>
-    </button>
+
+    <!-- Game 2: Daily Routine Sequence (Active MVP Activity) -->
+    <a class="game-choice game-choice-match" href="{{ url_for('game_routine', patient_id=patient.id) }}">
+        <div class="game-skill-tag">
+            <span class="skill-dot"></span>
+            <strong>Active MVP Game:</strong> Everyday Sequencing &amp; Routine Familiarity
+        </div>
+        <span class="game-choice-art">
+            <img src="{{ url_for('static', filename='img/diya_lamp.svg') }}" alt="Daily Routine Sequence" style="object-fit: contain; padding: 12px; background: #fffcf4;">
+        </span>
+        <span class="game-choice-label">Daily Routine Sequence</span>
+        <p class="game-purpose"><strong>Activity:</strong> Arrange familiar daily activities in a comfortable order. Supports familiarity with everyday routines through calm guided sequencing.</p>
+        <span class="game-choice-arrow">Start Activity &#8594;</span>
+    </a>
 </section>
-<section class="pace-note"><span aria-hidden="true">✦</span><div><strong>Playing with {{ patient.name }}</strong><p>Keep the room comfortable and celebrate effort, not speed.</p></div></section>
+
+<p style="text-align: center; color: #94a3b8; font-size: 14px; margin-top: 16px; padding-bottom: 8px;">More activities are planned.</p>
+
+
+</div>
+
+<script>
+(() => {
+    const card = document.getElementById("games-mascot-card");
+    const kickerEl = document.getElementById("games-bubble-kicker");
+    const msgEl = document.getElementById("games-bubble-msg");
+    if (!card || !msgEl) return;
+
+    const rawPatientName = {{ patient.name|tojson if patient and patient.name else '""' }};
+
+    const MASCOT_LANG_DATA = {
+        en: {
+            kicker: "🌸 Friendly Companion",
+            hint: "Click for another encouraging message",
+            namePrefix: " ",
+            messages: [
+                "Namaste{name}! Take your time, relax, and let's enjoy a gentle activity together! You are doing wonderfully. 💛",
+                "You are safe, loved, and surrounded by care. Take all the time you need today! 🌸",
+                "Every gentle match strengthens your memory. Let's have fun at your own peaceful pace! ✨",
+                "Smiling with you! Remember, there is no rush at all. Enjoy every little moment! 🌿"
+            ]
+        },
+        hi: {
+            kicker: "🌸 प्यारी सहेली",
+            hint: "एक और उत्साहवर्धक संदेश के लिए क्लिक करें",
+            namePrefix: " ",
+            messages: [
+                "नमस्ते{name}! आराम से खेलें, कोई जल्दी नहीं है। आप बहुत अच्छा कर रहे हैं! 💛",
+                "आप सुरक्षित हैं, आपसे बहुत स्नेह है और हम सब साथ हैं। जितना समय चाहें लें! 🌸",
+                "हर छोटा कदम आपकी स्मृति को संबल देता है। अपनी शांत गति से आनंद लें! ✨",
+                "आपके साथ मुस्कुराते हुए! याद रखें, कोई जल्दी नहीं है। हर छोटे पल का आनंद लें! 🌿"
+            ]
+        },
+        as: {
+            kicker: "🌸 মৰমৰ সংগী",
+            hint: "আৰু এটা উৎসাহিত বাৰ্তাৰ বাবে ক্লিক কৰক",
+            namePrefix: " ",
+            messages: [
+                "নমস্কাৰ{name}! শান্তভাৱে সময় লৈ খেলক, কোনো খৰখেদা নাই। আপুনি অতি সুন্দৰকৈ কৰিছে! 💛",
+                "আপুনি সুৰক্ষিত আৰু মৰমেৰে আগুৰি আছে। আজি যিমান সময় লাগে লওক! 🌸",
+                "প্ৰতিটো শান্ত পদক্ষেপে স্মৃতিশক্তি সতেজ কৰে। নিজৰ শান্ত গতিত আনন্দ লওক! ✨",
+                "আপোনাৰ লগত হাঁহি বিৰিঙাইছোঁ! মনত ৰাখিব, কোনো খৰখেদা নাই। প্ৰতিটো মুহূৰ্ত উপভোগ কৰক! 🌿"
+            ]
+        },
+        bn: {
+            kicker: "🌸 স্নেহের সঙ্গী",
+            hint: "আরও একটি উৎসাহজনক বার্তার জন্য ক্লিক করুন",
+            namePrefix: " ",
+            messages: [
+                "নমস্কার{name}! শান্ত মনে সময় নিয়ে খেলুন, কোনো তাড়া নেই। আপনি খুব সুন্দর করছেন! 💛",
+                "আপনি সুরক্ষিত এবং ভালোবাসায় ঘেরা। আজকে যতটা সময় প্রয়োজন নিন! 🌸",
+                "প্রতিটি শান্ত পদক্ষেপ স্মৃতিশক্তিকে সতেজ করে। নিজের গতিতে আনন্দ নিন! ✨",
+                "আপনার সাথে হাসিমুখে আছি! মনে রাখবেন, কোনো তাড়া নেই। প্রতিটি মুহূর্ত উপভোগ করুন! 🌿"
+            ]
+        },
+        kh: {
+            kicker: "🌸 Paralok ba sbun",
+            hint: "Shon ban ïoh biang kawei ka jingpynshlur",
+            namePrefix: " ",
+            messages: [
+                "Khublei{name}! Shim por bad shong thait, ngin ïalehkai sngewbha ryngkat! Phi leh bha bha shisha. 💛",
+                "Phi don ha ka jingshong suk bad ka jingieit. Shim katno ka por kaba phi donkam mynta! 🌸",
+                "Man ka jingïaid kaba jem ka kyntiew ïa ka jingkynmaw jong phi. Leh sngewbha ha ka rukom kaba jai-jai! ✨",
+                "Kmen ryngkat bad phi! Kynmaw, ym don jingpynkloi eiei. Sngewbha ha baroh ki khyllipmat! 🌿"
+            ]
+        },
+        mni: {
+            kicker: "🌸 নুংশিরবা মরুপ",
+            hint: "অতোপ্পা পুক্নিং থৌগৎনিংঙাই পাউ অমগীদমক নম্বিয়ু",
+            namePrefix: " ",
+            messages: [
+                "খুরুমজরি{name}! তপ্না তৌবিয়ু, পোথারবিয়ু, পুন্না নুংঙাইনা শানমিন্নসি! অদোম য়াম্না ফনা তৌরি। 💛",
+                "অদোম কনাগুম্বনা য়োকখৎলি অমসুং নুংশিরি। ঙসি চংবা মতম পুম্নমক লৌবিয়ু! 🌸",
+                "তপ্না চংশিনবা খুদিংমক্না অদোমগী নিংশিং শক্তি মপাঙ্গল কনখৎহল্লি। নুংঙাইনা শানবিয়ু! ✨",
+                "অদোমগা লোয়ননা নোইরি! নিংশিংবিয়ু, তফাওবা য়াওদে। খুদিংমক নুংঙাইনা ফংবিয়ু! 🌿"
+            ]
+        },
+        lus: {
+            kicker: "🌸 Thian ngainatawm",
+            hint: "Thuchah dang chhiar turin hmet rawh",
+            namePrefix: " ",
+            messages: [
+                "Chibai{name}! Hmanhmawh suh la, hahdam takin hun hmang dun ang le! I ti tha lutuk e. 💛",
+                "Hlauhthawn tur a awm lo, hmangaihna leh ngaihsakna i dawng reng e. Hun mamawh ang tawk la rawh le! 🌸",
+                "Engkim hian i hriatna a ti chak zel e. Hahdam takin lehkai nuam le! ✨",
+                "Hlim takin i kiangah ka awm e! Hmanhmawh a ngai lo, thlamuang takin awm rawh le! 🌿"
+            ]
+        }
+    };
+
+    let currentMsgIdx = 0;
+
+    function getActiveLang() {
+        return localStorage.getItem("smritisetu-language") || document.getElementById("language-select")?.value || "en";
+    }
+
+    function renderMascot(animate) {
+        const lang = getActiveLang();
+        const data = MASCOT_LANG_DATA[lang] || MASCOT_LANG_DATA.en;
+        const nameStr = rawPatientName ? (data.namePrefix + rawPatientName) : "";
+
+        if (kickerEl) {
+            kickerEl.textContent = data.kicker;
+        }
+
+        card.setAttribute("title", data.hint);
+
+        const rawMsg = data.messages[currentMsgIdx % data.messages.length];
+        const formattedMsg = rawMsg.replace("{name}", nameStr);
+
+        if (animate) {
+            msgEl.style.transition = "opacity 0.15s ease, transform 0.15s ease";
+            msgEl.style.opacity = "0.2";
+            msgEl.style.transform = "scale(0.98)";
+            setTimeout(() => {
+                msgEl.textContent = formattedMsg;
+                msgEl.style.opacity = "1";
+                msgEl.style.transform = "scale(1)";
+            }, 140);
+        } else {
+            msgEl.textContent = formattedMsg;
+        }
+    }
+
+    // Interactive message cycling on click
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+        const lang = getActiveLang();
+        const data = MASCOT_LANG_DATA[lang] || MASCOT_LANG_DATA.en;
+        currentMsgIdx = (currentMsgIdx + 1) % data.messages.length;
+        renderMascot(true);
+    });
+
+    // Listen to language changes dispatched by i18n.js
+    document.addEventListener("smritisetu:language", () => {
+        renderMascot(false);
+    });
+
+    // Listen to changes on any language selector dropdown directly
+    document.querySelectorAll("#language-select").forEach((sel) => {
+        sel.addEventListener("change", () => {
+            setTimeout(() => renderMascot(false), 30);
+        });
+    });
+
+    // Initial render
+    renderMascot(false);
+})();
+</script>
 {% endblock %}

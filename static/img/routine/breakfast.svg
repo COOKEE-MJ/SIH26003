@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <!-- Background -->
+  <circle cx="80" cy="80" r="74" fill="#fffcf5" stroke="#c96b3c" stroke-width="3.5"/>
+  <!-- Plate outer rim -->
+  <ellipse cx="80" cy="95" rx="52" ry="14" fill="none" stroke="#1e5548" stroke-width="3"/>
+  <!-- Plate inner -->
+  <ellipse cx="80" cy="95" rx="40" ry="10" fill="none" stroke="#1e5548" stroke-width="2"/>
+  <!-- Plate base -->
+  <path d="M34 95 Q34 114 80 114 Q126 114 126 95" fill="none" stroke="#1e5548" stroke-width="3"/>
+  <!-- Food on plate (simple mound) -->
+  <path d="M52 95 Q52 80 80 80 Q108 80 108 95" fill="none" stroke="#1e5548" stroke-width="2.5"/>
+  <!-- Spoon handle -->
+  <line x1="118" y1="115" x2="130" y2="60" stroke="#1e5548" stroke-width="3" stroke-linecap="round"/>
+  <!-- Spoon bowl -->
+  <ellipse cx="124" cy="56" rx="8" ry="5" fill="none" stroke="#1e5548" stroke-width="2.5" transform="rotate(-30 124 56)"/>
+  <!-- Steam -->
+  <path d="M70 76 Q66 66 72 58" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <path d="M80 74 Q84 64 78 56" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <path d="M90 76 Q86 66 92 58" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <!-- Label banner -->
+  <rect x="22" y="122" width="116" height="24" rx="12" fill="#1e5548"/>
+  <text x="80" y="138" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">BREAKFAST</text>
+</svg>
+

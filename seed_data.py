@@ -107,14 +107,15 @@ def insert_demo_sessions(conn, patient_ids):
         ],
     }
 
+    ph = "%s" if database.USE_POSTGRES else "?"
     for patient_id, sessions in session_plans.items():
         for days_ago, difficulty, score, total in sessions:
             played_at = (now - timedelta(days=days_ago)).isoformat(timespec="seconds")
             conn.execute(
-                """
+                f"""
                 INSERT INTO sessions
                     (patient_id, game_type, difficulty, score, total, played_at)
-                VALUES (?, 'matching', ?, ?, ?, ?)
+                VALUES ({ph}, 'matching', {ph}, {ph}, {ph}, {ph})
                 """,
                 (patient_id, difficulty, score, total, played_at),
             )

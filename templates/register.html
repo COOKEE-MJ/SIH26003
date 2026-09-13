@@ -1,26 +1,65 @@
 {% extends "base.html" %}
-
 {% block title %}Create Account | SmritiSetu{% endblock %}
-
+{% block body_class %}screen-auth-gate{% endblock %}
 {% block content %}
 <section class="form-shell">
     <div class="form-card">
-        <p class="eyebrow">A caring beginning</p>
-        <h1>Create your caregiver account</h1>
-        <p class="lead">Your account keeps one patient's care journey private and easy to follow.</p>
+        <p class="eyebrow" data-i18n="registerTagline">A caring beginning</p>
+        <h1 data-i18n="registerHeading">Create your caregiver account</h1>
+
+        <!-- Choose Language Option -->
+        <div class="auth-language-section" aria-labelledby="reg-lang-heading">
+            <div class="auth-language-header">
+                <span class="auth-lang-globe" aria-hidden="true">🌐</span>
+                <span id="reg-lang-heading" class="auth-language-title" data-i18n="chooseLanguage">Choose Language</span>
+            </div>
+            <div class="auth-language-pills" role="radiogroup" aria-label="Select preferred language">
+                <button type="button" class="lang-pill notranslate active" data-lang-btn="en" aria-pressed="true">
+                    <span class="pill-native">English</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="hi" aria-pressed="false">
+                    <span class="pill-native">हिन्दी</span>
+                    <span class="pill-roman">Hindi</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="as" aria-pressed="false">
+                    <span class="pill-native">অসমীয়া</span>
+                    <span class="pill-roman">Assamese</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="bn" aria-pressed="false">
+                    <span class="pill-native">বাংলা</span>
+                    <span class="pill-roman">Bengali</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="kh" aria-pressed="false">
+                    <span class="pill-native">Khasi</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="mni" aria-pressed="false">
+                    <span class="pill-native">মৈতৈলোন</span>
+                    <span class="pill-roman">Manipuri</span>
+                </button>
+                <button type="button" class="lang-pill notranslate" data-lang-btn="lus" aria-pressed="false">
+                    <span class="pill-native">Mizo</span>
+                </button>
+            </div>
+        </div>
+
         {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
         <form method="post" class="care-form">
-            <label for="name">Your name</label>
+            <label for="name" data-i18n="registerName">Your name</label>
             <input id="name" name="name" type="text" autocomplete="name" required>
-            <label for="email">Email address</label>
+            <label for="email" data-i18n="registerEmail">Email address</label>
             <input id="email" name="email" type="email" autocomplete="email" required>
-            <label for="password">Password</label>
+            <label for="contact" data-i18n="contactNumber">Contact number</label>
+            <input id="contact" name="contact" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required>
+            <label for="password" data-i18n="registerPassword">Password</label>
             <input id="password" name="password" type="password" minlength="6" autocomplete="new-password" required>
-            <label for="confirmation">Confirm password</label>
+            <label for="confirmation" data-i18n="registerConfirm">Confirm password</label>
             <input id="confirmation" name="confirmation" type="password" minlength="6" autocomplete="new-password" required>
-            <button class="button button-primary" type="submit">Create account</button>
+            <button class="button button-primary" type="submit" data-i18n="registerBtn">Create account</button>
         </form>
-        <p class="form-switch">Already registered? <a href="{{ url_for('login') }}">Sign in</a></p>
+        <p class="form-switch">
+            <span data-i18n="registerSwitch">Already registered?</span>
+            <a href="{{ url_for('login') }}" data-i18n="registerSwitchLink">Sign in</a>
+        </p>
     </div>
 </section>
 {% endblock %}

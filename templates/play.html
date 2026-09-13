@@ -1,36 +1,44 @@
 {% extends "base.html" %}
-
-{% block title %}Choose Activity - Memory Care{% endblock %}
-
+{% block title %}Choose Activity | SmritiSetu{% endblock %}
+{% block body_class %}page-play{% endblock %}
+{% block gov_top_bar %}{% endblock %}
 {% block content %}
+<div class="screen-patient">
 
-<div class="home-container">
+<section class="games-heading">
+    <a class="back-link" href="{{ url_for('home') }}" data-i18n="backHome">← Back home</a>
+    <p class="eyebrow" data-i18n="playHeading">Choose an activity</p>
+    <h1>Gentle Memory Activities for {{ patient.name }}</h1>
+    <p class="lead" data-i18n="playLead">Pick an activity below. Large cards and soothing sounds help make every moment feel peaceful.</p>
+</section>
 
-    <h2>Choose a Memory Activity</h2>
+<section class="game-choice-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 600px; margin: 0 auto;">
+    <a class="game-choice game-choice-match" href="{{ url_for('game_matching', patient_id=patient.id) }}">
+        <div class="game-skill-tag">
+            <span class="skill-dot"></span>
+            <strong>Activity Focus:</strong> Visual Recall &amp; Recognition
+        </div>
+        <span class="game-choice-art">
+            <img src="{{ url_for('static', filename='img/tea_cup.svg') }}" alt="Warm Tea Cup & Familiar Items" style="object-fit: contain; padding: 12px; background: #fffcf4;">
+        </span>
+        <span class="game-choice-label" data-i18n="playMatchLabel">Memory Matching</span>
+        <span class="game-choice-copy" data-i18n="playMatchCopy">Match familiar everyday pictures. Simple and calming.</span>
+        <span class="game-choice-arrow">Play Now →</span>
+    </a>
+</section>
 
-    <p class="welcome-text">
-        Hello, <strong>{{ patient.name }}</strong>!
-    </p>
-
-    <p>
-        Select an activity below to exercise memory and cognitive skills.
-    </p>
-
-    <div class="button-section">
-
-        <button class="answer-btn yes-btn"
-                onclick="window.location.href='/game/matching/{{ patient.id }}'">
-            🧩 Memory Matching
-        </button>
-
+<section class="pace-note" style="margin-top: 36px;">
+    <div class="elder-msg-pic">
+        <img src="{{ url_for('static', filename='img/tea_cup.svg') }}" alt="Warm Cup of Tea">
     </div>
-
-    <div style="margin-top: 25px;">
-        <p>
-            Match identical cards and improve your memory skills.
+    <div class="elder-msg-content">
+        <div class="elder-kicker">🍵 Caring Gentle Reminder</div>
+        <h3 class="elder-msg-title" style="font-size: 24px; margin: 2px 0 4px;">For {{ patient.name }}</h3>
+        <p class="elder-msg-body" style="font-size: 21px;">
+            "You are doing great! There is no rush—relax and have fun with each picture."
         </p>
     </div>
+</section>
 
 </div>
-
 {% endblock %}

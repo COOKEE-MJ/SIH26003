@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <!-- Background -->
+  <circle cx="80" cy="80" r="74" fill="#fffcf5" stroke="#c96b3c" stroke-width="3.5"/>
+  <!-- Sky area -->
+  <rect x="14" y="50" width="132" height="60" rx="0" fill="#fffcf5"/>
+  <!-- Horizon line -->
+  <line x1="14" y1="110" x2="146" y2="110" stroke="#1e5548" stroke-width="2"/>
+  <!-- Simple house roof and walls -->
+  <polygon points="48,110 48,80 80,58 112,80 112,110" fill="none" stroke="#1e5548" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Roof ridge -->
+  <polyline points="48,80 80,58 112,80" fill="none" stroke="#1e5548" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Door -->
+  <rect x="70" y="90" width="20" height="20" rx="2" fill="none" stroke="#1e5548" stroke-width="2.5"/>
+  <!-- Sun rising behind roof -->
+  <circle cx="80" cy="56" r="18" fill="none" stroke="#c96b3c" stroke-width="3"/>
+  <!-- Sun rays -->
+  <line x1="80" y1="32" x2="80" y2="26" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="97" y1="39" x2="101" y2="35" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="63" y1="39" x2="59" y2="35" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="104" y1="56" x2="110" y2="56" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="56" y1="56" x2="50" y2="56" stroke="#c96b3c" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Label banner -->
+  <rect x="22" y="122" width="116" height="24" rx="12" fill="#1e5548"/>
+  <text x="80" y="138" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">WAKE UP</text>
+</svg>
+
