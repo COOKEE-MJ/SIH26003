@@ -3,49 +3,6 @@
 
 {% block content %}
 
-<!-- Care Initiative Alignment Bar (Clean structured formatting) -->
-<div class="gov-accreditation-bar">
-    <span class="gov-acc-item">🌿 <strong>Care Focus:</strong> Dementia &amp; Memory Support</span>
-    <span class="gov-acc-item">📋 <strong>Activity Tracking:</strong> Structured Memory Activity Sessions</span>
-    <span class="gov-acc-item">🔒 <strong>Privacy First:</strong> Secure Patient-Isolated Care Circle</span>
-    <span class="gov-acc-item">🌐 <strong>Inclusion:</strong> Multilingual interface with selected North East Indian language support</span>
-</div>
-
-<!-- Heartwarming Emotional Return Banner (always shown, adapts to patient status) -->
-<section class="emotional-welcome-card" id="emotional-welcome-banner">
-    <div class="emotional-welcome-inner">
-        <div class="elder-msg-pic">
-            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion">
-        </div>
-
-        <div class="emotional-text-group">
-            <div class="elder-kicker">Daily Joy &amp; Warmth</div>
-            {% if patient %}
-                <h2 class="elder-msg-title">Welcome Back, {{ patient.name }}! </h2>
-            {% else %}
-                <h2 class="elder-msg-title">Welcome, {{ caregiver_name }}! </h2>
-            {% endif %}
-        </div>
-
-        <div class="emotional-stats-badge">
-            <span class="heart-pulse">❤️</span>
-            {% if patient %}
-                <small>Care Circle Active</small>
-                <strong>
-                    {% if stats.total_sessions > 0 %}
-                        {{ stats.total_sessions }} Gentle Sessions Completed
-                    {% else %}
-                        First Session Ready
-                    {% endif %}
-                </strong>
-            {% else %}
-                <small>Care Circle Not Started</small>
-                <strong>Register a Patient to Begin</strong>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
 <!-- Warm Personalized Hero -->
 <section class="home-hero">
     <div class="hero-copy">
@@ -89,6 +46,49 @@
         {% endif %}
     </div>
 </section>
+
+<!-- Heartwarming Emotional Return Banner (always shown, adapts to patient status) -->
+<section class="emotional-welcome-card" id="emotional-welcome-banner">
+    <div class="emotional-welcome-inner">
+        <div class="elder-msg-pic">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion">
+        </div>
+
+        <div class="emotional-text-group">
+            <div class="elder-kicker">Daily Joy &amp; Warmth</div>
+            {% if patient %}
+                <h2 class="elder-msg-title">Welcome Back, {{ patient.name }}! </h2>
+            {% else %}
+                <h2 class="elder-msg-title">Welcome, {{ caregiver_name }}! </h2>
+            {% endif %}
+        </div>
+
+        <div class="emotional-stats-badge">
+            <span class="heart-pulse">❤️</span>
+            {% if patient %}
+                <small>Care Circle Active</small>
+                <strong>
+                    {% if stats.total_sessions > 0 %}
+                        {{ stats.total_sessions }} Gentle Sessions Completed
+                    {% else %}
+                        First Session Ready
+                    {% endif %}
+                </strong>
+            {% else %}
+                <small>Care Circle Not Started</small>
+                <strong>Register a Patient to Begin</strong>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Care Initiative Alignment Bar (Clean structured formatting) -->
+<div class="gov-accreditation-bar">
+    <span class="gov-acc-item">🌿 <strong>Care Focus:</strong> Dementia &amp; Memory Support</span>
+    <span class="gov-acc-item">📋 <strong>Activity Tracking:</strong> Structured Memory Activity Sessions</span>
+    <span class="gov-acc-item">🔒 <strong>Privacy First:</strong> Secure Patient-Isolated Care Circle</span>
+    <span class="gov-acc-item">🌐 <strong>Inclusion:</strong> Multilingual interface with selected North East Indian language support</span>
+</div>
 
 <!-- Innovation: How SmritiSetu Works (Tab Block & Interactive Step Popup) -->
 <section class="how-it-works-tab-block" id="how-it-works" aria-labelledby="how-it-works-heading">
