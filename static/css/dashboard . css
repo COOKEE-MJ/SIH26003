@@ -1,173 +1,370 @@
+/* =========================================
+   DOCTOR DASHBOARD
+   TEAM ZENITH - SIH 2026
+   ========================================= */
+
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f1e8;
+    color: #26352d;
+    line-height: 1.6;
 }
 
-.header {
-    background: #1f3c88;
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.report-header {
+    background: #6f7f72;
     color: white;
-    padding: 25px 40px;
-}
-
-.header h1 {
-    margin-bottom: 6px;
-}
-
-.header p {
-    opacity: 0.9;
-}
-
-.container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.patient-card,
-.card,
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
-.patient-card h2,
-.card h2 {
-    margin-bottom: 15px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    padding: 28px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
 }
 
-.stat-card {
-    text-align: center;
+.report-label,
+.section-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
-.stat-card h3 {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
+.report-label {
+    margin: 0 0 6px;
+    opacity: 0.9;
 }
 
-.stat-card p {
-    font-size: 28px;
-    font-weight: bold;
-    color: #1f3c88;
+.report-header h1 {
+    margin: 0;
+    font-size: 32px;
 }
+
+.report-header p:last-child {
+    margin: 5px 0 0;
+    opacity: 0.9;
+}
+
+.dashboard-back {
+    display: inline-block;
+    text-decoration: none;
+    background: #fffdf8;
+    color: #435449;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.dashboard-back:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+   ========================================= */
+
+.report-container {
+    width: min(1180px, 92%);
+    margin: 32px auto 50px;
+}
+
+
+/* =========================================
+   PATIENT PROFILE
+   ========================================= */
+
+.patient-banner {
+    background: #fffdf8;
+    border: 1px solid #ddd7ca;
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 18px rgba(70, 70, 50, 0.06);
+}
+
+.patient-banner h2 {
+    margin: 5px 0;
+    font-size: 27px;
+}
+
+.patient-banner p {
+    margin: 0;
+    color: #68736c;
+}
+
+.section-label {
+    color: #77857a;
+}
+
+.profile-status {
+    text-align: right;
+}
+
+.profile-status span {
+    display: block;
+    font-size: 11px;
+    color: #77857a;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.profile-status strong {
+    display: block;
+    margin-top: 4px;
+    color: #4f6757;
+}
+
+
+/* =========================================
+   SUMMARY CARDS
+   ========================================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.summary-card {
+    background: #fffdf8;
+    border: 1px solid #ddd7ca;
+    border-radius: 14px;
+    padding: 22px;
+    min-height: 145px;
+    box-shadow: 0 5px 18px rgba(70, 70, 50, 0.05);
+}
+
+.summary-card span {
+    display: block;
+    color: #77857a;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.summary-card strong {
+    display: block;
+    margin: 10px 0 3px;
+    font-size: 27px;
+    color: #405247;
+}
+
+.summary-card p {
+    margin: 0;
+    color: #7b817c;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   CARDS
+   ========================================= */
+
+.clinical-card,
+.report-card {
+    background: #fffdf8;
+    border: 1px solid #ddd7ca;
+    border-radius: 14px;
+    padding: 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 18px rgba(70, 70, 50, 0.05);
+}
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.card-heading h2 {
+    margin: 4px 0 0;
+    color: #35463b;
+    font-size: 22px;
+}
+
+
+/* =========================================
+   PERFORMANCE INSIGHT
+   ========================================= */
+
+.interpretation-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.interpretation-grid > div {
+    background: #f5f1e8;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.interpretation-grid span {
+    display: block;
+    color: #78827c;
+    font-size: 13px;
+}
+
+.interpretation-grid strong {
+    display: block;
+    margin-top: 5px;
+    color: #405247;
+    font-size: 19px;
+}
+
+
+/* =========================================
+   RECOMMENDATION
+   ========================================= */
+
+.recommendation {
+    margin-top: 20px;
+    padding: 18px 20px;
+    border-left: 4px solid #d58a45;
+    background: #faf3e7;
+    border-radius: 8px;
+}
+
+.recommendation span {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #806344;
+}
+
+.recommendation p {
+    margin: 7px 0 0;
+    color: #4e554f;
+}
+
+
+/* =========================================
+   CHART
+   ========================================= */
 
 .chart-container {
     position: relative;
-    height: 350px;
+    width: 100%;
+    height: 340px;
 }
 
+
+/* =========================================
+   TABLE
+   ========================================= */
+
 .table-container {
+    width: 100%;
     overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px;
+}
+
+thead {
+    background: #eef0e9;
 }
 
 th,
 td {
-    padding: 13px;
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e2ddd2;
 }
 
 th {
-    background: #f0f3f8;
+    color: #536157;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-tr:hover {
-    background: #f8f9fb;
+td {
+    color: #555f58;
+    font-size: 14px;
 }
 
-@media (max-width: 700px) {
-    .stats {
+tbody tr:hover {
+    background: #faf8f2;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .interpretation-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .report-header {
+        padding: 24px 5%;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .report-header h1 {
+        font-size: 26px;
+    }
+
+    .report-container {
+        width: 94%;
+        margin-top: 20px;
+    }
+
+    .patient-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-status {
+        text-align: left;
+    }
+
+    .summary-grid,
+    .interpretation-grid {
         grid-template-columns: 1fr;
     }
 
-    .header {
-        padding: 20px;
-    }
-
-    .container {
-        padding: 0 12px;
+    .clinical-card,
+    .report-card {
+        padding: 18px;
     }
 
     .chart-container {
-        height: 280px;
+        height: 260px;
     }
 }
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
-}
-
-.header {
-    background: #1f3c88;
-    color: white;
-    padding: 25px 40px;
-}
-
-.header h1 {
-    margin-bottom: 6px;
-}
-
-.header p {
-    opacity: 0.9;
-}
-
-.container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.patient-card,
-.card,
-.stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
-.patient-card h2,
-.card h2 {
-    margin-bottom: 15px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.stat-card {
-    text-align: center;
-}
-
-.stat-card h3 {…
