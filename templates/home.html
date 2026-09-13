@@ -4,21 +4,40 @@
 {% block content %}
 
 {% if patient %}
-<!-- Heartwarming Emotional Return Banner (Only shown when patient is registered) -->
+<!-- Heartwarming Emotional Return Banner -->
 <section class="emotional-welcome-card" id="emotional-welcome-banner">
     <div class="emotional-welcome-inner">
+
         <div class="elder-msg-pic">
-            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}"
+                 alt="Cheerful Companion">
         </div>
+
         <div class="emotional-text-group">
             <div class="elder-kicker">Daily Joy &amp; Warmth</div>
-            <h2 class="elder-msg-title">Welcome Back, {{ patient.name }}! {%e else %} Welcome Back! {%endif %}</h2>
+
+            <h2 class="elder-msg-title">
+                {% if patient %}
+                    Welcome Back, {{ patient.name }}!
+                {% else %}
+                    Welcome Back!
+                {% endif %}
+            </h2>
         </div>
+
         <div class="emotional-stats-badge">
             <span class="heart-pulse">❤️</span>
             <small>Care Circle Active</small>
-            <strong>{% if stats.total_sessions > 0 %}{{ stats.total_sessions }} Gentle Sessions Completed{% else %}First Session Ready{% endif %}</strong>
+
+            <strong>
+                {% if patient and stats.total_sessions > 0 %}
+                    {{ stats.total_sessions }} Gentle Sessions Completed
+                {% else %}
+                    First Session Ready
+                {% endif %}
+            </strong>
         </div>
+
     </div>
 </section>
 
