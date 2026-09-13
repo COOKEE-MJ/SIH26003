@@ -15,14 +15,14 @@ class TestMusicSidebarGames(unittest.TestCase):
         with get_connection() as conn:
             cg = conn.execute("SELECT id, name FROM caregivers LIMIT 1").fetchone()
             if not cg:
-                conn.execute("INSERT INTO caregivers (name, email, password_hash) VALUES ('Test Caregiver', 'test@example.com', 'dummy')")
+                conn.execute("INSERT INTO caregivers (name, email, password_hash, created_at) VALUES ('Test Caregiver', 'test@example.com', 'dummy', '2026-09-13 00:00:00')")
                 conn.commit()
                 cg = conn.execute("SELECT id, name FROM caregivers LIMIT 1").fetchone()
             self.caregiver_id = cg['id']
 
             pt = conn.execute("SELECT id, name FROM patients WHERE caregiver_id = ? LIMIT 1", (self.caregiver_id,)).fetchone()
             if not pt:
-                conn.execute("INSERT INTO patients (caregiver_id, name, age, diagnosis_stage) VALUES (?, 'Test Patient', 72, 'Early stage')", (self.caregiver_id,))
+                conn.execute("INSERT INTO patients (caregiver_id, name, age, sex, diagnosis_stage, created_at) VALUES (?, 'Test Patient', 72, 'Female', 'Early stage', '2026-09-13 00:00:00')", (self.caregiver_id,))
                 conn.commit()
                 pt = conn.execute("SELECT id, name FROM patients WHERE caregiver_id = ? LIMIT 1", (self.caregiver_id,)).fetchone()
             self.patient_id = pt['id']
