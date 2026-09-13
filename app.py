@@ -160,6 +160,10 @@ def register():
             caregiver_id = create_caregiver(name, email, generate_password_hash(password), contact=contact)
         except ValueError as error:
             return render_template('register.html', error=str(error)), 400
+        except Exception as error:
+            import traceback
+            app.logger.error("Registration failed: %s\n%s", error, traceback.format_exc())
+            return render_template('register.html', error=f"Registration system error ({type(error).__name__}): {error}"), 500
         session['caregiver_id'] = caregiver_id
         session['caregiver_name'] = name
         return redirect(url_for('home'))
@@ -760,6 +764,29 @@ def reset_daily_routines_api():
         return jsonify({'success': True, 'routines': refreshed})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/health')
+def health():
+    status = {'status': 'ok', 'postgres': False, 'database': 'unknown'}
+    try:
+        from database import get_connection, USE_POSTGRES
+        status['postgres'] = USE_POSTGRES
+        conn = get_connection()
+        try:
+            row = conn.execute("SELECT 1 as live").fetchone()
+            status['database'] = 'connected'
+            status['val'] = row['live'] if row else None
+        finally:
+            conn.close()
+        return jsonify(status), 200
+    except Exception as e:
+        import traceback
+        status['status'] = 'error'
+        status['database'] = 'failed'
+        status['error_type'] = type(e).__name__
+        status['error_message'] = str(e)
+        return jsonify(status), 500
 
 
 if __name__ == '__main__':

@@ -48,14 +48,11 @@ VALID_SEX_VALUES = ("Male", "Female")
 
 def get_connection():
     """
-    Create and return a SQLite connection.
-
-    - Points at the project-relative database file (DB_PATH)
-    - Rows behave like dicts (sqlite3.Row) so callers can do row["name"]
-    - Foreign key enforcement is turned on for this connection
+    Create and return a database connection (PostgreSQL in production, SQLite locally).
     """
     if USE_POSTGRES:
-        postgres_url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        clean_url = str(DATABASE_URL).strip().strip("'").strip('"')
+        postgres_url = clean_url.replace("postgres://", "postgresql://", 1)
         return psycopg.connect(postgres_url, row_factory=dict_row)
 
     conn = sqlite3.connect(DB_PATH)
@@ -153,6 +150,8 @@ def init_db():
                 """
             )
             conn.execute("ALTER TABLE caregivers ADD COLUMN IF NOT EXISTS contact TEXT")
+            conn.execute("ALTER TABLE care_routines ADD COLUMN IF NOT EXISTS frequency TEXT DEFAULT 'daily'")
+            conn.execute("ALTER TABLE care_routines ADD COLUMN IF NOT EXISTS completed_date TEXT")
             conn.commit()
             return
 
