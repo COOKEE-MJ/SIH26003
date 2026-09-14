@@ -3,45 +3,6 @@
 
 {% block content %}
 
-{% if patient %}
-<!-- Heartwarming Emotional Return Banner -->
-<section class="emotional-welcome-card" id="emotional-welcome-banner">
-    <div class="emotional-welcome-inner">
-
-        <div class="elder-msg-pic">
-            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}"
-                 alt="Cheerful Companion">
-        </div>
-
-        <div class="emotional-text-group">
-            <div class="elder-kicker">Daily Joy &amp; Warmth</div>
-
-            <h2 class="elder-msg-title">
-                {% if patient %}
-                    Welcome Back, {{ patient.name }}!
-                {% else %}
-                    Welcome Back!
-                {% endif %}
-            </h2>
-        </div>
-
-        <div class="emotional-stats-badge">
-            <span class="heart-pulse">❤️</span>
-            <small>Care Circle Active</small>
-
-            <strong>
-                {% if patient and stats.total_sessions > 0 %}
-                    {{ stats.total_sessions }} Gentle Sessions Completed
-                {% else %}
-                    First Session Ready
-                {% endif %}
-            </strong>
-        </div>
-
-    </div>
-</section>
-{% endif %}
-
 <!-- Warm Personalized Hero -->
 <section class="home-hero">
     <div class="hero-copy">
@@ -83,6 +44,41 @@
         <div class="floating-note note-top">SmritiSetu Cognitive Support</div>
         <div class="floating-note note-bottom">🌱 Gentle Memory Care</div>
         {% endif %}
+    </div>
+</section>
+
+<!-- Heartwarming Emotional Return Banner (always shown, adapts to patient status) -->
+<section class="emotional-welcome-card" id="emotional-welcome-banner">
+    <div class="emotional-welcome-inner">
+        <div class="elder-msg-pic">
+            <img src="{{ url_for('static', filename='img/mascot/cheerful.png') }}" alt="Cheerful Companion">
+        </div>
+
+        <div class="emotional-text-group">
+            <div class="elder-kicker">Daily Joy &amp; Warmth</div>
+            {% if patient %}
+                <h2 class="elder-msg-title">Welcome Back, {{ patient.name }}! </h2>
+            {% else %}
+                <h2 class="elder-msg-title">Welcome, {{ caregiver_name }}! </h2>
+            {% endif %}
+        </div>
+
+        <div class="emotional-stats-badge">
+            <span class="heart-pulse">❤️</span>
+            {% if patient %}
+                <small>Care Circle Active</small>
+                <strong>
+                    {% if stats.total_sessions > 0 %}
+                        {{ stats.total_sessions }} Gentle Sessions Completed
+                    {% else %}
+                        First Session Ready
+                    {% endif %}
+                </strong>
+            {% else %}
+                <small>Care Circle Not Started</small>
+                <strong>Register a Patient to Begin</strong>
+            {% endif %}
+        </div>
     </div>
 </section>
 
@@ -247,17 +243,11 @@
     <div class="section-title-row">
         <div>
             <p class="eyebrow">Caregiver Dashboard &amp; Memory Portal</p>
-            <h2>Today's Gameplay Performance &amp; Daily Living Overview</h2>
+            <h2 style="font-weight: 900; font size: 2.2rem; letter-spacing: -0.01rem;">Today's Gameplay Performance &amp; Daily Living Overview</h2>
         </div>
         {% if patient %}
             <span class="patient-pill">Patient: <strong>{{ patient.name }}</strong> (UHID #{{ patient.id }})</span>
         {% endif %}
-    </div>
-
-    <!-- Current MVP Note -->
-    <div class="mvp-badge-note" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; font-size: 13.5px; color: #166534; line-height: 1.5; display: flex; align-items: center; gap: 8px;">
-        <span style="background: #16a34a; color: #ffffff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Current MVP</span>
-        <span>Current MVP: Memory Match, patient-specific progress tracking, caregiver routines and notes, multilingual interface, and printable gameplay summaries.</span>
     </div>
 
     <!-- Mandatory SIH 2026 In-App Performance Disclaimer -->
@@ -270,7 +260,7 @@
         <div class="cmd-card metric-card">
             <div class="cmd-card-header">
                 <span class="cmd-icon">🧠</span>
-                <span class="cmd-label">Latest Game Accuracy</span>
+                <span class="cmd-label" style="font-weight: 700; font-size: 1.0rem:">Latest Game Accuracy</span>
             </div>
             {% if patient and stats.has_played %}
                 <div class="score-display">
@@ -310,7 +300,7 @@
         <div class="cmd-card status-card">
             <div class="cmd-card-header">
                 <span class="cmd-icon">🌿</span>
-                <span class="cmd-label">Gameplay Progress Summary</span>
+                <span class="cmd-label" style=font-weight: 700; font-size: 1.05rem;">Gameplay Progress Summary</span>
             </div>
             {% if patient and stats.has_played %}
                 <div class="status-badge-row">
@@ -353,7 +343,7 @@
         <div class="cmd-card reminders-card">
             <div class="cmd-card-header">
                 <span class="cmd-icon">⏰</span>
-                <span class="cmd-label">Daily Care &amp; Medication Routine</span>
+                <span class="cmd-label" style="font-weight: 700; font-size: 1.05rem;">Daily Care &amp; Medication Routine</span>
                 {% if patient and reminders %}
                 <button type="button" class="btn-refresh-routine" onclick="refreshDailyRoutines()" title="Refresh Daily Routine block (resets daily tasks for today)">
                     🔄 Refresh
@@ -414,7 +404,7 @@
         <div class="cmd-card notes-card">
             <div class="cmd-card-header">
                 <span class="cmd-icon">💌</span>
-                <span class="cmd-label" data-i18n="familyMemoryNotesAnchors">Family Memory Notes &amp; Anchors</span>
+                <span class="cmd-label" data-i18n="familyMemoryNotesAnchors" style="font-weight: 700; font-size: 1.05rem;">Family Memory Notes &amp; Anchors</span>
             </div>
             <div class="notes-feed" id="home-notes-feed">
                 {% if patient and family_notes %}
